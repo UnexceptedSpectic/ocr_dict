@@ -14,13 +14,10 @@ class TableViewCell: UITableViewCell {
     
     static let resultID = "ResultTableViewCell"
     
-    
-    @IBOutlet weak var containerView: UIView!
-    @IBOutlet weak var wordLabel: UILabel!
     @IBOutlet weak var categoryLabel: UILabel!
     @IBOutlet weak var definitionLabel: UILabel!
     
-    static let dictID = "DictionaryTableViewCell"
+    static let dictID = "DataForWordTypeTableViewCell"
     
     override func awakeFromNib() {
         super.awakeFromNib()

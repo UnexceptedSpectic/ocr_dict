@@ -63,6 +63,13 @@ struct Sense: Decodable {
 
 struct Example: Decodable {
     
+    let notes: [Note]?
+    let text: String?
+    
+}
+
+struct Note: Decodable {
+    
     let text: String?
     
 }

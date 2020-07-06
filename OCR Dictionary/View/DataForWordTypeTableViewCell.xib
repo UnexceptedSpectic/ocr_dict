@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="DataForWordTypeTableViewCell" rowHeight="1003" id="NrI-fD-y4r" userLabel="DataForWordTypeTableViewCell" customClass="TableViewCell" customModule="OCR_Dictionary" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="463" height="1003"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="NrI-fD-y4r" id="Ag9-1R-cFp">
+                <rect key="frame" x="0.0" y="0.0" width="463" height="1003"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ran-rO-6JB" userLabel="containerView">
+                        <rect key="frame" x="10" y="0.0" width="443" height="1003"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="751" text="adjective" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rJk-qR-9Z7" userLabel="categoryLabel">
+                                <rect key="frame" x="20" y="10" width="413" height="20.5"/>
+                                <fontDescription key="fontDescription" type="italicSystem" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="752" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nRk-mU-Rhn" userLabel="definitionLabel">
+                                <rect key="frame" x="30" y="40.5" width="398" height="952.5"/>
+                                <mutableString key="text">a super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definitona super long definiton a super long definiton a super long definiton a super long definiton a super long definiton</mutableString>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="secondarySystemBackgroundColor" red="0.94901960780000005" green="0.94901960780000005" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="nRk-mU-Rhn" secondAttribute="trailing" constant="15" id="0cc-Iv-qfz"/>
+                            <constraint firstItem="nRk-mU-Rhn" firstAttribute="leading" secondItem="Ran-rO-6JB" secondAttribute="leading" constant="30" id="9d0-mz-2Vd"/>
+                            <constraint firstItem="rJk-qR-9Z7" firstAttribute="leading" secondItem="Ran-rO-6JB" secondAttribute="leading" constant="20" id="FEi-Eh-6Et"/>
+                            <constraint firstAttribute="trailing" secondItem="rJk-qR-9Z7" secondAttribute="trailing" constant="10" id="tTl-q0-h3K"/>
+                            <constraint firstItem="nRk-mU-Rhn" firstAttribute="top" secondItem="rJk-qR-9Z7" secondAttribute="bottom" constant="10" id="v4Z-pj-aVd"/>
+                            <constraint firstItem="rJk-qR-9Z7" firstAttribute="top" secondItem="Ran-rO-6JB" secondAttribute="top" constant="10" id="z4b-ib-mZZ"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="Ran-rO-6JB" firstAttribute="leading" secondItem="Ag9-1R-cFp" secondAttribute="leading" constant="10" id="H1T-JX-Co9"/>
+                    <constraint firstAttribute="bottom" secondItem="Ran-rO-6JB" secondAttribute="bottom" id="OB8-Su-TVF"/>
+                    <constraint firstItem="Ran-rO-6JB" firstAttribute="top" secondItem="Ag9-1R-cFp" secondAttribute="top" id="QRk-JZ-NWZ"/>
+                    <constraint firstAttribute="bottom" secondItem="nRk-mU-Rhn" secondAttribute="bottom" constant="10" id="ZWh-DX-jP4"/>
+                    <constraint firstAttribute="trailing" secondItem="Ran-rO-6JB" secondAttribute="trailing" constant="10" id="ZYr-sy-zVU"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="categoryLabel" destination="rJk-qR-9Z7" id="Wpa-AV-9fr"/>
+                <outlet property="definitionLabel" destination="nRk-mU-Rhn" id="tFX-VB-5SG"/>
+            </connections>
+            <point key="canvasLocation" x="-425.36231884057975" y="165.73660714285714"/>
+        </tableViewCell>
+    </objects>
+</document>

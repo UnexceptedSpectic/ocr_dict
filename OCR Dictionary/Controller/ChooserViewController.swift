@@ -27,7 +27,9 @@ class ChooserViewController: UIViewController {
         // Analyze cropped image
         let foundText = ocr.getText(with: cropImageToWordFocus(image: capturedImage!))
         // Save found words to results array
-        self.foundWords = foundText.trimmingCharacters(in: CharacterSet.alphanumerics.inverted).components(separatedBy: CharacterSet.whitespaces)
+        self.foundWords = foundText.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+                                    .components(separatedBy: CharacterSet.whitespacesAndNewlines)
+                                    .filter { !$0.isEmpty }
         print(self.foundWords)
 
         // Configure the result table view
@@ -78,7 +80,7 @@ class ChooserViewController: UIViewController {
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let dictionaryVC = segue.destination as! DictionaryViewController
-        dictionaryVC.queryWord = self.chosenWord
+        dictionaryVC.queryWord = self.chosenWord.lowercased()
     }
 
 }

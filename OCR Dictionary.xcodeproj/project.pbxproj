@@ -11,7 +11,7 @@
 		D42B48F024A4F5010054CE66 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42B48EE24A4F5010054CE66 /* TableViewCell.swift */; };
 		D42B48F124A4F5010054CE66 /* ResultTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D42B48EF24A4F5010054CE66 /* ResultTableViewCell.xib */; };
 		D42B48F324A71B670054CE66 /* DictionaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42B48F224A71B670054CE66 /* DictionaryViewController.swift */; };
-		D4704C8624A833C200100641 /* DictionaryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4704C8524A833C200100641 /* DictionaryTableViewCell.xib */; };
+		D4704C8624A833C200100641 /* DataForWordTypeTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4704C8524A833C200100641 /* DataForWordTypeTableViewCell.xib */; };
 		D4704C8824AC591700100641 /* DictionaryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4704C8724AC591700100641 /* DictionaryManager.swift */; };
 		D4704C8A24AC642B00100641 /* WordData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4704C8924AC642B00100641 /* WordData.swift */; };
 		D488F414248E0116001D25CC /* LibraryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D488F412248E0116001D25CC /* LibraryCollectionViewCell.swift */; };
@@ -35,7 +35,7 @@
 		D42B48EE24A4F5010054CE66 /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		D42B48EF24A4F5010054CE66 /* ResultTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ResultTableViewCell.xib; sourceTree = "<group>"; };
 		D42B48F224A71B670054CE66 /* DictionaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryViewController.swift; sourceTree = "<group>"; };
-		D4704C8524A833C200100641 /* DictionaryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DictionaryTableViewCell.xib; sourceTree = "<group>"; };
+		D4704C8524A833C200100641 /* DataForWordTypeTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DataForWordTypeTableViewCell.xib; sourceTree = "<group>"; };
 		D4704C8724AC591700100641 /* DictionaryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryManager.swift; sourceTree = "<group>"; };
 		D4704C8924AC642B00100641 /* WordData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordData.swift; sourceTree = "<group>"; };
 		D488F412248E0116001D25CC /* LibraryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -117,7 +117,7 @@
 				D488F413248E0116001D25CC /* LibraryCollectionViewCell.xib */,
 				D42B48EE24A4F5010054CE66 /* TableViewCell.swift */,
 				D42B48EF24A4F5010054CE66 /* ResultTableViewCell.xib */,
-				D4704C8524A833C200100641 /* DictionaryTableViewCell.xib */,
+				D4704C8524A833C200100641 /* DataForWordTypeTableViewCell.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -212,7 +212,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D4DB529E2480CE1E00F48A83 /* LaunchScreen.storyboard in Resources */,
-				D4704C8624A833C200100641 /* DictionaryTableViewCell.xib in Resources */,
+				D4704C8624A833C200100641 /* DataForWordTypeTableViewCell.xib in Resources */,
 				D4DB529B2480CE1E00F48A83 /* Assets.xcassets in Resources */,
 				D42B48F124A4F5010054CE66 /* ResultTableViewCell.xib in Resources */,
 				D4F036F024A1069D00A2D4CB /* tessdata in Resources */,
