@@ -40,6 +40,7 @@ class DictionaryViewController: UIViewController {
         // Configure the result table view
         dicitonaryTableView.register(TableViewCell.nib(nibName: TableViewCell.dictID), forCellReuseIdentifier: TableViewCell.dictID)
         dicitonaryTableView.showsVerticalScrollIndicator = false
+        dicitonaryTableView.allowsSelection = false
         
         DispatchQueue.main.async {
             
@@ -95,7 +96,7 @@ extension DictionaryViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-                
+        
         if indexPath.row == 0 {
             
             // Create cell from storyboard prototype cell for word being queried
@@ -137,38 +138,156 @@ extension DictionaryViewController: UITableViewDataSource {
                 // Assume that only one result will ever be found
                 let result = results[0]
                 
-                // Configure wordType cells. Subtract one for the storyboard prototype cell
+                // Set word type e.g. adjective to work with. Subtract one for the storyboard prototype cell
                 let wordType = result.lexicalEntries![indexPath.row - 1]
                 
                 self.setCellLabelText(for: cell.categoryLabel, as: wordType.lexicalCategory!.id)
                 
-                // Each lexical category has a single entry and a single sense, so can force unwrap
-                let sense = wordType.entries![0].senses![0]
+                // Define text attribute presets
+                let italicSecondaryAttributes = [NSAttributedString.Key.font: UIFont.italicSystemFont(ofSize: 14), NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel]
+                let italicTertiaryAttributes = [NSAttributedString.Key.font: UIFont.italicSystemFont(ofSize: 14), NSAttributedString.Key.foregroundColor: UIColor.tertiaryLabel]
                 
-                let definitionText = sense.definitions![0]
+                // Extract primary sense and subsense data
+                let definitionsText = NSMutableAttributedString(string: "")
                 
-                var examplesText = ""
+                let senses = wordType.entries![0].senses!
                 
-                if let examples = sense.examples {
+                for (ind, sense) in senses.enumerated() {
                     
-                    for (ind, example) in examples.enumerated() {
+                    // Configure primary sense/definition and examples text
+                    let definitionNumber: String
+                    if senses.count > 1 {
                         
-                        if let notes = example.notes {
+                        definitionNumber = "\(String(ind + 1)). "
+                        
+                    } else {
+                        
+                        definitionNumber = ""
+                        
+                    }
+                    
+                    let definitionText = NSMutableAttributedString(string: "\(definitionNumber)\(sense.definitions![0])")
+                    let examplesText = NSMutableAttributedString(string: "")
+                    
+                    // Add examples for the defined word
+                    if let examples = sense.examples {
+                        
+                        examplesText.append(NSAttributedString(string: ": "))
+                        
+                        for (ind, example) in examples.enumerated() {
                             
-                            examplesText += "[" + notes[0].text! + "]: " + example.text!
+                            // Add note text
+                            if let notes = example.notes {
+                                
+                                examplesText.append(NSAttributedString(string: "[\(notes[0].text!)]: ", attributes: italicTertiaryAttributes))
+                                
+                            }
                             
-                        } else {
+                            // Add example text
+                            examplesText.append(NSAttributedString(string: example.text!, attributes: italicSecondaryAttributes))
                             
-                            examplesText += example.text!
-                            
-                        }
-                        if ind != examples.count - 1 {
-                            examplesText += " | "
+                            if ind != examples.count - 1 {
+                                
+                                examplesText.append(NSAttributedString(string: " | "))
+                                
+                            } else {
+                                
+                                examplesText.append(NSAttributedString(string: "."))
+                                
+                            }
                         }
                     }
+                    
+                    definitionText.append(examplesText)
+                    
+                    // Add subsense definition and example text to primary data text
+                    if let subsenses = sense.subsenses {
+                        
+                        let subsensesText = NSMutableAttributedString(string: "")
+                        
+                        for subsense in subsenses {
+                            
+                            // Check for and attempt to save subsense definition. Continue only if one is found.
+                            var subsenseDefinition: String?
+                            if let definitions = subsense.definitions {
+                                
+                                subsenseDefinition = definitions[0]
+                                
+                            } else if let crossReferenceMarkers = subsense.crossReferenceMarkers {
+                                
+                                subsenseDefinition = crossReferenceMarkers[0]
+                                
+                            } else {
+                                
+                                // Skip iteration
+                                continue
+                                
+                            }
+                            
+                            // Create a new, bulleted row
+                            subsensesText.append(NSAttributedString(string: "\n\n\u{2022} "))
+                            
+                            // Add subsense note
+                            if let notes = subsense.notes {
+                                
+                                subsensesText.append(NSAttributedString(string: "[\(notes[0].text!)] ", attributes: italicTertiaryAttributes))
+                                
+                            }
+                            
+                            // Add subsense domain
+                            if let domains = subsense.domains {
+                                
+                                subsensesText.append(NSAttributedString(string: "\(domains[0].text!) ", attributes: italicTertiaryAttributes))
+                                
+                            }
+                            
+                            // Add subsense definition
+                            subsensesText.append(NSAttributedString(string: subsenseDefinition!))
+                            
+                            // Add subsense examples
+                            let examplesText = NSMutableAttributedString(string: "")
+                            
+                            if let examples = subsense.examples {
+                                
+                                examplesText.append(NSAttributedString(string: ": "))
+                                
+                                for (ind, example) in examples.enumerated() {
+                                    
+                                    examplesText.append(NSAttributedString(string: example.text!, attributes: italicSecondaryAttributes))
+                                    
+                                    if ind != examples.count - 1 {
+                                        
+                                        examplesText.append(NSAttributedString(string: " | "))
+                                        
+                                    } else {
+                                        
+                                        examplesText.append(NSAttributedString(string: "."))
+                                        
+                                    }
+                                }
+                                
+                                subsensesText.append(examplesText)
+                                
+                            }
+                        }
+                        
+                        definitionText.append(subsensesText)
+                        
+                    }
+                                        
+                    // Save text for the data of each primary sense and its subsenses
+                    definitionsText.append(definitionText)
+                    
+                    if ind < senses.count {
+                        
+                        definitionsText.append(NSAttributedString(string: "\n\n"))
+                        
+                    }
+                    
                 }
-                
-                self.setCellLabelText(for: cell.definitionLabel, as: definitionText + ": " + examplesText)
+                                
+                // Configure cell with definitions and examples text
+                self.setCellLabelAttributeText(for: cell.definitionLabel, as: definitionsText)
                 
             }
             // Update frame height. Autolayout doesn't seem to do so as elements change in height. May be an issue with how constraints are set up.
@@ -186,6 +305,13 @@ extension DictionaryViewController: UITableViewDataSource {
             self.heightOfAddedLabels += label.intrinsicContentSize.height
             
         }
+        
+    }
+    
+    func setCellLabelAttributeText(for label: UILabel, as text: NSMutableAttributedString) {
+        
+        label.attributedText = text
+        self.heightOfAddedLabels += label.intrinsicContentSize.height
         
     }
     

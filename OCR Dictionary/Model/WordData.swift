@@ -76,9 +76,18 @@ struct Note: Decodable {
 
 struct Subsense: Decodable {
     
+    let crossReferenceMarkers: [String]?
     let definitions: [String]?
+    let domains: [Domain]?
     let examples: [Example]?
+    let notes: [Note]?
     let shortDefinitions: [String]?
+    
+}
+
+struct Domain: Decodable {
+    
+    let text: String?
     
 }
 
