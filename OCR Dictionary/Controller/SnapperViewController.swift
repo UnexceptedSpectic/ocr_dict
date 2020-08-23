@@ -12,6 +12,8 @@ import AVFoundation
 class SnapperViewController: UIViewController, AVCapturePhotoCaptureDelegate {
 
     @IBOutlet weak var cameraView: UIView!
+    @IBOutlet weak var snapButton: UIButton!
+    @IBOutlet weak var capturingIndicator: UIActivityIndicatorView!
     var wordFocusBoxLabel: UILabel!
     
     var captureSession: AVCaptureSession!
@@ -24,6 +26,10 @@ class SnapperViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        snapButton.isHidden = false
+        capturingIndicator.isHidden = true
+        capturingIndicator.style = .medium
+        capturingIndicator.color = .black
         wordFocusBoxLabel = SnapperViewController.generateWordFocusBoxLabel(view: self.view)
         cameraView.addSubview(wordFocusBoxLabel)
         
@@ -33,6 +39,9 @@ class SnapperViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     // Called every time the view loads
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
+        snapButton.isHidden = false
+        capturingIndicator.isHidden = true
         
         captureSession = AVCaptureSession()
         captureSession.sessionPreset = .high
@@ -105,6 +114,10 @@ class SnapperViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         
         let settings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
         stillImageOutput.capturePhoto(with: settings, delegate: self)
+        videoPreviewLayer.connection?.isEnabled = false
+        capturingIndicator.startAnimating()
+        snapButton.isHidden = true
+        capturingIndicator.isHidden = false
     }
     
   

@@ -14,6 +14,7 @@
 		D4704C8624A833C200100641 /* DataForWordTypeTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4704C8524A833C200100641 /* DataForWordTypeTableViewCell.xib */; };
 		D4704C8824AC591700100641 /* DictionaryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4704C8724AC591700100641 /* DictionaryManager.swift */; };
 		D4704C8A24AC642B00100641 /* WordData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4704C8924AC642B00100641 /* WordData.swift */; };
+		D486B32D24F20D91007AA2D6 /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D486B32C24F20D91007AA2D6 /* Cell.swift */; };
 		D488F414248E0116001D25CC /* LibraryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D488F412248E0116001D25CC /* LibraryCollectionViewCell.swift */; };
 		D488F415248E0116001D25CC /* LibraryCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D488F413248E0116001D25CC /* LibraryCollectionViewCell.xib */; };
 		D491FCE2248891E000B66A67 /* SnapperViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D491FCE1248891E000B66A67 /* SnapperViewController.swift */; };
@@ -38,6 +39,7 @@
 		D4704C8524A833C200100641 /* DataForWordTypeTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DataForWordTypeTableViewCell.xib; sourceTree = "<group>"; };
 		D4704C8724AC591700100641 /* DictionaryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryManager.swift; sourceTree = "<group>"; };
 		D4704C8924AC642B00100641 /* WordData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordData.swift; sourceTree = "<group>"; };
+		D486B32C24F20D91007AA2D6 /* Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cell.swift; sourceTree = "<group>"; };
 		D488F412248E0116001D25CC /* LibraryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryCollectionViewCell.swift; sourceTree = "<group>"; };
 		D488F413248E0116001D25CC /* LibraryCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LibraryCollectionViewCell.xib; sourceTree = "<group>"; };
 		D491FCE1248891E000B66A67 /* SnapperViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapperViewController.swift; sourceTree = "<group>"; };
@@ -139,6 +141,7 @@
 				D4F036ED24A0ED9B00A2D4CB /* OpticalCharacterRecognition.swift */,
 				D4704C8724AC591700100641 /* DictionaryManager.swift */,
 				D4704C8924AC642B00100641 /* WordData.swift */,
+				D486B32C24F20D91007AA2D6 /* Cell.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -275,6 +278,7 @@
 				D4DB52922480CE1D00F48A83 /* AppDelegate.swift in Sources */,
 				D488F414248E0116001D25CC /* LibraryCollectionViewCell.swift in Sources */,
 				D491FCE2248891E000B66A67 /* SnapperViewController.swift in Sources */,
+				D486B32D24F20D91007AA2D6 /* Cell.swift in Sources */,
 				D4704C8824AC591700100641 /* DictionaryManager.swift in Sources */,
 				D4DB52942480CE1D00F48A83 /* SceneDelegate.swift in Sources */,
 				D491FCE42488A7CA00B66A67 /* ChooserViewController.swift in Sources */,

@@ -18,6 +18,8 @@ class DictionaryViewController: UIViewController {
     var wordData: WordData?
     var wordDataGetterGroup: DispatchGroup?
     
+    var cells: [Cell]?
+    
     var heightOfAddedLabels: CGFloat = 0
     
     override func viewDidLoad() {
@@ -84,79 +86,116 @@ extension DictionaryViewController: UITableViewDelegate {
 extension DictionaryViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        let numberOfNoneWordtypeCells = 1
-        
-        if let results = self.wordData!.results {
-            return results[0].lexicalEntries!.count + numberOfNoneWordtypeCells
+                
+        // Return the total number of cells required
+        // Create a list of cell objects that describe cell type and a cell's index in its enclosing data structure
+        if let results = self.wordData?.results {
+            
+            cells = [Cell(type: "wordName", resultIndex: 0, indexInContainer: nil)]
+            
+            for (resInd, result) in results.enumerated() {
+                
+                if resInd != 0 {
+                    cells?.append(Cell(type: "wordName", resultIndex: 0, indexInContainer: nil))
+                }
+                for (lexInd, _) in result.lexicalEntries!.enumerated() {
+                    cells?.append(Cell(type: "wordData", resultIndex: resInd, indexInContainer: lexInd))
+                }
+                cells?.append(Cell(type: "wordOrigin", resultIndex: 0, indexInContainer: nil))
+                
+            }
+            
+            return cells!.count
+            
         } else {
-            return numberOfNoneWordtypeCells
+            
+            // No results found for oxford api word query
+            cells?.append(Cell(type: "wordNotFound", resultIndex: 0, indexInContainer: nil))
+            return 1
+            
         }
         
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        if indexPath.row == 0 {
-            
-            // Create cell from storyboard prototype cell for word being queried
-            let cell = tableView.dequeueReusableCell(withIdentifier: "word", for: indexPath)
-            
-            // Set radius for top corners of word container
-            let wordContainerView = cell.contentView.subviews[0]
-            wordContainerView.layer.cornerRadius = 10
-            wordContainerView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
-            
-            if let results = self.wordData?.results {
+        let cellType = cells![indexPath.row].type
+        let resultIndex = cells![indexPath.row].resultIndex
+        let indexInContainer = cells![indexPath.row].indexInContainer
+        
+        if let results = self.wordData?.results {
+        
+            if cellType == "wordName" {
                 
-                // Assume that only one result will ever be found
-                let result = results[0]
+                // Create cell from storyboard prototype cell for word being queried
+                let cell = tableView.dequeueReusableCell(withIdentifier: "word", for: indexPath)
+                
+                // Set radius for top corners of word container
+                let wordContainerView = cell.contentView.subviews[0]
+                wordContainerView.layer.cornerRadius = 10
+                wordContainerView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
+                
+                // Access the appropriate result
+                let result = results[resultIndex]
                 // Set word and phonetics text
                 self.setCellLabelText(for: wordContainerView.subviews[0] as! UILabel, as: result.id)
                 
+                // Update frame height. Autolayout doesn't seem to do so as elements change in height. May be an issue with how constraints are set up.
+                cell.frame = self.updatedFrameHeight(for: cell.frame, addHeight: self.heightOfAddedLabels)
+                return cell
+                
+            } else if cellType == "wordOrigin" {
+                
+                // Create cell from storyboard prototype cell for word origin
+                let cell = tableView.dequeueReusableCell(withIdentifier: "origin", for: indexPath)
+                
+                // Round bottom corners
+                let originContainerView = cell.contentView.subviews[0]
+                originContainerView.layer.cornerRadius = 10
+                originContainerView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+                
+                // Assume that the first lexical entry of a given result contains etymology info
+                let entry = results[resultIndex].lexicalEntries![0].entries![0]
+                
+                // Get and assign etymology data
+                if let etymologies = entry.etymologies {
+                    
+                    self.setCellLabelText(for: originContainerView.subviews.last as! UILabel, as: etymologies[0])
+                    
+                }
+                
+                // Update frame height. Autolayout doesn't seem to do so as elements change in height. May be an issue with how constraints are set up.
+                cell.frame = self.updatedFrameHeight(for: cell.frame, addHeight: self.heightOfAddedLabels)
+                return cell
+                
             } else {
-                self.setCellLabelText(for: wordContainerView.subviews[0] as! UILabel, as: "N/A")
-            }
-            
-            // Update frame height. Autolayout doesn't seem to do so as elements change in height. May be an issue with how constraints are set up.
-            cell.frame = self.updatedFrameHeight(for: cell.frame, addHeight: self.heightOfAddedLabels)
-            return cell
-            
-        }
-            //        else if indexPath.row == dicitonaryTableView.numberOfRows(inSection: 0) - 1 {
-            //
-            //            // Create final cell
-            //
-            //        }
-        else {
-            
-            // Create cell using xib template for wordType and definition: [note] example, ... content
-            let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.dictID, for: indexPath) as! TableViewCell
-            
-            if let results = self.wordData?.results {
                 
+                // Create cell using xib template for wordType and definition: [note] example, ... content
+                let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.dictID, for: indexPath) as! TableViewCell
+                    
                 // Assume that only one result will ever be found
-                let result = results[0]
+                let result = results[resultIndex]
                 
-                // Set word type e.g. adjective to work with. Subtract one for the storyboard prototype cell
-                let wordType = result.lexicalEntries![indexPath.row - 1]
+                // Set word type e.g. adjective to work with. Subtract one for the first storyboard prototype cell
+                let wordType = result.lexicalEntries![indexInContainer!]
                 
                 self.setCellLabelText(for: cell.categoryLabel, as: wordType.lexicalCategory!.id)
                 
                 // Define text attribute presets
-                let italicSecondaryAttributes = [NSAttributedString.Key.font: UIFont.italicSystemFont(ofSize: 14), NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel]
-                let italicTertiaryAttributes = [NSAttributedString.Key.font: UIFont.italicSystemFont(ofSize: 14), NSAttributedString.Key.foregroundColor: UIColor.tertiaryLabel]
+                let italicSecondary14Attributes = [NSAttributedString.Key.font: UIFont.italicSystemFont(ofSize: 14), NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel]
+                let italicTertiary14Attributes = [NSAttributedString.Key.font: UIFont.italicSystemFont(ofSize: 14), NSAttributedString.Key.foregroundColor: UIColor.tertiaryLabel]
                 
                 // Extract primary sense and subsense data
                 let definitionsText = NSMutableAttributedString(string: "")
                 
-                let senses = wordType.entries![0].senses!
+                // Only ever one entry per word type
+                let entry = wordType.entries![0]
                 
-                for (ind, sense) in senses.enumerated() {
+                for (ind, sense) in entry.senses!.enumerated() {
                     
                     // Configure primary sense/definition and examples text
                     let definitionNumber: String
-                    if senses.count > 1 {
+                    if entry.senses!.count > 1 {
                         
                         definitionNumber = "\(String(ind + 1)). "
                         
@@ -179,12 +218,12 @@ extension DictionaryViewController: UITableViewDataSource {
                             // Add note text
                             if let notes = example.notes {
                                 
-                                examplesText.append(NSAttributedString(string: "[\(notes[0].text!)]: ", attributes: italicTertiaryAttributes))
+                                examplesText.append(NSAttributedString(string: "[\(notes[0].text!)]: ", attributes: italicTertiary14Attributes))
                                 
                             }
                             
                             // Add example text
-                            examplesText.append(NSAttributedString(string: example.text!, attributes: italicSecondaryAttributes))
+                            examplesText.append(NSAttributedString(string: example.text!, attributes: italicSecondary14Attributes))
                             
                             if ind != examples.count - 1 {
                                 
@@ -230,14 +269,14 @@ extension DictionaryViewController: UITableViewDataSource {
                             // Add subsense note
                             if let notes = subsense.notes {
                                 
-                                subsensesText.append(NSAttributedString(string: "[\(notes[0].text!)] ", attributes: italicTertiaryAttributes))
+                                subsensesText.append(NSAttributedString(string: "[\(notes[0].text!)] ", attributes: italicTertiary14Attributes))
                                 
                             }
                             
                             // Add subsense domain
                             if let domains = subsense.domains {
                                 
-                                subsensesText.append(NSAttributedString(string: "\(domains[0].text!) ", attributes: italicTertiaryAttributes))
+                                subsensesText.append(NSAttributedString(string: "\(domains[0].text!) ", attributes: italicTertiary14Attributes))
                                 
                             }
                             
@@ -253,7 +292,7 @@ extension DictionaryViewController: UITableViewDataSource {
                                 
                                 for (ind, example) in examples.enumerated() {
                                     
-                                    examplesText.append(NSAttributedString(string: example.text!, attributes: italicSecondaryAttributes))
+                                    examplesText.append(NSAttributedString(string: example.text!, attributes: italicSecondary14Attributes))
                                     
                                     if ind != examples.count - 1 {
                                         
@@ -274,25 +313,44 @@ extension DictionaryViewController: UITableViewDataSource {
                         definitionText.append(subsensesText)
                         
                     }
-                                        
+                    
                     // Save text for the data of each primary sense and its subsenses
                     definitionsText.append(definitionText)
                     
-                    if ind < senses.count {
+                    if ind < entry.senses!.count {
                         
                         definitionsText.append(NSAttributedString(string: "\n\n"))
                         
                     }
                     
                 }
-                                
+                
                 // Configure cell with definitions and examples text
                 self.setCellLabelAttributeText(for: cell.definitionLabel, as: definitionsText)
                 
+                
+                // Update frame height. Autolayout doesn't seem to do so as elements change in height. May be an issue with how constraints are set up.
+                cell.frame = self.updatedFrameHeight(for: cell.frame, addHeight: self.heightOfAddedLabels)
+                return cell
             }
+            
+        } else {
+            
+             // Create a cell for when a word did not return any results
+            let cell = tableView.dequeueReusableCell(withIdentifier: "word", for: indexPath)
+            
+            // Round all corners
+            let wordContainerView = cell.contentView.subviews[0]
+            wordContainerView.layer.cornerRadius = 10
+            wordContainerView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+            
+            // Set error message text
+            self.setCellLabelText(for: wordContainerView.subviews[0] as! UILabel, as: "Sorry, '\(queryWord!)' was not be found.")
+            
             // Update frame height. Autolayout doesn't seem to do so as elements change in height. May be an issue with how constraints are set up.
             cell.frame = self.updatedFrameHeight(for: cell.frame, addHeight: self.heightOfAddedLabels)
             return cell
+            
         }
         
     }
