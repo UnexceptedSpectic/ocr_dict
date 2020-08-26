@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import Firebase
 
-class MainViewController: UIViewController {
+class LibraryViewController: UIViewController {
 
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var collectionInstructionsLabel: UILabel!
@@ -23,6 +24,7 @@ class MainViewController: UIViewController {
         }
         
         // Configure collection
+        collectionView.isHidden = true
         collectionView.register(LibraryCollectionViewCell.nib(), forCellWithReuseIdentifier: LibraryCollectionViewCell.identifier)
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -35,6 +37,10 @@ class MainViewController: UIViewController {
         layout.minimumInteritemSpacing = CGFloat(0)
         collectionView.collectionViewLayout = layout
         
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        collectionView.isHidden = false
     }
 
     @IBAction func didTapCaptureButton(_ sender: UIButton) {
@@ -77,11 +83,23 @@ class MainViewController: UIViewController {
         
     }
     
+    @IBAction func didTapLogout(_ sender: UIButton) {
+    
+        do {
+            try Auth.auth().signOut()
+            print("signing out")
+            self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
+        } catch let error as NSError {
+            print("Error signing out: \(error).")
+        }
+    
+    }
+    
 }
 
 // Extensions required for configuring collection with template nib/xib. Makes loading collection items more efficient
 
-extension MainViewController: UICollectionViewDelegate {
+extension LibraryViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
         
@@ -92,7 +110,7 @@ extension MainViewController: UICollectionViewDelegate {
     }
 }
 
-extension MainViewController: UICollectionViewDataSource {
+extension LibraryViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return collectionItems.count
@@ -108,7 +126,7 @@ extension MainViewController: UICollectionViewDataSource {
     
 }
 
-extension MainViewController: UICollectionViewDelegateFlowLayout {
+extension LibraryViewController: UICollectionViewDelegateFlowLayout {
      
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         // Configure three collection items per row
