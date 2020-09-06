@@ -32,7 +32,7 @@ class ChooserViewController: UIViewController {
                                     .filter { !$0.isEmpty }
 
         // Configure the result table view
-        resultTableView.register(TableViewCell.nib(nibName: TableViewCell.resultID), forCellReuseIdentifier: TableViewCell.resultID)
+        resultTableView.register(TableViewCell.nib(nibName: K.tables.tesseract.cell.nib.result), forCellReuseIdentifier: K.tables.tesseract.cell.type.result)
         resultTableView.delegate = self
         resultTableView.dataSource = self
         resultTableView.showsVerticalScrollIndicator = false
@@ -105,7 +105,7 @@ extension ChooserViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.resultID, for: indexPath) as! TableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: K.tables.tesseract.cell.type.result, for: indexPath) as! TableViewCell
         cell.resultButton.setTitle(self.foundWords[indexPath.row].trimmingCharacters(in: CharacterSet.alphanumerics.inverted), for: .normal)
         cell.resultButton.addTarget(self, action: #selector(cellTapped(cellButton:)), for: .touchUpInside)
         // TODO: allow users to edit a cell's word? select relevant portion? train model?

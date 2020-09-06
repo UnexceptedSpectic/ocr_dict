@@ -25,7 +25,7 @@ class LibraryViewController: UIViewController {
         
         // Configure collection
         collectionView.isHidden = true
-        collectionView.register(LibraryCollectionViewCell.nib(), forCellWithReuseIdentifier: LibraryCollectionViewCell.identifier)
+        collectionView.register(CollectionViewCell.nib(nibName: K.collections.library.cell.nib), forCellWithReuseIdentifier: K.collections.library.cell.type)
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.showsVerticalScrollIndicator = false
@@ -49,7 +49,7 @@ class LibraryViewController: UIViewController {
     
     @IBAction func addCollectionItem(_ sender: UIButton) {
         // Create alert controller
-        let alert = UIAlertController(title: "Create a new Project", message: "Enter project name", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Create a new Collection", message: "Collection name", preferredStyle: .alert)
 
         // Add the text input field
         alert.addTextField(configurationHandler: nil)
@@ -117,9 +117,9 @@ extension LibraryViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: LibraryCollectionViewCell.identifier, for: indexPath) as! LibraryCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: K.collections.library.cell.type, for: indexPath) as! CollectionViewCell
 
-        cell.configure(backgroundColor: LibraryCollectionViewCell.backgroundColors["default"]!)
+        cell.configure(backgroundColor: K.brand.colors.gray)
         cell.configure(projectName: collectionItems[indexPath.row])
         return cell
     }

@@ -10,15 +10,13 @@ import UIKit
 
 class TableViewCell: UITableViewCell {
 
+    // TessResultCell outlets
     @IBOutlet weak var resultButton: UIButton!
-    
-    static let resultID = "ResultTableViewCell"
-    
+        
+    // DictLexicalCell outlets
     @IBOutlet weak var categoryLabel: UILabel!
     @IBOutlet weak var definitionLabel: UILabel!
-    
-    static let dictID = "DataForWordTypeTableViewCell"
-    
+        
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

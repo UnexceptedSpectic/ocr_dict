@@ -40,7 +40,7 @@ class DictionaryViewController: UIViewController {
         self.queryWordLabel.text = queryWord
         
         // Configure the result table view
-        dicitonaryTableView.register(TableViewCell.nib(nibName: TableViewCell.dictID), forCellReuseIdentifier: TableViewCell.dictID)
+        dicitonaryTableView.register(TableViewCell.nib(nibName: K.tables.dictionary.cell.nib.lexical), forCellReuseIdentifier: K.tables.dictionary.cell.type.lexical)
         dicitonaryTableView.showsVerticalScrollIndicator = false
         dicitonaryTableView.allowsSelection = false
         
@@ -91,17 +91,17 @@ extension DictionaryViewController: UITableViewDataSource {
         // Create a list of cell objects that describe cell type and a cell's index in its enclosing data structure
         if let results = self.wordData?.results {
             
-            cells = [Cell(type: "wordName", resultIndex: 0, indexInContainer: nil)]
+            cells = [Cell(type: K.tables.dictionary.cell.type.name, resultIndex: 0, indexInContainer: nil)]
             
             for (resInd, result) in results.enumerated() {
                 
                 if resInd != 0 {
-                    cells?.append(Cell(type: "wordName", resultIndex: 0, indexInContainer: nil))
+                    cells?.append(Cell(type: K.tables.dictionary.cell.type.name, resultIndex: 0, indexInContainer: nil))
                 }
                 for (lexInd, _) in result.lexicalEntries!.enumerated() {
-                    cells?.append(Cell(type: "wordData", resultIndex: resInd, indexInContainer: lexInd))
+                    cells?.append(Cell(type: K.tables.dictionary.cell.type.lexical, resultIndex: resInd, indexInContainer: lexInd))
                 }
-                cells?.append(Cell(type: "wordOrigin", resultIndex: 0, indexInContainer: nil))
+                cells?.append(Cell(type: K.tables.dictionary.cell.type.origin, resultIndex: 0, indexInContainer: nil))
                 
             }
             
@@ -110,7 +110,7 @@ extension DictionaryViewController: UITableViewDataSource {
         } else {
             
             // No results found for oxford api word query
-            cells = [Cell(type: "wordNotFound", resultIndex: 0, indexInContainer: nil)]
+            cells = [Cell(type: K.tables.dictionary.cell.type.noResult, resultIndex: 0, indexInContainer: nil)]
             return 1
             
         }
@@ -125,10 +125,10 @@ extension DictionaryViewController: UITableViewDataSource {
         
         if let results = self.wordData?.results {
         
-            if cellType == "wordName" {
+            if cellType == K.tables.dictionary.cell.type.name {
                 
                 // Create cell from storyboard prototype cell for word being queried
-                let cell = tableView.dequeueReusableCell(withIdentifier: "word", for: indexPath)
+                let cell = tableView.dequeueReusableCell(withIdentifier: K.tables.dictionary.cell.type.name, for: indexPath)
                 
                 // Set radius for top corners of word container
                 let wordContainerView = cell.contentView.subviews[0]
@@ -144,10 +144,10 @@ extension DictionaryViewController: UITableViewDataSource {
                 cell.frame = self.updatedFrameHeight(for: cell.frame, addHeight: self.heightOfAddedLabels)
                 return cell
                 
-            } else if cellType == "wordOrigin" {
+            } else if cellType == K.tables.dictionary.cell.type.origin {
                 
                 // Create cell from storyboard prototype cell for word origin
-                let cell = tableView.dequeueReusableCell(withIdentifier: "origin", for: indexPath)
+                let cell = tableView.dequeueReusableCell(withIdentifier: K.tables.dictionary.cell.type.origin, for: indexPath)
                 
                 // Round bottom corners
                 let originContainerView = cell.contentView.subviews[0]
@@ -175,7 +175,7 @@ extension DictionaryViewController: UITableViewDataSource {
             } else {
                 
                 // Create cell using xib template for wordType and definition: [note] example, ... content
-                let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.dictID, for: indexPath) as! TableViewCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: K.tables.dictionary.cell.type.lexical, for: indexPath) as! TableViewCell
                     
                 // Assume that only one result will ever be found
                 let result = results[resultIndex]
@@ -339,7 +339,7 @@ extension DictionaryViewController: UITableViewDataSource {
                                                
                // Round bottom corners of cell if no word origin cell ahead
                 let nextCellType = cells![indexPath.row + 1].type
-               if entry.etymologies == nil && nextCellType == "wordOrigin" {
+               if entry.etymologies == nil && nextCellType == K.tables.dictionary.cell.type.origin {
                 
                     let lastWordDataContainerView = cell.contentView.subviews[0]
                     lastWordDataContainerView.layer.cornerRadius = 10
@@ -356,12 +356,14 @@ extension DictionaryViewController: UITableViewDataSource {
         } else {
             
              // Create a cell for when a word did not return any results
-            let cell = tableView.dequeueReusableCell(withIdentifier: "word", for: indexPath)
+            let cell = tableView.dequeueReusableCell(withIdentifier: K.tables.dictionary.cell.type.name, for: indexPath)
             
             // Round all corners
             let wordContainerView = cell.contentView.subviews[0]
             wordContainerView.layer.cornerRadius = 10
             wordContainerView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+            
+            // Give cell container bottom padding
             let contentBottomConstraint = cell.contentView.constraints.filter { $0.identifier == "wordLabelContentViewBottom"}
             let containerBottonConstraint = cell.contentView.subviews[0].constraints.filter { $0.identifier == "wordLabelContainerViewBottom"}
             contentBottomConstraint[0].constant = 20
@@ -371,7 +373,7 @@ extension DictionaryViewController: UITableViewDataSource {
             // Set error message text
             let word = wordContainerView.subviews[0] as! UILabel
             self.setCellLabelText(for: word, as: "No results found")
-            word.font = UIFont(name: "TimesNewRomanPSMT", size: 14)
+            word.font = UIFont(name: K.brand.fonts.systemDefault, size: 14)
             
             // Update frame height. Autolayout doesn't seem to do so as elements change in height. May be an issue with how constraints are set up.
             cell.frame = self.updatedFrameHeight(for: cell.frame, addHeight: self.heightOfAddedLabels)
