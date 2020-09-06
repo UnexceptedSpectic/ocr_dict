@@ -424,7 +424,6 @@
                             <constraint firstItem="Nnl-JZ-RVD" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="CfR-Pv-h6v"/>
                             <constraint firstItem="Pel-Jr-KOi" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Cxh-M1-VD3"/>
                             <constraint firstAttribute="trailing" secondItem="do7-m4-cdS" secondAttribute="trailing" id="DHC-uF-ej5"/>
-                            <constraint firstItem="Nnl-JZ-RVD" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Ei0-mY-202"/>
                             <constraint firstAttribute="bottom" secondItem="nqu-DR-Mto" secondAttribute="bottom" id="Gcg-LQ-Xjk"/>
                             <constraint firstItem="tKH-HH-WhG" firstAttribute="top" secondItem="do7-m4-cdS" secondAttribute="bottom" id="M4y-rh-RiU"/>
                             <constraint firstItem="do7-m4-cdS" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="WTW-bb-CRP"/>
@@ -656,7 +655,7 @@
                                                     <constraints>
                                                         <constraint firstItem="7G4-WB-Vag" firstAttribute="leading" secondItem="La1-7U-o6H" secondAttribute="leading" constant="20" id="AU3-d5-esV"/>
                                                         <constraint firstItem="7G4-WB-Vag" firstAttribute="top" secondItem="La1-7U-o6H" secondAttribute="top" constant="20" id="d6J-VT-pfp"/>
-                                                        <constraint firstAttribute="bottom" secondItem="7G4-WB-Vag" secondAttribute="bottom" id="icE-1R-yX6"/>
+                                                        <constraint firstAttribute="bottom" secondItem="7G4-WB-Vag" secondAttribute="bottom" identifier="wordLabelContainerViewBottom" id="icE-1R-yX6"/>
                                                         <constraint firstAttribute="trailing" secondItem="7G4-WB-Vag" secondAttribute="trailing" constant="20" id="qKl-cW-2W8"/>
                                                     </constraints>
                                                 </view>
@@ -665,7 +664,7 @@
                                                 <constraint firstAttribute="trailing" secondItem="La1-7U-o6H" secondAttribute="trailing" constant="10" id="1Iv-Ip-DEJ"/>
                                                 <constraint firstItem="La1-7U-o6H" firstAttribute="leading" secondItem="WzP-Xd-7NP" secondAttribute="leading" constant="10" id="5eE-fJ-5M2"/>
                                                 <constraint firstItem="La1-7U-o6H" firstAttribute="top" secondItem="WzP-Xd-7NP" secondAttribute="top" constant="10" id="kdE-nG-2XI"/>
-                                                <constraint firstAttribute="bottom" secondItem="7G4-WB-Vag" secondAttribute="bottom" id="w42-tT-nEP"/>
+                                                <constraint firstAttribute="bottom" secondItem="7G4-WB-Vag" secondAttribute="bottom" identifier="wordLabelContentViewBottom" id="w42-tT-nEP"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>

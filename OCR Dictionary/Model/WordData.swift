@@ -17,7 +17,7 @@ struct WordData: Decodable {
 
 struct Result: Decodable {
     
-    let id: String?
+    let word: String?
     let lexicalEntries: [LexicalEntry]?
     
 }

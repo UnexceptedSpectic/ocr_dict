@@ -110,7 +110,7 @@ extension DictionaryViewController: UITableViewDataSource {
         } else {
             
             // No results found for oxford api word query
-            cells?.append(Cell(type: "wordNotFound", resultIndex: 0, indexInContainer: nil))
+            cells = [Cell(type: "wordNotFound", resultIndex: 0, indexInContainer: nil)]
             return 1
             
         }
@@ -138,7 +138,7 @@ extension DictionaryViewController: UITableViewDataSource {
                 // Access the appropriate result
                 let result = results[resultIndex]
                 // Set word and phonetics text
-                self.setCellLabelText(for: wordContainerView.subviews[0] as! UILabel, as: result.id)
+                self.setCellLabelText(for: wordContainerView.subviews[0] as! UILabel, as: result.word)
                 
                 // Update frame height. Autolayout doesn't seem to do so as elements change in height. May be an issue with how constraints are set up.
                 cell.frame = self.updatedFrameHeight(for: cell.frame, addHeight: self.heightOfAddedLabels)
@@ -161,6 +161,10 @@ extension DictionaryViewController: UITableViewDataSource {
                 if let etymologies = entry.etymologies {
                     
                     self.setCellLabelText(for: originContainerView.subviews.last as! UILabel, as: etymologies[0])
+                    
+                } else {
+                    // Hide the contents of the origin cell
+                    cell.isHidden = true
                     
                 }
                 
@@ -205,7 +209,12 @@ extension DictionaryViewController: UITableViewDataSource {
                         
                     }
                     
-                    let definitionText = NSMutableAttributedString(string: "\(definitionNumber)\(sense.definitions![0])")
+                    var definitionText = NSMutableAttributedString(string: "")
+                    
+                    if let definitions = sense.definitions {
+                        definitionText = NSMutableAttributedString(string: "\(definitionNumber)\(definitions[0])")
+                    }
+                    
                     let examplesText = NSMutableAttributedString(string: "")
                     
                     // Add examples for the defined word
@@ -327,6 +336,16 @@ extension DictionaryViewController: UITableViewDataSource {
                 
                 // Configure cell with definitions and examples text
                 self.setCellLabelAttributeText(for: cell.definitionLabel, as: definitionsText)
+                                               
+               // Round bottom corners of cell if no word origin cell ahead
+                let nextCellType = cells![indexPath.row + 1].type
+               if entry.etymologies == nil && nextCellType == "wordOrigin" {
+                
+                    let lastWordDataContainerView = cell.contentView.subviews[0]
+                    lastWordDataContainerView.layer.cornerRadius = 10
+                    lastWordDataContainerView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+                
+                }
                 
                 
                 // Update frame height. Autolayout doesn't seem to do so as elements change in height. May be an issue with how constraints are set up.
@@ -343,9 +362,16 @@ extension DictionaryViewController: UITableViewDataSource {
             let wordContainerView = cell.contentView.subviews[0]
             wordContainerView.layer.cornerRadius = 10
             wordContainerView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+            let contentBottomConstraint = cell.contentView.constraints.filter { $0.identifier == "wordLabelContentViewBottom"}
+            let containerBottonConstraint = cell.contentView.subviews[0].constraints.filter { $0.identifier == "wordLabelContainerViewBottom"}
+            contentBottomConstraint[0].constant = 20
+            containerBottonConstraint[0].constant = 20
+            cell.updateConstraints()
             
             // Set error message text
-            self.setCellLabelText(for: wordContainerView.subviews[0] as! UILabel, as: "Sorry, '\(queryWord!)' was not be found.")
+            let word = wordContainerView.subviews[0] as! UILabel
+            self.setCellLabelText(for: word, as: "No results found")
+            word.font = UIFont(name: "TimesNewRomanPSMT", size: 14)
             
             // Update frame height. Autolayout doesn't seem to do so as elements change in height. May be an issue with how constraints are set up.
             cell.frame = self.updatedFrameHeight(for: cell.frame, addHeight: self.heightOfAddedLabels)

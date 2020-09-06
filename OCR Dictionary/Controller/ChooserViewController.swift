@@ -30,7 +30,6 @@ class ChooserViewController: UIViewController {
         self.foundWords = foundText.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
                                     .components(separatedBy: CharacterSet.whitespacesAndNewlines)
                                     .filter { !$0.isEmpty }
-        print(self.foundWords)
 
         // Configure the result table view
         resultTableView.register(TableViewCell.nib(nibName: TableViewCell.resultID), forCellReuseIdentifier: TableViewCell.resultID)
