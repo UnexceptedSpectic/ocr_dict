@@ -16,7 +16,8 @@ class TableViewCell: UITableViewCell {
     // DictLexicalCell outlets
     @IBOutlet weak var categoryLabel: UILabel!
     @IBOutlet weak var definitionLabel: UILabel!
-        
+    @IBOutlet weak var containerBottomMargin: NSLayoutConstraint!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
