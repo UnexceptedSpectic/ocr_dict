@@ -7,13 +7,13 @@
 //
 
 import UIKit
-import Firebase
 
 class LibraryViewController: UIViewController {
 
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var collectionInstructionsLabel: UILabel!
-
+    @IBOutlet weak var topNav: UINavigationItem!
+    
     var collectionItems: [String] = ["first", "second","first", "second","first", "second","first", "second","first", "second","first", "second","first", "second","first", "second"]
     
     override func viewDidLoad() {
@@ -39,6 +39,16 @@ class LibraryViewController: UIViewController {
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Enable the navigation bar
+        navigationController?.isNavigationBarHidden = false
+        
+        // Hide back button
+        topNav.hidesBackButton = true
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         collectionView.isHidden = false
     }
@@ -47,7 +57,7 @@ class LibraryViewController: UIViewController {
         self.performSegue(withIdentifier: "homeToSnapper", sender: self)
     }
     
-    @IBAction func addCollectionItem(_ sender: UIButton) {
+    @IBAction func addCollectionItem(_ sender: UIBarButtonItem) {
         // Create alert controller
         let alert = UIAlertController(title: "Create a new Collection", message: "Collection name", preferredStyle: .alert)
 
@@ -83,18 +93,6 @@ class LibraryViewController: UIViewController {
         
     }
     
-    @IBAction func didTapLogout(_ sender: UIButton) {
-    
-        do {
-            try Auth.auth().signOut()
-            print("signing out")
-            self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
-        } catch let error as NSError {
-            print("Error signing out: \(error).")
-        }
-    
-    }
-    
 }
 
 // Extensions required for configuring collection with template nib/xib. Makes loading collection items more efficient
@@ -113,10 +111,12 @@ extension LibraryViewController: UICollectionViewDelegate {
 extension LibraryViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
         return collectionItems.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: K.collections.library.cell.type, for: indexPath) as! CollectionViewCell
 
         cell.configure(backgroundColor: K.brand.colors.gray)
@@ -129,9 +129,11 @@ extension LibraryViewController: UICollectionViewDataSource {
 extension LibraryViewController: UICollectionViewDelegateFlowLayout {
      
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        // Configure three collection items per row
-        // and ~ heigh of 120 - varies by screen size to prevent cutoff at bottom
-        return CGSize(width: collectionView.frame.size.width/3, height: collectionView.frame.size.height / round(collectionView.frame.size.height / 120))
+        
+        // Configure 3 collection items per row and 4 rows
+        return CGSize(
+            width: round(collectionView.frame.size.width / 3),
+            height: round(collectionView.frame.size.height / 4))
     }
     
 }

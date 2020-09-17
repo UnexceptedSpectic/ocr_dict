@@ -9,11 +9,24 @@
 import UIKit
 
 class AuthenticationViewController: UIViewController {
-
+        
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Disable the navigation bar
+        navigationController?.isNavigationBarHidden = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Enable the navigation bar for the next view
+        navigationController?.isNavigationBarHidden = false
     }
     
 

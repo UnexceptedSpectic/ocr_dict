@@ -39,6 +39,20 @@ class ChooserViewController: UIViewController {
     
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Disable the navigation bar
+        navigationController?.isNavigationBarHidden = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Enable the navigation bar for the next view
+        navigationController?.isNavigationBarHidden = false
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
 //        previewImage.image = capturedImage
         super.updateViewConstraints()
@@ -47,12 +61,6 @@ class ChooserViewController: UIViewController {
         resultTableView.contentInset = UIEdgeInsets(top: max(resultTableView.frame.size.height/2 - resultTableView.contentSize.height/2, 0), left: 0, bottom: 0, right: 0)
         resultTableView.isHidden = false
         
-    }
-    
-    @IBAction func closeView(_ sender: UIButton) {
-    
-        dismiss(animated: true, completion: nil)
-    
     }
     
     func cropImageToWordFocus(image: UIImage) -> UIImage {
@@ -67,7 +75,7 @@ class ChooserViewController: UIViewController {
     
     }
     
-    @objc func cellTapped(cellButton: UIButton) {
+    @objc func didTapCell(cellButton: UIButton) {
                 
         // Attempt to define the chosen word
 //        let dictVc = UIReferenceLibraryViewController(term: (cellButton.titleLabel?.text!)!)
@@ -76,10 +84,29 @@ class ChooserViewController: UIViewController {
         performSegue(withIdentifier: "ChooserToDict", sender: self)
         
     }
-
+    
+    @IBAction func didTapClose(_ sender: UIButton) {
+        
+        backTwo(animated: true)
+    }
+    
+    @IBAction func didTapBack(_ sender: UIButton) {
+        
+        navigationController?.popViewController(animated: true)
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let dictionaryVC = segue.destination as! DictionaryViewController
-        dictionaryVC.queryWord = self.chosenWord.lowercased()
+        
+        if segue.identifier == "ChooserToDict" {
+         
+            let dictionaryVC = segue.destination as! DictionaryViewController
+            dictionaryVC.queryWord = self.chosenWord.lowercased()
+        }
+    }
+    
+    func backTwo(animated: Bool) {
+        let viewControllers: [UIViewController] = self.navigationController!.viewControllers as [UIViewController]
+        self.navigationController!.popToViewController(viewControllers[viewControllers.count - 3], animated: animated)
     }
 
 }
@@ -107,7 +134,7 @@ extension ChooserViewController: UITableViewDataSource {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: K.tables.tesseract.cell.type.result, for: indexPath) as! TableViewCell
         cell.resultButton.setTitle(self.foundWords[indexPath.row].trimmingCharacters(in: CharacterSet.alphanumerics.inverted), for: .normal)
-        cell.resultButton.addTarget(self, action: #selector(cellTapped(cellButton:)), for: .touchUpInside)
+        cell.resultButton.addTarget(self, action: #selector(didTapCell(cellButton:)), for: .touchUpInside)
         // TODO: allow users to edit a cell's word? select relevant portion? train model?
 //        cell.resultTextField.text = self.foundWords[indexPath.row]
 //        cell.resultTextField.isUserInteractionEnabled = false

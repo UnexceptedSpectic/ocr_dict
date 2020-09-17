@@ -21,6 +21,7 @@
 		D486B33724F41D08007AA2D6 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D486B33624F41D08007AA2D6 /* RegisterViewController.swift */; };
 		D488F414248E0116001D25CC /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D488F412248E0116001D25CC /* CollectionViewCell.swift */; };
 		D488F415248E0116001D25CC /* LibraryCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D488F413248E0116001D25CC /* LibraryCell.xib */; };
+		D490F0D0250D5BD200F906F5 /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D490F0CF250D5BD200F906F5 /* AccountViewController.swift */; };
 		D491FCE2248891E000B66A67 /* SnapperViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D491FCE1248891E000B66A67 /* SnapperViewController.swift */; };
 		D491FCE42488A7CA00B66A67 /* ChooserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D491FCE32488A7CA00B66A67 /* ChooserViewController.swift */; };
 		D4DB52922480CE1D00F48A83 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DB52912480CE1D00F48A83 /* AppDelegate.swift */; };
@@ -51,6 +52,7 @@
 		D486B33624F41D08007AA2D6 /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		D488F412248E0116001D25CC /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		D488F413248E0116001D25CC /* LibraryCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LibraryCell.xib; sourceTree = "<group>"; };
+		D490F0CF250D5BD200F906F5 /* AccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
 		D491FCE1248891E000B66A67 /* SnapperViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapperViewController.swift; sourceTree = "<group>"; };
 		D491FCE32488A7CA00B66A67 /* ChooserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooserViewController.swift; sourceTree = "<group>"; };
 		D4DB528E2480CE1D00F48A83 /* OCR Dictionary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OCR Dictionary.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -143,6 +145,7 @@
 				D486B33424F41CFC007AA2D6 /* LoginViewController.swift */,
 				D486B33624F41D08007AA2D6 /* RegisterViewController.swift */,
 				D4DB52952480CE1D00F48A83 /* LibraryViewController.swift */,
+				D490F0CF250D5BD200F906F5 /* AccountViewController.swift */,
 				D491FCE1248891E000B66A67 /* SnapperViewController.swift */,
 				D491FCE32488A7CA00B66A67 /* ChooserViewController.swift */,
 				D42B48F224A71B670054CE66 /* DictionaryViewController.swift */,
@@ -297,6 +300,7 @@
 				D491FCE2248891E000B66A67 /* SnapperViewController.swift in Sources */,
 				D486B33724F41D08007AA2D6 /* RegisterViewController.swift in Sources */,
 				D4EC4B6F2504B58000A0BC10 /* Constants.swift in Sources */,
+				D490F0D0250D5BD200F906F5 /* AccountViewController.swift in Sources */,
 				D486B32D24F20D91007AA2D6 /* Cell.swift in Sources */,
 				D4704C8824AC591700100641 /* DictionaryManager.swift in Sources */,
 				D4DB52942480CE1D00F48A83 /* SceneDelegate.swift in Sources */,

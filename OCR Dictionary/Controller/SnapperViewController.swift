@@ -36,6 +36,23 @@ class SnapperViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         // Do any additional setup after loading the view.
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Disable the navigation bar
+        navigationController?.isNavigationBarHidden = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Enable the navigation bar for the next view
+        navigationController?.isNavigationBarHidden = false
+        
+        // Stop the camera preview
+        self.captureSession.stopRunning()
+    }
+    
     // Called every time the view loads
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -67,9 +84,7 @@ class SnapperViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         DispatchQueue.main.async {
             self.videoPreviewLayer.frame = self.cameraView.bounds
         }
-        
-        viewWillDisappear(true)
-        
+                
     }
     
     public static func generateWordFocusBoxLabel(view: UIView) -> UILabel {
@@ -94,12 +109,6 @@ class SnapperViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         performSegue(withIdentifier: "SnapperToCropper", sender: self)
     }
     
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        self.captureSession.stopRunning()
-    }
-    
     func setupLivePreview() {
         
         videoPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
@@ -122,7 +131,8 @@ class SnapperViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     
   
     @IBAction func cancelSnap(_ sender: UIButton) {
-        dismiss(animated: true, completion: nil)
+        
+        navigationController?.popViewController(animated: true)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
