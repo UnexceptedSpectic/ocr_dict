@@ -50,6 +50,8 @@ class LibraryViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
         collectionView.isHidden = false
     }
 

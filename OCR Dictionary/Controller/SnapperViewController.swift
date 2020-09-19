@@ -136,6 +136,8 @@ class SnapperViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
+        
         let cropperVC = segue.destination as! ChooserViewController
         cropperVC.capturedImage = self.capturedImage
     }

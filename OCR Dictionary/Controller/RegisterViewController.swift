@@ -42,6 +42,8 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        touchesBegan(touches, with: event)
+        
         self.view.endEditing(true)
     }
     

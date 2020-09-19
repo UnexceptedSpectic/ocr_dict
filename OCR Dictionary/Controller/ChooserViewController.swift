@@ -20,6 +20,7 @@ class ChooserViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         previewImage.contentMode = .scaleAspectFit
         
         previewImage.addSubview(SnapperViewController.generateWordFocusBoxLabel(view: self.view))
@@ -54,6 +55,8 @@ class ChooserViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
 //        previewImage.image = capturedImage
         super.updateViewConstraints()
     
