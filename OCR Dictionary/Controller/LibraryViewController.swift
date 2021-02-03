@@ -105,8 +105,8 @@ extension LibraryViewController: UICollectionViewDelegate {
         
         print("collection item tapped!")
         
-        // TODO: seque to new page with table view of collection's words
-        // include search bar at top
+        performSegue(withIdentifier: "LibraryToCollection", sender: self)
+        
     }
 }
 

@@ -22,6 +22,7 @@
 		D488F414248E0116001D25CC /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D488F412248E0116001D25CC /* CollectionViewCell.swift */; };
 		D488F415248E0116001D25CC /* LibraryCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D488F413248E0116001D25CC /* LibraryCell.xib */; };
 		D490F0D0250D5BD200F906F5 /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D490F0CF250D5BD200F906F5 /* AccountViewController.swift */; };
+		D490F0D22515CC3700F906F5 /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D490F0D12515CC3700F906F5 /* CollectionViewController.swift */; };
 		D491FCE2248891E000B66A67 /* SnapperViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D491FCE1248891E000B66A67 /* SnapperViewController.swift */; };
 		D491FCE42488A7CA00B66A67 /* ChooserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D491FCE32488A7CA00B66A67 /* ChooserViewController.swift */; };
 		D4DB52922480CE1D00F48A83 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DB52912480CE1D00F48A83 /* AppDelegate.swift */; };
@@ -53,6 +54,7 @@
 		D488F412248E0116001D25CC /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		D488F413248E0116001D25CC /* LibraryCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LibraryCell.xib; sourceTree = "<group>"; };
 		D490F0CF250D5BD200F906F5 /* AccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
+		D490F0D12515CC3700F906F5 /* CollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
 		D491FCE1248891E000B66A67 /* SnapperViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapperViewController.swift; sourceTree = "<group>"; };
 		D491FCE32488A7CA00B66A67 /* ChooserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooserViewController.swift; sourceTree = "<group>"; };
 		D4DB528E2480CE1D00F48A83 /* OCR Dictionary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OCR Dictionary.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -149,6 +151,7 @@
 				D491FCE1248891E000B66A67 /* SnapperViewController.swift */,
 				D491FCE32488A7CA00B66A67 /* ChooserViewController.swift */,
 				D42B48F224A71B670054CE66 /* DictionaryViewController.swift */,
+				D490F0D12515CC3700F906F5 /* CollectionViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -292,6 +295,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D490F0D22515CC3700F906F5 /* CollectionViewController.swift in Sources */,
 				D486B33524F41CFC007AA2D6 /* LoginViewController.swift in Sources */,
 				D42B48F324A71B670054CE66 /* DictionaryViewController.swift in Sources */,
 				D4DB52962480CE1D00F48A83 /* LibraryViewController.swift in Sources */,

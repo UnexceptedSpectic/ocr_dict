@@ -438,11 +438,40 @@
                         <outlet property="collectionView" destination="Pel-Jr-KOi" id="KHO-Ba-6O7"/>
                         <outlet property="topNav" destination="LHm-hX-3DD" id="gec-0B-IkF"/>
                         <segue destination="qn7-PX-Wh5" kind="show" identifier="homeToSnapper" id="pPm-xx-56a"/>
+                        <segue destination="g5H-a4-3py" kind="show" identifier="LibraryToCollection" id="kVg-Tt-FEd"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="4682.608695652174" y="138.61607142857142"/>
+        </scene>
+        <!--Collection View Controller-->
+        <scene sceneID="PSC-an-tex">
+            <objects>
+                <viewController id="g5H-a4-3py" customClass="CollectionViewController" customModule="OCR_Dictionary" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="B98-O0-Tvb">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="808"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Eau-FI-Mh8" userLabel="collectionTableView">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="774"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="TWi-jn-WBC" firstAttribute="bottom" secondItem="Eau-FI-Mh8" secondAttribute="bottom" id="EGX-Pq-Nao"/>
+                            <constraint firstItem="Eau-FI-Mh8" firstAttribute="leading" secondItem="TWi-jn-WBC" secondAttribute="leading" id="Ra3-oN-EFn"/>
+                            <constraint firstItem="Eau-FI-Mh8" firstAttribute="top" secondItem="TWi-jn-WBC" secondAttribute="top" id="WZb-28-TSU"/>
+                            <constraint firstItem="TWi-jn-WBC" firstAttribute="trailing" secondItem="Eau-FI-Mh8" secondAttribute="trailing" id="kiR-OT-Zbh"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="TWi-jn-WBC"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="hHi-Ii-g6p"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="63P-wD-ryW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5551" y="863"/>
         </scene>
         <!--Snapper View Controller-->
         <scene sceneID="FOP-HU-y6X">
@@ -780,7 +809,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="AaT-Dv-Aac"/>
+        <segue reference="MRY-hl-c13"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="arrow.left" catalog="system" width="128" height="98"/>
