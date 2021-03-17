@@ -12,11 +12,8 @@ class TableViewCell: UITableViewCell {
 
     // TessResultCell outlets
     @IBOutlet weak var resultButton: UIButton!
-        
-    // DictLexicalCell outlets
-    @IBOutlet weak var categoryLabel: UILabel!
-    @IBOutlet weak var definitionLabel: UILabel!
-    @IBOutlet weak var containerBottomMargin: NSLayoutConstraint!
+    
+    // TODO: create xibs for DictDefinitionCell and DictExampleCell
     
     override func awakeFromNib() {
         super.awakeFromNib()

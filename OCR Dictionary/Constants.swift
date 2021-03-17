@@ -31,14 +31,11 @@ struct K {
                 struct type {
                     
                     static let name = "name"
-                    static let lexical = "lexical"
+                    static let category = "category"
+                    static let primaryDefinition = "primaryDefinition"
+                    static let secondaryDefenition = "secondaryDefenition"
                     static let origin = "origin"
                     static let noResult = "noResult"
-                }
-                
-                struct nib {
-                    
-                    static let lexical = "DictLexicalCell"
                 }
             }
         }

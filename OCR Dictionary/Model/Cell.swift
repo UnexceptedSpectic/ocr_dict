@@ -6,8 +6,13 @@
 //  Copyright © 2020 Philip Badzuh. All rights reserved.
 //
 
+import Foundation
+
 struct Cell {
     let type: String
     let resultIndex: Int
-    let indexInContainer: Int?
+    let lexicalIndex: Int?
+    let senseIndex: Int?
+    let subsenseIndex: Int?
+    let text: [NSAttributedString]?
 }
