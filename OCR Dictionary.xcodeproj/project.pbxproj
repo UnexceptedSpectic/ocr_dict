@@ -20,6 +20,7 @@
 		D486B33724F41D08007AA2D6 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D486B33624F41D08007AA2D6 /* RegisterViewController.swift */; };
 		D488F414248E0116001D25CC /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D488F412248E0116001D25CC /* CollectionViewCell.swift */; };
 		D488F415248E0116001D25CC /* LibraryCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D488F413248E0116001D25CC /* LibraryCell.xib */; };
+		D48D2C2D260DA3AD00CFF6CF /* dictStarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48D2C2C260DA3AD00CFF6CF /* dictStarButton.swift */; };
 		D490F0D0250D5BD200F906F5 /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D490F0CF250D5BD200F906F5 /* AccountViewController.swift */; };
 		D490F0D22515CC3700F906F5 /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D490F0D12515CC3700F906F5 /* CollectionViewController.swift */; };
 		D491FCE2248891E000B66A67 /* SnapperViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D491FCE1248891E000B66A67 /* SnapperViewController.swift */; };
@@ -51,6 +52,7 @@
 		D486B33624F41D08007AA2D6 /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		D488F412248E0116001D25CC /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		D488F413248E0116001D25CC /* LibraryCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LibraryCell.xib; sourceTree = "<group>"; };
+		D48D2C2C260DA3AD00CFF6CF /* dictStarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = dictStarButton.swift; sourceTree = "<group>"; };
 		D490F0CF250D5BD200F906F5 /* AccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
 		D490F0D12515CC3700F906F5 /* CollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
 		D491FCE1248891E000B66A67 /* SnapperViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapperViewController.swift; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 				D488F413248E0116001D25CC /* LibraryCell.xib */,
 				D42B48EE24A4F5010054CE66 /* TableViewCell.swift */,
 				D42B48EF24A4F5010054CE66 /* TessResultCell.xib */,
+				D48D2C2C260DA3AD00CFF6CF /* dictStarButton.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -297,6 +300,7 @@
 				D4DB52962480CE1D00F48A83 /* LibraryViewController.swift in Sources */,
 				D4DB52922480CE1D00F48A83 /* AppDelegate.swift in Sources */,
 				D488F414248E0116001D25CC /* CollectionViewCell.swift in Sources */,
+				D48D2C2D260DA3AD00CFF6CF /* dictStarButton.swift in Sources */,
 				D491FCE2248891E000B66A67 /* SnapperViewController.swift in Sources */,
 				D486B33724F41D08007AA2D6 /* RegisterViewController.swift in Sources */,
 				D4EC4B6F2504B58000A0BC10 /* Constants.swift in Sources */,

@@ -15,4 +15,5 @@ struct Cell {
     let senseIndex: Int?
     let subsenseIndex: Int?
     let text: [NSAttributedString]?
+    var saved: Bool = false
 }

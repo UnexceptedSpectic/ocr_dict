@@ -61,6 +61,17 @@ class DictionaryViewController: UIViewController {
         }
     }
     
+    @objc func didTapStar(_ sender: dictStarButton) -> () {
+        let cell = self.cells![sender.getIndexPath()!.row]
+        if (cell.saved) {
+            self.cells![sender.getIndexPath()!.row].saved = false
+        } else {
+            self.cells![sender.getIndexPath()!.row].saved = true
+        }
+        self.dicitonaryTableView.reloadData()
+        // TODO: bring up window with list of collections to save to. add option to create collection.
+    }
+    
     /*
      // MARK: - Navigation
      
@@ -73,6 +84,10 @@ class DictionaryViewController: UIViewController {
     
     func getCellStructs(wordDataResults: [Result]?) -> [Cell]? {
         // Create a list of cell objects that describe cell type and a cell content's location in the Oxford API data structure
+        if let cells = self.cells {
+            return cells
+        }
+        
         var cells: [Cell] = []
         
         if let results = wordDataResults {
@@ -286,12 +301,34 @@ extension DictionaryViewController: UITableViewDataSource {
             let primDefLabel = cell!.viewWithTag(2) as! UILabel
             primDefNumLabel.attributedText = NSAttributedString(string:String(primDefInd! + 1), attributes: secondary14Attributes)
             primDefLabel.attributedText = cellText![0]
+            // Set star button as outlined/filled
+            let starButton = cell?.viewWithTag(3) as! dictStarButton
+            let cell = self.cells![indexPath.row]
+            if (cell.saved) {
+                starButton.setImage(UIImage(systemName: "star.fill"), for: .normal)
+            } else {
+                starButton.setImage(UIImage(systemName: "star"), for: .normal)
+            }
+            // Listen to star button tap event
+            starButton.setIndexPath(indexPath: indexPath)
+            starButton.addTarget(self, action: #selector(didTapStar), for: .touchUpInside)
         case K.tables.dictionary.cell.type.secondaryDefenition:
             // Create cell from storyboard prototype cell for secondary/sub definition
             cell = tableView.dequeueReusableCell(withIdentifier: K.tables.dictionary.cell.type.secondaryDefenition, for: indexPath)
             // Set text
             let subDefLabel = cell!.viewWithTag(1) as! UILabel
             subDefLabel.attributedText = cellText![0]
+            // Set star button as outlined/filled
+            let starButton = cell?.viewWithTag(3) as! dictStarButton
+            let cell = self.cells![indexPath.row]
+            if (cell.saved) {
+                starButton.setImage(UIImage(systemName: "star.fill"), for: .normal)
+            } else {
+                starButton.setImage(UIImage(systemName: "star"), for: .normal)
+            }
+            // Listen to star button tap event
+            starButton.setIndexPath(indexPath: indexPath)
+            starButton.addTarget(self, action: #selector(didTapStar), for: .touchUpInside)
         case K.tables.dictionary.cell.type.origin:
             // Create cell from storyboard prototype cell for word origin
             cell = tableView.dequeueReusableCell(withIdentifier: K.tables.dictionary.cell.type.origin, for: indexPath)
@@ -336,6 +373,8 @@ extension DictionaryViewController: UITableViewDataSource {
         
         cell!.layoutIfNeeded()
         
+        // TODO: Set star as outlined or filled based on whether word definition is saved for user.
+        
         return cell!
         
     }
@@ -359,3 +398,4 @@ extension UIView {
         return self.constraints.first { $0.identifier == identifier }
     }
 }
+

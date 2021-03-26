@@ -771,40 +771,41 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="primaryDefinition" id="m4P-gc-k4E" userLabel="primDefCell">
-                                        <rect key="frame" x="0.0" y="126.99999809265137" width="414" height="91.333335876464844"/>
+                                        <rect key="frame" x="0.0" y="126.99999809265137" width="414" height="111.66666412353516"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="m4P-gc-k4E" id="CHc-Ec-j5c">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="91.333335876464844"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="111.66666412353516"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ASH-zt-6af" userLabel="primDefContainer">
-                                                    <rect key="frame" x="10" y="0.0" width="394" height="91.333333333333329"/>
+                                                    <rect key="frame" x="10" y="0.0" width="394" height="111.66666666666667"/>
                                                     <subviews>
-                                                        <stackView opaque="NO" tag="10" contentMode="scaleToFill" distribution="fillProportionally" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="uMS-nm-6Ea">
-                                                            <rect key="frame" x="20" y="10" width="354" height="81.333333333333329"/>
+                                                        <stackView opaque="NO" tag="10" contentMode="scaleToFill" distribution="fillProportionally" alignment="top" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="uMS-nm-6Ea">
+                                                            <rect key="frame" x="20" y="10" width="354" height="101.66666666666667"/>
                                                             <subviews>
-                                                                <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1 " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Tb-Qc-Ehb" userLabel="primDefNumLabel">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="20" height="20.333333333333332"/>
+                                                                <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Tb-Qc-Ehb" userLabel="primDefNumLabel">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="10" height="20.333333333333332"/>
                                                                     <constraints>
-                                                                        <constraint firstAttribute="width" constant="20" id="ccl-s9-hbr"/>
+                                                                        <constraint firstAttribute="width" constant="10" id="ccl-s9-hbr"/>
                                                                     </constraints>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                     <nil key="textColor"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
                                                                 <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tx8-Bp-szm" userLabel="primDefLabel">
-                                                                    <rect key="frame" x="20" y="0.0" width="314" height="81.333333333333329"/>
+                                                                    <rect key="frame" x="15" y="0.0" width="294" height="101.66666666666667"/>
                                                                     <string key="text">Vibrations that travel through the air or another medium and can be heard when they reach a person's or animal's ear. light travels faster than sound</string>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                     <nil key="textColor"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
-                                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="H7G-nM-9fi" userLabel="starButton">
-                                                                    <rect key="frame" x="334" y="0.0" width="20" height="20"/>
+                                                                <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="H7G-nM-9fi" userLabel="starButton" customClass="dictStarButton" customModule="OCR_Dictionary" customModuleProvider="target">
+                                                                    <rect key="frame" x="314" y="0.0" width="40" height="40"/>
                                                                     <constraints>
-                                                                        <constraint firstAttribute="width" constant="20" id="Azm-nz-GfA"/>
-                                                                        <constraint firstAttribute="height" constant="20" id="YxV-Cf-O7R"/>
+                                                                        <constraint firstAttribute="width" constant="40" id="Azm-nz-GfA"/>
+                                                                        <constraint firstAttribute="height" constant="40" id="YxV-Cf-O7R"/>
                                                                     </constraints>
+                                                                    <inset key="contentEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
                                                                     <state key="normal" title="Button" image="star" catalog="system"/>
                                                                 </button>
                                                             </subviews>
@@ -828,39 +829,40 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="secondaryDefenition" id="gNn-uq-emF" userLabel="subDefCell">
-                                        <rect key="frame" x="0.0" y="218.33333396911621" width="414" height="50.666667938232422"/>
+                                        <rect key="frame" x="0.0" y="238.66666221618652" width="414" height="71"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="gNn-uq-emF" id="ces-TQ-fJi">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="50.666667938232422"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="71"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9qF-51-qeL" userLabel="subDefContainer">
-                                                    <rect key="frame" x="10" y="0.0" width="394" height="50.666666666666664"/>
+                                                    <rect key="frame" x="10" y="0.0" width="394" height="71"/>
                                                     <subviews>
-                                                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" alignment="top" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="9uh-wa-4fr">
-                                                            <rect key="frame" x="40" y="10" width="334" height="40.666666666666664"/>
+                                                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" alignment="top" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="9uh-wa-4fr">
+                                                            <rect key="frame" x="40" y="10" width="334" height="61"/>
                                                             <subviews>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="•" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ce5-jt-6iJ" userLabel="subDefBulletLabel">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="5" height="20.333333333333332"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="10" height="20.333333333333332"/>
                                                                     <constraints>
-                                                                        <constraint firstAttribute="width" constant="5" id="zVC-Gu-HnG"/>
+                                                                        <constraint firstAttribute="width" constant="10" id="zVC-Gu-HnG"/>
                                                                     </constraints>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                     <nil key="textColor"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
                                                                 <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="A thing that can be heard. she heard the sound of voices in the hall" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="exK-8M-w9f" userLabel="subDefLabel">
-                                                                    <rect key="frame" x="15" y="0.0" width="289" height="40.666666666666664"/>
+                                                                    <rect key="frame" x="15" y="0.0" width="274" height="61"/>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                     <nil key="textColor"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
-                                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ggm-J7-Awh" userLabel="starButton">
-                                                                    <rect key="frame" x="314" y="0.0" width="20" height="20"/>
+                                                                <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ggm-J7-Awh" userLabel="starButton" customClass="dictStarButton" customModule="OCR_Dictionary" customModuleProvider="target">
+                                                                    <rect key="frame" x="294" y="0.0" width="40" height="40"/>
                                                                     <constraints>
-                                                                        <constraint firstAttribute="width" constant="20" id="g9j-Qw-Etb"/>
-                                                                        <constraint firstAttribute="height" constant="20" id="yXh-11-sVu"/>
+                                                                        <constraint firstAttribute="width" constant="40" id="g9j-Qw-Etb"/>
+                                                                        <constraint firstAttribute="height" constant="40" id="yXh-11-sVu"/>
                                                                     </constraints>
+                                                                    <inset key="contentEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
                                                                     <state key="normal" title="Button" image="star" catalog="system"/>
                                                                 </button>
                                                             </subviews>
@@ -884,7 +886,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="origin" id="cIt-Pk-8Od" userLabel="originCell">
-                                        <rect key="frame" x="0.0" y="269.00000190734863" width="414" height="128.33332824707031"/>
+                                        <rect key="frame" x="0.0" y="309.66666221618652" width="414" height="128.33332824707031"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="cIt-Pk-8Od" id="qgh-0W-SIB">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="128.33332824707031"/>
