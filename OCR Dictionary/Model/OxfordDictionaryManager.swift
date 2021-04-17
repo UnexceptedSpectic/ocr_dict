@@ -52,7 +52,7 @@
                     
                     if let confirmedData = data {
                         
-                        if let wordData = self.parseJSON(dictData: confirmedData) {
+                        if let wordData = parseJSON(jsonData: confirmedData, dataModel: OxfordWordData.self) {
                             // Pass data to the delegate. DictionaryViewController should declare itself as such.
                             self.delegate?.didGetWordData(wordData: wordData)
                         }
@@ -67,20 +67,4 @@
                         
         }
         
-        func parseJSON(dictData: Data) -> OxfordWordData? {
-            
-            let decoder = JSONDecoder()
-            do {
-                
-                let decodedData = try decoder.decode(OxfordWordData.self, from: dictData)
-                return decodedData
-                
-            } catch {
-                
-                print(error)
-                return nil
-                
-            }
-            
-        }
     }

@@ -18,6 +18,9 @@ class LibraryViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+                
+        var firestoreM = FirestoreManager()
+        firestoreM.userDataDelegate = self
         
         if collectionItems.count > 0 {
             collectionInstructionsLabel.isHidden = true
@@ -138,4 +141,12 @@ extension LibraryViewController: UICollectionViewDelegateFlowLayout {
             height: round(collectionView.frame.size.height / 4))
     }
     
+}
+
+extension LibraryViewController: FirestoreUserDataDelegate {
+    
+    func didGetUserData(userData: FirestoreUserData?) {
+        
+    }
+
 }

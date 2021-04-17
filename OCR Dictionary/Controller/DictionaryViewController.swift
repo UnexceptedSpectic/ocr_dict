@@ -12,47 +12,54 @@ class DictionaryViewController: UIViewController {
     
     @IBOutlet weak var dicitonaryTableView: UITableView!
     @IBOutlet weak var queryWordLabel: UILabel!
+    @IBOutlet weak var saveButton: UIButton!
     
     var queryWord: String?
-    var wordData: WordData?
+    var wordData: OxfordWordData?
     var wordDataGetterGroup: DispatchGroup?
     var definitionTableGroup = DispatchGroup()
-    var cells: [Cell]?
-    
-    // Define text attribute presets
-    let heading1Attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 24), NSAttributedString.Key.foregroundColor: UIColor.label]
-    let italicSecondaryHeading1Attributes = [NSAttributedString.Key.font: UIFont.italicSystemFont(ofSize: 18), NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel]
-    let heading2Attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16), NSAttributedString.Key.foregroundColor: UIColor.label]
-    let primary14Attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14), NSAttributedString.Key.foregroundColor: UIColor.label]
-    let secondary14Attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14), NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel]
-    let italicSecondary14Attributes = [NSAttributedString.Key.font: UIFont.italicSystemFont(ofSize: 14), NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel]
-    let italicTertiary14Attributes = [NSAttributedString.Key.font: UIFont.italicSystemFont(ofSize: 14), NSAttributedString.Key.foregroundColor: UIColor.tertiaryLabel]
+    var cells: [DictTableCell]?
+    var dbUserData: FirestoreUserData?
+    var firestoreManager: FirestoreManager?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Fetch definition data
-        var dictionaryManager = DictionaryManager()
-        dictionaryManager.delegate = self
+        // Configure the result table view
+        dicitonaryTableView.allowsSelection = false
         
-        wordDataGetterGroup = DispatchGroup()
-        wordDataGetterGroup!.enter()
-        
-        DispatchQueue.main.async {
-            dictionaryManager.getDefinitionData(word: self.queryWord!)
-        }
+        // Disable save button until local data diverges from db version
+        saveButton.isEnabled = false
         
         // Set query word to label at top of view
         self.queryWordLabel.text = queryWord
         
-        // Configure the result table view
-        dicitonaryTableView.allowsSelection = false
+        // Fetch word data from firestore, else oxford api, then reload table
+        firestoreManager = FirestoreManager()
+        fetchWordDataReloadTable()
+    }
+    
+    func fetchWordDataReloadTable() {
+        // Logic for fetching word data. Always query firestore first
+        self.firestoreManager!.wordCellsDelegate =  self
+        self.firestoreManager!.userDataDelegate = self
         
-        // Start loading table after definition data is obtained (and all other dispatch group tasks are completed)
+        // Perform firestore/oxford dict word queries on background thread
+        wordDataGetterGroup = DispatchGroup()
+        wordDataGetterGroup!.enter()
+        
+        DispatchQueue.main.async {
+            // Fetch word cells from firestore
+            print("starting to get user word cells")
+            self.firestoreManager!.getWordData(for: self.queryWord!)
+        }
+        
+        // Start loading table after word and user? data is obtained (all dispatch group tasks are completed/leave() is called)
         DispatchQueue.main.async {
             
             self.wordDataGetterGroup!.notify(queue: .main) {
-                
+                                
+                // Set up dict table view and reload view, now that data has been obtained
                 self.dicitonaryTableView.delegate = self
                 self.dicitonaryTableView.dataSource = self
                 self.dicitonaryTableView.reloadData()
@@ -61,15 +68,69 @@ class DictionaryViewController: UIViewController {
         }
     }
     
-    @objc func didTapStar(_ sender: dictStarButton) -> () {
-        let cell = self.cells![sender.getIndexPath()!.row]
-        if (cell.saved) {
-            self.cells![sender.getIndexPath()!.row].saved = false
-        } else {
-            self.cells![sender.getIndexPath()!.row].saved = true
+    @IBAction func didTapSave(_ sender: UIButton) {
+        // Show word saver
+//        performSegue(withIdentifier: "DictToSaver", sender: self)
+        let updatedUserData = self.firestoreManager?.saveUserData(add: queryWord!, to: "testCollection", usingTemplate: dbUserData, givenNew: getSavedCellIndexes(cells: self.cells!))
+        self.dbUserData = updatedUserData
+        self.saveButton.isEnabled = false
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "DictToSaver" {
+         
+            let saverVC = segue.destination as! WordSaverViewController
+            saverVC.wordCells = self.cells
         }
+    }
+    
+    @objc func didTapStar(_ sender: dictStarButton) -> () {
+        
+       // Toggle starring/unstarring a definition
+        let cell = self.cells![sender.getIndexPath()!.row] as! DefinitionCell
+        if (cell.saved) {
+            cell.saved = false
+            self.cells![sender.getIndexPath()!.row] = cell
+        } else {
+            cell.saved = true
+            self.cells![sender.getIndexPath()!.row] = cell
+        }
+        
+        // Enable/disable save button
+        setSaveButtonState()
+
+        // Refresh table view
         self.dicitonaryTableView.reloadData()
         // TODO: bring up window with list of collections to save to. add option to create collection.
+    }
+    
+    func setSaveButtonState() {
+        // Enable/disable save button
+        let localStarredCellIndexes = getSavedCellIndexes(cells: self.cells!)
+        if let dbUserData = self.dbUserData {
+            if let dbStarredCellIndexes = self.firestoreManager!.getStarredCellIndexes(for: self.queryWord!, in: dbUserData) {
+                // Enable save button if local starred definitions diverge from those in the db
+                if localStarredCellIndexes != dbStarredCellIndexes {
+                    self.saveButton.isEnabled = true
+                } else {
+                    self.saveButton.isEnabled = false
+                }
+            } else {
+                // Enable save button when the word is not found in any user collection in the db
+                if localStarredCellIndexes.count > 0 {
+                    self.saveButton.isEnabled = true
+                } else {
+                    self.saveButton.isEnabled = false
+                }
+            }
+        } else {
+            if localStarredCellIndexes.count > 0 {
+                self.saveButton.isEnabled = true
+            } else {
+                self.saveButton.isEnabled = false
+            }
+        }
     }
     
     /*
@@ -82,139 +143,71 @@ class DictionaryViewController: UIViewController {
      }
      */
     
-    func getCellStructs(wordDataResults: [Result]?) -> [Cell]? {
+    func getSavedCellIndexes(cells: [DictTableCell]) -> [Int] {
+        
+        var savedCellIndexes: [Int] = []
+        
+        for (ind, cell) in cells.enumerated() {
+            if cell is DefinitionCell {
+                let dCell = cell as! DefinitionCell
+                if dCell.saved {
+                    savedCellIndexes.append(ind)
+                }
+            }
+        }
+        
+        return savedCellIndexes
+    }
+    
+    func createCellStructs(wordDataResults: [Result]?) -> [DictTableCell]? {
         // Create a list of cell objects that describe cell type and a cell content's location in the Oxford API data structure
         if let cells = self.cells {
             return cells
         }
         
-        var cells: [Cell] = []
+        var cells: [DictTableCell] = []
         
         if let results = wordDataResults {
             
             for (resInd, result) in results.enumerated() {
-                
-                cells.append(Cell(type: K.tables.dictionary.cell.type.name, resultIndex: resInd, lexicalIndex: nil, senseIndex: nil, subsenseIndex: nil,
-                                   text: [NSAttributedString(string: result.word!,
-                                                             attributes: heading1Attributes),
-                                          NSAttributedString(string: "| " + result.lexicalEntries![0].entries![0].pronunciations!.last!.phoneticSpelling! + " |",
-                                                             attributes: italicSecondaryHeading1Attributes)]))
+                                
+                cells.append(WordPronounciationCell(
+                    indexLocation: [resInd],
+                    wordText: NSAttributedString(
+                        string: result.word!,
+                        attributes: K.stringAttributes.heading1),
+                    phoneticText: NSAttributedString(
+                        string:  "| \(result.lexicalEntries![0].entries![0].pronunciations!.last!.phoneticSpelling!) |",
+                        attributes: K.stringAttributes.italicSecondaryHeading1)
+                    )
+                )
                 
                 for (lexInd, entry) in result.lexicalEntries!.enumerated() {
-                    cells.append(Cell(type: K.tables.dictionary.cell.type.category, resultIndex: resInd, lexicalIndex: lexInd, senseIndex: nil, subsenseIndex: nil, text: [NSAttributedString(string: entry.lexicalCategory!.id!, attributes: heading2Attributes)]))
                     
+                    cells.append(LexicalCategoryCell(
+                        indexLocation: [resInd, lexInd],
+                        categoryText: NSAttributedString(
+                            string: entry.lexicalCategory!.id!,
+                            attributes: K.stringAttributes.heading2)
+                        )
+                    )
+                    
+                    // Configure primary sense/definition and examples text
                     if let primaryDefinitions = entry.entries![0].senses {
                         for (primDefInd, primaryDef) in primaryDefinitions.enumerated() {
-                            
-                            // Configure primary sense/definition and examples text
-                            var definitionText = NSMutableAttributedString(string: "")
-                            
-                            if let definitions = primaryDef.definitions {
-                                definitionText = NSMutableAttributedString(string: definitions[0], attributes: primary14Attributes)
+                               
+                            if let defStruct = getDefinitionStruct(definitionData: primaryDef, indexLocation: [resInd, lexInd, primDefInd], type: K.dictionaries.oxford.definition.type.primary) {
+                                cells.append(defStruct)
                             }
                             
-                            let examplesText = NSMutableAttributedString(string: "")
-                            
-                            // Add examples for the defined word
-                            if let examples = primaryDef.examples {
-                                
-                                examplesText.append(NSAttributedString(string: ": "))
-                                
-                                for (ind, example) in examples.enumerated() {
-                                    
-                                    // Add note text
-                                    if let notes = example.notes {
-                                        
-                                        examplesText.append(NSAttributedString(string: "[\(notes[0].text!)]: ", attributes: italicTertiary14Attributes))
-                                        
-                                    }
-                                    
-                                    // Add example text
-                                    examplesText.append(NSAttributedString(string: example.text!, attributes: italicSecondary14Attributes))
-                                    
-                                    if ind != examples.count - 1 {
-                                        
-                                        examplesText.append(NSAttributedString(string: " | "))
-                                        
-                                    } else {
-                                        
-                                        examplesText.append(NSAttributedString(string: "."))
-                                        
-                                    }
-                                }
-                            }
-                            
-                            definitionText.append(examplesText)
-                            
-                            cells.append(Cell(type: K.tables.dictionary.cell.type.primaryDefinition, resultIndex: resInd, lexicalIndex: lexInd, senseIndex: primDefInd, subsenseIndex: nil, text: [definitionText]))
-                            
-                            // Add subsense definition and example text to primary data text
+                            // Configure subsense/definition and examples text
                             if let subsenses = primaryDef.subsenses {
                                 
                                 for (subsenseInd, subsense) in subsenses.enumerated() {
-                                    
-                                    let subsensesText = NSMutableAttributedString(string: "")
-                                    
-                                    // Check for and attempt to save subsense definition. Continue only if one is found.
-                                    var subsenseDefinition: NSAttributedString?
-                                    if let definitions = subsense.definitions {
                                         
-                                        subsenseDefinition = NSAttributedString(string: definitions[0], attributes: primary14Attributes)
-                                        
-                                    } else if let crossReferenceMarkers = subsense.crossReferenceMarkers {
-                                        
-                                        subsenseDefinition = NSAttributedString(string: crossReferenceMarkers[0], attributes: primary14Attributes)
-                                        
-                                    } else {
-                                        
-                                        // Skip iteration
-                                        continue
+                                    if let defStruct = getDefinitionStruct(definitionData: subsense, indexLocation: [resInd, lexInd, primDefInd, subsenseInd], type: K.dictionaries.oxford.definition.type.secondary) {
+                                        cells.append(defStruct)
                                     }
-                                    
-                                    // Add subsense note
-                                    if let notes = subsense.notes {
-                                        
-                                        subsensesText.append(NSAttributedString(string: "[\(notes[0].text!)] ", attributes: italicTertiary14Attributes))
-                                        
-                                    }
-                                    
-                                    // Add subsense domain
-                                    if let domains = subsense.domains {
-                                        
-                                        subsensesText.append(NSAttributedString(string: "\(domains[0].text!) ", attributes: italicTertiary14Attributes))
-                                        
-                                    }
-                                    
-                                    // Add subsense definition
-                                    subsensesText.append(subsenseDefinition!)
-                                    
-                                    // Add subsense examples
-                                    let examplesText = NSMutableAttributedString(string: "")
-                                    
-                                    if let examples = subsense.examples {
-                                        
-                                        examplesText.append(NSAttributedString(string: ": "))
-                                        
-                                        for (ind, example) in examples.enumerated() {
-                                            
-                                            examplesText.append(NSAttributedString(string: example.text!, attributes: italicSecondary14Attributes))
-                                            
-                                            if ind != examples.count - 1 {
-                                                
-                                                examplesText.append(NSAttributedString(string: " | "))
-                                                
-                                            } else {
-                                                
-                                                examplesText.append(NSAttributedString(string: "."))
-                                                
-                                            }
-                                        }
-                                        
-                                        subsensesText.append(examplesText)
-                                        
-                                    }
-                                    
-                                    cells.append(Cell(type: K.tables.dictionary.cell.type.secondaryDefenition, resultIndex: resInd, lexicalIndex: lexInd, senseIndex: primDefInd, subsenseIndex: subsenseInd, text: [subsensesText]))
                                 }
                             }
                         }
@@ -224,23 +217,138 @@ class DictionaryViewController: UIViewController {
                 
                 if let etymologies = result.lexicalEntries![0].entries![0].etymologies {
                     
-                    cells.append(Cell(type: K.tables.dictionary.cell.type.origin, resultIndex: resInd, lexicalIndex: nil, senseIndex: nil, subsenseIndex: nil, text: [NSAttributedString(string: etymologies[0])]))
+                    cells.append(OriginCell(
+                        indexLocation: [resInd],
+                        etymology: NSAttributedString(
+                            string: etymologies[0],
+                            attributes: K.stringAttributes.primary14)))
                 }
             }
             
         } else {
             
             // No results found for oxford api word query
-            cells = [Cell(type: K.tables.dictionary.cell.type.noResult, resultIndex: 0, lexicalIndex: nil, senseIndex: nil, subsenseIndex: nil, text: [NSAttributedString(string: "No results found", attributes: heading1Attributes)])]
+            cells = [NoResultCell()]
             
         }
         
         return cells
     }
     
+    func getDefinitionStruct(definitionData: Definition, indexLocation: [Int], type: String) -> DefinitionCell? {
+        
+        // Build definition string
+        let definitionText = NSMutableAttributedString(string: "")
+        
+        // Add domain text
+        if let domains = definitionData.domains {
+            definitionText.append(NSAttributedString(
+                string: "\(domains[0].text) ",
+                attributes: K.stringAttributes.italicTertiary14))
+        }
+        
+        // Add note text
+        if let notes = definitionData.notes {
+            
+            let noteText = getNoteText(notes: notes)
+            definitionText.append(noteText)
+        }
+        
+        // Add register text
+        if let registerText = getRegisterText(definitionData: definitionData) {
+            definitionText.append(registerText)
+        }
+        
+        // Add definition/reference text
+        let defText: String
+        if let definitions = definitionData.definitions {
+            defText = definitions[0]
+        } else if let crossReferenceMarkers = definitionData.crossReferenceMarkers {
+            defText = crossReferenceMarkers[0]
+        } else {
+            // Skip saving subsense
+            return nil
+        }
+        definitionText.append(NSAttributedString(
+            string: defText,
+            attributes: K.stringAttributes.primary14))
+        
+        // Add definition examples string
+        let examplesText = NSMutableAttributedString(string: "")
+        if let examples = definitionData.examples {
+            
+            examplesText.append(NSAttributedString(
+                string: ": ",
+                attributes: K.stringAttributes.primary14))
+            
+            for (ind, example) in examples.enumerated() {
+                
+                // Add note text
+                if let notes = example.notes {
+                    
+                    let noteText = getNoteText(notes: notes)
+                    examplesText.append(noteText)
+                }
+                
+                // Add example text
+                examplesText.append(NSAttributedString(
+                    string: example.text!,
+                    attributes: K.stringAttributes.italicSecondary14))
+                
+                // Separate/punctuate examples
+                let separatorText: String
+                if ind != examples.count - 1 {
+                    separatorText = " | "
+                } else {
+                    separatorText = "."
+                }
+                examplesText.append(NSAttributedString(
+                    string: separatorText,
+                    attributes: K.stringAttributes.primary14))
+            }
+        }
+        
+        return DefinitionCell(
+            type: type,
+            indexLocation: indexLocation,
+            saved: false,
+            definition: definitionText,
+            examples: examplesText)
+        
+    }
+    
+    func getNoteText(notes: [Note]) -> NSAttributedString {
+        let note = notes[0]
+        let noteText = NSMutableAttributedString(string: "")
+        if note.type == "wordFormNote" {
+            noteText.append(NSAttributedString(string: "(", attributes: K.stringAttributes.primary14))
+            noteText.append(NSAttributedString(string: note.text.trimmingCharacters(in: ["\""]), attributes: K.stringAttributes.boldPrimary14))
+            noteText.append(NSAttributedString(string: ") ", attributes: K.stringAttributes.primary14))
+        } else if note.type == "grammaticalNote" {
+            noteText.append(NSAttributedString(string: "[\(note.text)] ", attributes: K.stringAttributes.italicTertiary14))
+        } else {
+            noteText.append(NSAttributedString(string: "[\(note.text)] ", attributes: K.stringAttributes.italicTertiary14))
+            print("New definition note type found: \(note.type)")
+        }
+        return noteText
+    }
+    
+    func getRegisterText(definitionData: Definition) -> NSAttributedString? {
+        if let registers = definitionData.registers {
+            let registerText: String
+            if (definitionData.domains != nil || definitionData.notes != nil) {
+                registerText = registers[0].text.lowercased()
+            } else {
+                registerText = uppercaseFirstCharacter(str: registers[0].text)
+            }
+            return NSAttributedString(string: "\(registerText) ", attributes: K.stringAttributes.italicTertiary14)
+        } else {
+            return nil
+        }
+    }
+    
 }
 
-// TODO: remove - no selection actions needed here
 // Extensions for the dictionary table view
 extension DictionaryViewController: UITableViewDelegate {
     
@@ -257,91 +365,103 @@ extension DictionaryViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         // Return the total number of cells required
-        self.cells = getCellStructs(wordDataResults: self.wordData?.results)
-        return self.cells!.count
+        if let cells = self.cells {
+            return cells.count
+        } else {
+            return 0
+        }
         
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cellType = cells![indexPath.row].type
-        let resultIndex = cells![indexPath.row].resultIndex
-        let primDefInd = cells![indexPath.row].senseIndex
-        let cellText = cells![indexPath.row].text
-        
+        let cellStruct = cells![indexPath.row]
+        let resultIndex = cells![indexPath.row].indexLocation[0]
         var cell: UITableViewCell?
         
-        switch(cellType) {
-            
-        case K.tables.dictionary.cell.type.name:
-            // Create cell from storyboard prototype cell for word name/string
-            cell = tableView.dequeueReusableCell(withIdentifier: K.tables.dictionary.cell.type.name, for: indexPath)
+        if cellStruct is WordPronounciationCell {
+            let cStruct = cellStruct as! WordPronounciationCell
+            // Create cell from storyboard prototype cell for word and its pronounciation
+            cell = tableView.dequeueReusableCell(
+                withIdentifier: K.tables.dictionary.cell.nib.wordPronounciation,
+                for: indexPath)
             // Set text
-            let wordLabel = cell!.viewWithTag(1) as! UILabel
+            let wordLabel = cell?.viewWithTag(1) as! UILabel
             let resultNumLabel = cell!.viewWithTag(2) as! UILabel
             let phoneticLabel = cell!.viewWithTag(3) as! UILabel
-            wordLabel.attributedText = cellText![0]
-            resultNumLabel.text = String(resultIndex + 1)
-            phoneticLabel.attributedText = cellText![1]
+            wordLabel.attributedText = cStruct.wordText
+            resultNumLabel.text = String(cStruct.indexLocation[0] + 1)
+            phoneticLabel.attributedText = cStruct.phoneticText
             // Set name label width
             wordLabel.constraintWithIdentifier("wordLabelWidth")!.constant = wordLabel.intrinsicContentSize.width
             // Set result number label width
             resultNumLabel.constraintWithIdentifier("resultNumLabelWidth")!.constant = resultNumLabel.intrinsicContentSize.width
-        case K.tables.dictionary.cell.type.category:
+        } else if cellStruct is LexicalCategoryCell {
+            let cStruct = cellStruct as! LexicalCategoryCell
             // Create cell from storyboard prototype cell for word category
-            cell = tableView.dequeueReusableCell(withIdentifier: K.tables.dictionary.cell.type.category, for: indexPath)
+            cell = tableView.dequeueReusableCell(withIdentifier: K.tables.dictionary.cell.nib.category, for: indexPath)
             // Set text
             let categoryLabel = cell!.viewWithTag(1) as! UILabel
-            categoryLabel.attributedText = cellText![0]
-        case K.tables.dictionary.cell.type.primaryDefinition:
-            // Create cell from storyboard prototype cell for primary definition
-            cell = tableView.dequeueReusableCell(withIdentifier: K.tables.dictionary.cell.type.primaryDefinition, for: indexPath)
-            // Set text
-            let primDefNumLabel = cell!.viewWithTag(1) as! UILabel
-            let primDefLabel = cell!.viewWithTag(2) as! UILabel
-            primDefNumLabel.attributedText = NSAttributedString(string:String(primDefInd! + 1), attributes: secondary14Attributes)
-            primDefLabel.attributedText = cellText![0]
-            // Set star button as outlined/filled
-            let starButton = cell?.viewWithTag(3) as! dictStarButton
-            let cell = self.cells![indexPath.row]
-            if (cell.saved) {
-                starButton.setImage(UIImage(systemName: "star.fill"), for: .normal)
+            categoryLabel.attributedText = cStruct.categoryText
+        } else if cellStruct is DefinitionCell {
+            let cStruct = cellStruct as! DefinitionCell
+            if cStruct.type == K.dictionaries.oxford.definition.type.primary {
+                // Create cell from storyboard prototype cell for primary definition
+                cell = tableView.dequeueReusableCell(withIdentifier: K.tables.dictionary.cell.nib.primaryDefinition, for: indexPath)
+                // Set text
+                let primDefNumLabel = cell!.viewWithTag(1) as! UILabel
+                let primDefLabel = cell!.viewWithTag(2) as! UILabel
+                primDefNumLabel.attributedText = NSAttributedString(string:String(cStruct.indexLocation[2] + 1), attributes: K.stringAttributes.secondary14)
+                let defExText = NSMutableAttributedString(attributedString: cStruct.definition)
+                defExText.append(cStruct.examples!)
+                primDefLabel.attributedText = defExText
+                // Set star button as outlined/filled
+                let starButton = cell!.viewWithTag(3) as! dictStarButton
+                if cStruct.saved {
+                    starButton.setImage(UIImage(systemName: "star.fill"), for: .normal)
+                } else {
+                    starButton.setImage(UIImage(systemName: "star"), for: .normal)
+                }
+                // Listen to star button tap event
+                starButton.setIndexPath(indexPath: indexPath)
+                starButton.addTarget(self, action: #selector(didTapStar), for: .touchUpInside)
+            } else if cStruct.type == K.dictionaries.oxford.definition.type.secondary {
+                // Create cell from storyboard prototype cell for secondary/sub definition
+                cell = tableView.dequeueReusableCell(withIdentifier: K.tables.dictionary.cell.nib.secondaryDefenition, for: indexPath)
+                // Set text
+                let subDefLabel = cell!.viewWithTag(1) as! UILabel
+                let defExText = NSMutableAttributedString(attributedString: cStruct.definition)
+                defExText.append(cStruct.examples!)
+                subDefLabel.attributedText = defExText
+                // Set star button as outlined/filled
+                let starButton = cell!.viewWithTag(3) as! dictStarButton
+                if cStruct.saved {
+                    starButton.setImage(UIImage(systemName: "star.fill"), for: .normal)
+                } else {
+                    starButton.setImage(UIImage(systemName: "star"), for: .normal)
+                }
+                // Listen to star button tap event
+                starButton.setIndexPath(indexPath: indexPath)
+                starButton.addTarget(self, action: #selector(didTapStar), for: .touchUpInside)
             } else {
-                starButton.setImage(UIImage(systemName: "star"), for: .normal)
+                print("Error: Issue differentiating between primary and secondary definition cells.")
             }
-            // Listen to star button tap event
-            starButton.setIndexPath(indexPath: indexPath)
-            starButton.addTarget(self, action: #selector(didTapStar), for: .touchUpInside)
-        case K.tables.dictionary.cell.type.secondaryDefenition:
-            // Create cell from storyboard prototype cell for secondary/sub definition
-            cell = tableView.dequeueReusableCell(withIdentifier: K.tables.dictionary.cell.type.secondaryDefenition, for: indexPath)
-            // Set text
-            let subDefLabel = cell!.viewWithTag(1) as! UILabel
-            subDefLabel.attributedText = cellText![0]
-            // Set star button as outlined/filled
-            let starButton = cell?.viewWithTag(3) as! dictStarButton
-            let cell = self.cells![indexPath.row]
-            if (cell.saved) {
-                starButton.setImage(UIImage(systemName: "star.fill"), for: .normal)
-            } else {
-                starButton.setImage(UIImage(systemName: "star"), for: .normal)
-            }
-            // Listen to star button tap event
-            starButton.setIndexPath(indexPath: indexPath)
-            starButton.addTarget(self, action: #selector(didTapStar), for: .touchUpInside)
-        case K.tables.dictionary.cell.type.origin:
+        } else if cellStruct is OriginCell {
+            let cStruct = cellStruct as! OriginCell
             // Create cell from storyboard prototype cell for word origin
-            cell = tableView.dequeueReusableCell(withIdentifier: K.tables.dictionary.cell.type.origin, for: indexPath)
+            cell = tableView.dequeueReusableCell(withIdentifier: K.tables.dictionary.cell.nib.origin, for: indexPath)
             // Set text
             let originLabel = cell!.viewWithTag(1) as! UILabel
-            originLabel.attributedText = cellText![0]
-        case K.tables.dictionary.cell.type.noResult:
-            cell = tableView.dequeueReusableCell(withIdentifier: K.tables.dictionary.cell.type.name, for: indexPath)
+            originLabel.attributedText = cStruct.etymology
+        } else if cellStruct is NoResultCell {
+            // TODO: Create dedicated cell to handle cases when a word is not found in the dictionary
+            cell = tableView.dequeueReusableCell(withIdentifier: K.tables.dictionary.cell.nib.wordPronounciation, for: indexPath)
             // Set text
             let msg = cell!.viewWithTag(1) as! UILabel
-            msg.attributedText = cellText![0]
-        default:
-            print("Error: cellType not matched")
+            msg.attributedText = NoResultCell.text
+        }
+        else {
+            print("Error: Cell type could not be determined.")
         }
         
         let containerView = cell!.contentView.subviews[0]
@@ -351,23 +471,28 @@ extension DictionaryViewController: UITableViewDataSource {
             containerView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
         }
         
-        // Round bottom corners of last cell in each result. Acts on cell prototype, not its instance.
-        if indexPath.row + 1 == cells!.count || cells![indexPath.row + 1].resultIndex == resultIndex + 1 {
+        // Logic for last cell in each result. Acts on cell prototype, not its instance.
+        if indexPath.row + 1 == cells!.count || cells![indexPath.row + 1].indexLocation[0] == resultIndex + 1 {
+            // Round bottom corners
             containerView.layer.cornerRadius = 10
             containerView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+            // Set result bottom margin for cells that don't have etymology info
+            if !(cellStruct is OriginCell) {
+                containerView.constraintWithIdentifier("nonLastCellBottomMargin")?.constant = 20
+            }
         }
         
         // Set result container top margins
         if indexPath.row == 0 {
             containerView.constraintWithIdentifier("resultContainerTopMargin")!.constant = 20
-        } else if cells![indexPath.row - 1].resultIndex == resultIndex - 1 {
+        } else if cells![indexPath.row - 1].indexLocation[0] == resultIndex - 1 {
             containerView.constraintWithIdentifier("resultContainerTopMargin")!.constant = 10
         }
         
         // Set result container bottom margins
         if indexPath.row + 1 == cells!.count {
             containerView.superview!.constraintWithIdentifier("resultContainerBottomMargin")!.constant = 20
-        } else if cells![indexPath.row + 1].resultIndex == resultIndex + 1 {
+        } else if cells![indexPath.row + 1].indexLocation[0] == resultIndex + 1 {
             containerView.superview!.constraintWithIdentifier("resultContainerBottomMargin")!.constant = 0
         }
         
@@ -379,12 +504,59 @@ extension DictionaryViewController: UITableViewDataSource {
         
     }
     
+    func updateCellStructs(userData: FirestoreUserData) {
+        // User data may or may not contain saved definitions for a word
+        if let starredCellIndexes = self.firestoreManager!.getStarredCellIndexes(for: self.queryWord!, in: userData) {
+            for cellInd in starredCellIndexes {
+                let updatedCell = self.cells![cellInd] as! DefinitionCell
+                updatedCell.saved = true
+                self.cells![cellInd] = updatedCell
+            }
+        }
+    }
+    
 }
 
-extension DictionaryViewController: WordDataDelegate {
+extension DictionaryViewController: OxfordWordDataDelegate {
     
-    func didGetWordData(wordData: WordData) {
+    func didGetWordData(wordData: OxfordWordData) {
+        print("found word data in oxford dict")
+        // Save wordData to firestore
+        self.firestoreManager?.saveWordData(for: self.queryWord!, wordData: wordData)
+        // Save wordData locally and generate cell structs
         self.wordData = wordData
+        self.cells = createCellStructs(wordDataResults: self.wordData?.results)
+        self.wordDataGetterGroup!.leave()
+    }
+    
+}
+
+extension DictionaryViewController: FirestoreUserWordCellsDelegate {
+    
+    func didGetWordData(wordData: OxfordWordData?) {
+        if let wordData = wordData {
+            print("found word data in firestore")
+            self.wordData = wordData
+            self.cells = createCellStructs(wordDataResults: self.wordData?.results)
+            self.firestoreManager?.getUserData()
+        } else {
+            // No word data found in firestore. Query oxford api and save result to firestore
+            var dictionaryManager = OxfordDictionaryManager()
+            dictionaryManager.delegate = self
+            dictionaryManager.getDefinitionData(word: self.queryWord!)
+        }
+    }
+    
+}
+
+extension DictionaryViewController: FirestoreUserDataDelegate {
+    
+    func didGetUserData(userData: FirestoreUserData?) {
+        print("successfully got user data")
+        self.dbUserData = userData
+        if let userData = userData {
+            updateCellStructs(userData: userData)
+        }
         self.wordDataGetterGroup!.leave()
     }
     
@@ -398,4 +570,3 @@ extension UIView {
         return self.constraints.first { $0.identifier == identifier }
     }
 }
-
