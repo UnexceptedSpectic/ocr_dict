@@ -16,6 +16,13 @@ class CollectionViewCell: UICollectionViewCell {
     @IBOutlet var imageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     
+    // Custom config for cell
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        // Round corners
+        self.layer.cornerRadius = 10.0
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -25,7 +32,7 @@ class CollectionViewCell: UICollectionViewCell {
         imageView.backgroundColor = color
     }
     
-    public func configure(projectName title: String) {
+    public func configure(collectionName title: String) {
         titleLabel.text = title
     }
 

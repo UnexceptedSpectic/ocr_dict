@@ -99,6 +99,13 @@ struct FirestoreManager {
             print("Error: could not get current user.")
         }
     }
+    
+    func saveUserData(updatedUserData: FirestoreUserData) {
+        if let currentUser = Auth.auth().currentUser {
+            let updatedUserDataDict = structToDict(structInstance: updatedUserData)
+            self.db.collection(K.firestore.collections.users).document(currentUser.email!).setData(updatedUserDataDict!)
+        }
+    }
         
     func saveUserData(add word: String, to collectionName: String, usingTemplate dbUserData: FirestoreUserData?, givenNew starredCellIndexes: [Int]) -> FirestoreUserData {
         
@@ -150,12 +157,6 @@ struct FirestoreManager {
         }
         
         return updatedUserData
-    }
-    
-    func getDatetimeString() -> String {
-        let df = DateFormatter()
-        df.dateFormat = "yyyy-MM-dd hh:mm:ss"
-        return df.string(from: Date())
     }
         
     }

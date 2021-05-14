@@ -8,13 +8,11 @@
 
 import UIKit
 
-class TableViewCell: UITableViewCell {
+class TessResultTableCell: UITableViewCell {
 
     // TessResultCell outlets
     @IBOutlet weak var resultButton: UIButton!
-    
-    // TODO: create xibs for DictDefinitionCell and DictExampleCell
-    
+        
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

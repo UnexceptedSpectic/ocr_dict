@@ -10,21 +10,21 @@ import Foundation
 
 struct FirestoreUserData: Decodable, Encodable {
     
-    let collections: [Collection]
+    var collections: [Collection]
 }
 
 struct Collection: Decodable, Encodable {
     
-    let name: String
+    var name: String
     let dateCreated: String
-    let dateModified: String
-    let words: [Word]
+    var dateModified: String
+    var words: [Word]
 }
 
 struct Word: Decodable, Encodable {
     
     let word: String
     let dateAdded: String
-    let dateModified: String
-    let starredCellIndexes: [Int]
+    var dateModified: String
+    var starredCellIndexes: [Int]
 }

@@ -13,18 +13,27 @@ class LibraryViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var collectionInstructionsLabel: UILabel!
     @IBOutlet weak var topNav: UINavigationItem!
+    @IBOutlet weak var collectionsLoadingIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var addCollectionButton: UIBarButtonItem!
     
-    var collectionItems: [String] = ["first", "second","first", "second","first", "second","first", "second","first", "second","first", "second","first", "second","first", "second"]
+    var firestoreM: FirestoreManager?
+    var userData: FirestoreUserData?
+    
+    let gridGapSize: CGFloat = 10
     
     override func viewDidLoad() {
         super.viewDidLoad()
                 
-        var firestoreM = FirestoreManager()
-        firestoreM.userDataDelegate = self
+        firestoreM = FirestoreManager()
+        firestoreM!.userDataDelegate = self
+        firestoreM!.getUserData()
+        // Start activity indicator
+        collectionsLoadingIndicator.startAnimating()
+        // Disable add collection button
+        addCollectionButton.isEnabled = false
         
-        if collectionItems.count > 0 {
-            collectionInstructionsLabel.isHidden = true
-        }
+        // Hide instruction label by default
+        collectionInstructionsLabel.isHidden = true
         
         // Configure collection
         collectionView.isHidden = true
@@ -32,12 +41,19 @@ class LibraryViewController: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.showsVerticalScrollIndicator = false
+        // Allow scrolling/pulling beyond vertical bounds
+        collectionView.alwaysBounceVertical = true;
         
         let layout = UICollectionViewFlowLayout()
         // Specify outer padding of collection
-        // layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        layout.minimumLineSpacing = CGFloat(0)
-        layout.minimumInteritemSpacing = CGFloat(0)
+         layout.sectionInset = UIEdgeInsets(
+            top: gridGapSize,
+            left: gridGapSize,
+            bottom: gridGapSize,
+            right: gridGapSize
+        )
+        layout.minimumLineSpacing = gridGapSize
+        layout.minimumInteritemSpacing = gridGapSize
         collectionView.collectionViewLayout = layout
         
     }
@@ -75,15 +91,26 @@ class LibraryViewController: UIViewController {
             // Add collection item if collection name isn't empty
             if !(textField?.text!.isEmpty)! {
                 
-                self.collectionItems.append((textField?.text)!)
-                
-                if self.collectionItems.count > 0 {
-                    self.collectionInstructionsLabel.isHidden = true
+                let dtNow = getDatetimeString()
+                let newCollection = Collection(
+                    name: (textField?.text)!,
+                    dateCreated: dtNow,
+                    dateModified: dtNow,
+                    words: []
+                )
+                if self.userData != nil {
+                    self.userData!.collections.append(newCollection)
                 } else {
-                    self.collectionInstructionsLabel.isHidden = false
+                    self.userData = FirestoreUserData(collections: [newCollection])
                 }
                 
-                let indexPath = IndexPath(row: self.collectionItems.count - 1, section: 0)
+                // Save data to firestore
+                self.firestoreM!.saveUserData(updatedUserData: self.userData!)
+                
+                // Show/hide add collection instructions label
+                self.toggleInstructionsGivenUserData()
+                
+                let indexPath = IndexPath(row: self.userData!.collections.count - 1, section: 0)
                 self.collectionView.insertItems(at: [indexPath])
             }
         }))
@@ -93,9 +120,17 @@ class LibraryViewController: UIViewController {
             alert.dismiss(animated: true, completion: nil)
         }))
 
-        // 4. Present the alert.
+        // Show the alert
         self.present(alert, animated: true, completion: nil)
         
+    }
+    
+    func toggleInstructionsGivenUserData() {
+        if self.userData!.collections.count == 0 {
+            collectionInstructionsLabel.isHidden = false
+        } else {
+            collectionInstructionsLabel.isHidden = true
+        }
     }
     
 }
@@ -117,7 +152,11 @@ extension LibraryViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        return collectionItems.count
+        if let userData = self.userData {
+            return userData.collections.count
+        } else {
+            return 0
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -125,7 +164,7 @@ extension LibraryViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: K.collections.library.cell.type, for: indexPath) as! CollectionViewCell
 
         cell.configure(backgroundColor: K.brand.colors.gray)
-        cell.configure(projectName: collectionItems[indexPath.row])
+        cell.configure(collectionName: self.userData!.collections[indexPath.row].name)
         return cell
     }
     
@@ -135,10 +174,12 @@ extension LibraryViewController: UICollectionViewDelegateFlowLayout {
      
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        // Configure 3 collection items per row and 4 rows
+        // Configure 3 collection items per row and 4 rows. Subtract grid spacing e.g. 4 spaces/3 cells.
+        // TODO: Add different config for landscape mode, or disable the latter.
         return CGSize(
-            width: round(collectionView.frame.size.width / 3),
-            height: round(collectionView.frame.size.height / 4))
+            width: floor(collectionView.frame.size.width / 3 - 4/3 * self.gridGapSize),
+            height: floor(collectionView.frame.size.height / 4 - 5/4 * self.gridGapSize)
+        )
     }
     
 }
@@ -146,7 +187,20 @@ extension LibraryViewController: UICollectionViewDelegateFlowLayout {
 extension LibraryViewController: FirestoreUserDataDelegate {
     
     func didGetUserData(userData: FirestoreUserData?) {
-        
+        // Stop activity indicator
+        collectionsLoadingIndicator.stopAnimating()
+        // Enable add collection button
+        addCollectionButton.isEnabled = true
+        // Save user data
+        self.userData = userData
+        // Show/hide collection instructions
+        if userData != nil {
+            toggleInstructionsGivenUserData()
+        } else {
+            collectionInstructionsLabel.isHidden = false
+        }
+        // Reload collection view
+        collectionView.reloadData()
     }
 
 }

@@ -341,12 +341,15 @@
                                 <rect key="frame" x="0.0" y="692" width="414" height="0.0"/>
                                 <color key="backgroundColor" red="0.43847274780000001" green="0.75777047870000003" blue="0.70153659580000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Create a collection using the &quot;+&quot; icon above to organize definitions" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nnl-JZ-RVD">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Create a collection of definitions using the &quot;+&quot; icon above." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nnl-JZ-RVD">
                                 <rect key="frame" x="75" y="325.66666666666669" width="264" height="40.666666666666686"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.50190538169999999" green="0.50199359659999998" blue="0.50189298390000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="4Cs-jo-uqc">
+                                <rect key="frame" x="197" y="336" width="20" height="20"/>
+                            </activityIndicatorView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Pel-Jr-KOi">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="642"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
@@ -410,10 +413,12 @@
                             <constraint firstItem="Nnl-JZ-RVD" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="CfR-Pv-h6v"/>
                             <constraint firstItem="Pel-Jr-KOi" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Cxh-M1-VD3"/>
                             <constraint firstAttribute="bottom" secondItem="nqu-DR-Mto" secondAttribute="bottom" id="Gcg-LQ-Xjk"/>
+                            <constraint firstItem="4Cs-jo-uqc" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="Hiq-W8-1DX"/>
                             <constraint firstItem="ALq-4e-Mfm" firstAttribute="top" secondItem="Pel-Jr-KOi" secondAttribute="bottom" id="aks-pR-7Aa"/>
                             <constraint firstItem="ALq-4e-Mfm" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="h9a-UP-6Ty"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="ALq-4e-Mfm" secondAttribute="trailing" id="hic-89-xW0"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Pel-Jr-KOi" secondAttribute="trailing" id="jJY-YJ-69g"/>
+                            <constraint firstItem="4Cs-jo-uqc" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="lzQ-bk-GBI"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Nnl-JZ-RVD" secondAttribute="trailing" constant="75" id="n2H-57-MgJ"/>
                             <constraint firstAttribute="trailing" secondItem="nqu-DR-Mto" secondAttribute="trailing" id="qeQ-WP-EnH"/>
                             <constraint firstItem="nqu-DR-Mto" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="xdY-lT-eXj"/>
@@ -434,8 +439,10 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="addCollectionButton" destination="gHd-Hj-CYF" id="XhC-ue-ZLX"/>
                         <outlet property="collectionInstructionsLabel" destination="Nnl-JZ-RVD" id="GcY-G2-xgM"/>
                         <outlet property="collectionView" destination="Pel-Jr-KOi" id="KHO-Ba-6O7"/>
+                        <outlet property="collectionsLoadingIndicator" destination="4Cs-jo-uqc" id="UQU-hL-POK"/>
                         <outlet property="topNav" destination="LHm-hX-3DD" id="gec-0B-IkF"/>
                         <segue destination="qn7-PX-Wh5" kind="show" identifier="homeToSnapper" id="pPm-xx-56a"/>
                         <segue destination="g5H-a4-3py" kind="show" identifier="LibraryToCollection" id="kVg-Tt-FEd"/>
