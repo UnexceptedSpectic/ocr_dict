@@ -18,6 +18,7 @@ class LibraryViewController: UIViewController {
     
     var firestoreM: FirestoreManager?
     var userData: FirestoreUserData?
+    var selectedCollectionIndex: Int?
     
     let gridGapSize: CGFloat = 10
     
@@ -75,7 +76,7 @@ class LibraryViewController: UIViewController {
     }
 
     @IBAction func didTapCaptureButton(_ sender: UIButton) {
-        self.performSegue(withIdentifier: "homeToSnapper", sender: self)
+        self.performSegue(withIdentifier: "HomeToSnapper", sender: self)
     }
     
     @IBAction func addCollectionItem(_ sender: UIBarButtonItem) {
@@ -133,6 +134,17 @@ class LibraryViewController: UIViewController {
         }
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
+        
+        // Pass userData and collection index to collection view
+        if segue.destination is CollectionViewController {
+            let controllerVC = segue.destination as! CollectionViewController
+            controllerVC.userData = self.userData
+            controllerVC.collectionIndex = self.selectedCollectionIndex
+        }
+    }
+    
 }
 
 // Extensions required for configuring collection with template nib/xib. Makes loading collection items more efficient
@@ -140,7 +152,7 @@ class LibraryViewController: UIViewController {
 extension LibraryViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
-        
+        self.selectedCollectionIndex = indexPath.row
         print("collection item tapped!")
         
         performSegue(withIdentifier: "LibraryToCollection", sender: self)

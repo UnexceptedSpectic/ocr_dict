@@ -55,7 +55,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                 if let e = error {
                     self.messageLabel.text = e.localizedDescription
                 } else {
-                    self.performSegue(withIdentifier: "loginToLibrary", sender: self)
+                    self.performSegue(withIdentifier: "LoginToLibrary", sender: self)
                 }
             }
         } else {

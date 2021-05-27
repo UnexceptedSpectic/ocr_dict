@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import CoreHaptics
+import AudioToolbox.AudioServices
 
 class DictionaryViewController: UIViewController {
     
@@ -22,6 +24,11 @@ class DictionaryViewController: UIViewController {
     var dbUserData: FirestoreUserData?
     var firestoreManager: FirestoreManager?
     
+    // For managing definition star state
+    var starHeldDown: Bool = false
+    var defaultDefinitionIndex: Int?
+    var defaultDefinitionIndexUpdatePending: Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -35,13 +42,14 @@ class DictionaryViewController: UIViewController {
         self.queryWordLabel.text = queryWord
         
         // Fetch word data from firestore, else oxford api, then reload table
-        firestoreManager = FirestoreManager()
         fetchWordDataReloadTable()
     }
     
     func fetchWordDataReloadTable() {
         // Logic for fetching word data. Always query firestore first
-        self.firestoreManager!.wordCellsDelegate =  self
+
+        self.firestoreManager = FirestoreManager()
+        self.firestoreManager!.wordDataDelegate =  self
         self.firestoreManager!.userDataDelegate = self
         
         // Perform firestore/oxford dict word queries on background thread
@@ -71,7 +79,12 @@ class DictionaryViewController: UIViewController {
     @IBAction func didTapSave(_ sender: UIButton) {
         // Show word saver
 //        performSegue(withIdentifier: "DictToSaver", sender: self)
-        let updatedUserData = self.firestoreManager?.saveUserData(add: queryWord!, to: "testCollection", usingTemplate: dbUserData, givenNew: getSavedCellIndexes(cells: self.cells!))
+        let updatedUserData = self.firestoreManager?.saveUserData(
+            add: queryWord!,
+            to: "testCollection",
+            usingTemplate: dbUserData,
+            newStarredCellIndexes: getSavedCellIndexes(cells: self.cells!),
+            newDefaultDefinitionIndex: self.defaultDefinitionIndex)
         self.dbUserData = updatedUserData
         self.saveButton.isEnabled = false
     }
@@ -85,18 +98,74 @@ class DictionaryViewController: UIViewController {
         }
     }
     
-    @objc func didTapStar(_ sender: dictStarButton) -> () {
+    @objc func didTapStar(_ sender: dictStarButton) {
+        self.starHeldDown = true
+        let starHoldStart = Date()
+        DispatchQueue.global(qos: .userInitiated).async {
+            // Super star a definition if star button is held for certain period of time
+            let holdThreshold = 0.25
+            while self.starHeldDown {
+                // Compare star hold duration to threshold
+                if ((Date().timeIntervalSinceReferenceDate - starHoldStart.timeIntervalSinceReferenceDate) > holdThreshold) {
+                    // Toggle definition cell as default/not
+                    self.defaultDefinitionIndexUpdatePending = true
+                    // Haptic/vibrate feedback
+                    if CHHapticEngine.capabilitiesForHardware().supportsHaptics {
+                        UISelectionFeedbackGenerator().selectionChanged()
+                    } else {
+                        AudioServicesPlaySystemSoundWithCompletion(kSystemSoundID_Vibrate) {}
+                    }
+                    DispatchQueue.main.async {
+                        // Refresh table view
+                        self.dicitonaryTableView.setNeedsDisplay()
+                    }
+                    break
+                }
+
+                // Sleep for 0.001 seconds between star hold duration checks
+                usleep(1000)
+            }
+        }
+    }
+    
+    @objc func didReleaseStar(_ sender: dictStarButton) {
         
-       // Toggle starring/unstarring a definition
-        let cell = self.cells![sender.getIndexPath()!.row] as! DefinitionCell
-        if (cell.saved) {
-            cell.saved = false
-            self.cells![sender.getIndexPath()!.row] = cell
-        } else {
+        // Required to terminate async function in didTapStar()
+        self.starHeldDown = false
+        
+       // Toggle definition cell as starred/not
+        let cellIndex = sender.getIndexPath()!.row
+        let cell = self.cells![cellIndex] as! DefinitionCell
+        
+        if self.defaultDefinitionIndexUpdatePending {
+        // Sufficient hold event
+            // Unsave previous default definition cell
+            if let previousDefaultDefinitionCellIndex = self.defaultDefinitionIndex {
+                let previousDefaultDefinitionCell = self.cells![previousDefaultDefinitionCellIndex] as! DefinitionCell
+                previousDefaultDefinitionCell.saved = false
+                self.cells![previousDefaultDefinitionCellIndex] = previousDefaultDefinitionCell
+            }
+            // Save current cell
             cell.saved = true
-            self.cells![sender.getIndexPath()!.row] = cell
+            // Update index
+            self.defaultDefinitionIndex = cellIndex
+        } else {
+        // Tap event
+            if (cell.saved) {
+                cell.saved = false
+                if self.defaultDefinitionIndex == cellIndex {
+                    self.defaultDefinitionIndex = nil
+                }
+            } else {
+                cell.saved = true
+            }
         }
         
+        // Reset definition cell touch state
+        self.defaultDefinitionIndexUpdatePending = false
+        
+        self.cells![cellIndex] = cell
+                
         // Enable/disable save button
         setSaveButtonState()
 
@@ -109,23 +178,26 @@ class DictionaryViewController: UIViewController {
         // Enable/disable save button
         let localStarredCellIndexes = getSavedCellIndexes(cells: self.cells!)
         if let dbUserData = self.dbUserData {
-            if let dbStarredCellIndexes = self.firestoreManager!.getStarredCellIndexes(for: self.queryWord!, in: dbUserData) {
-                // Enable save button if local starred definitions diverge from those in the db
-                if localStarredCellIndexes != dbStarredCellIndexes {
+            if let firstCollection = self.firestoreManager!.getWordInFirstCollection(for: self.queryWord!, in: dbUserData) {
+                let dbStarredCellIndexes = firstCollection.starredCellIndexes
+                let dbDefaultDefinitionIndex = firstCollection.defaultDefinitionIndex
+                // Enable save button if local user data differs from that in the db
+                if (localStarredCellIndexes != dbStarredCellIndexes || self.defaultDefinitionIndex != dbDefaultDefinitionIndex) {
                     self.saveButton.isEnabled = true
                 } else {
                     self.saveButton.isEnabled = false
                 }
             } else {
                 // Enable save button when the word is not found in any user collection in the db
-                if localStarredCellIndexes.count > 0 {
+                if (!localStarredCellIndexes.isEmpty || self.defaultDefinitionIndex != nil) {
                     self.saveButton.isEnabled = true
                 } else {
                     self.saveButton.isEnabled = false
                 }
             }
         } else {
-            if localStarredCellIndexes.count > 0 {
+            // Enable save button when user data could not be obtained from the database/prior to it having been asynchronously fetched
+            if (!localStarredCellIndexes.isEmpty || self.defaultDefinitionIndex != nil) {
                 self.saveButton.isEnabled = true
             } else {
                 self.saveButton.isEnabled = false
@@ -386,7 +458,7 @@ extension DictionaryViewController: UITableViewDataSource {
                 withIdentifier: K.tables.dictionary.cell.nib.wordPronounciation,
                 for: indexPath)
             // Set text
-            let wordLabel = cell?.viewWithTag(1) as! UILabel
+            let wordLabel = cell!.viewWithTag(1) as! UILabel
             let resultNumLabel = cell!.viewWithTag(2) as! UILabel
             let phoneticLabel = cell!.viewWithTag(3) as! UILabel
             wordLabel.attributedText = cStruct.wordText
@@ -416,15 +488,11 @@ extension DictionaryViewController: UITableViewDataSource {
                 defExText.append(cStruct.examples!)
                 primDefLabel.attributedText = defExText
                 // Set star button as outlined/filled
-                let starButton = cell!.viewWithTag(3) as! dictStarButton
-                if cStruct.saved {
-                    starButton.setImage(UIImage(systemName: "star.fill"), for: .normal)
-                } else {
-                    starButton.setImage(UIImage(systemName: "star"), for: .normal)
-                }
-                // Listen to star button tap event
+                let starButton = configureDictStarButton(cell: cell!, cellInd: indexPath.row, isSaved: cStruct.saved)
+                // Listen to star button tap and release events
                 starButton.setIndexPath(indexPath: indexPath)
-                starButton.addTarget(self, action: #selector(didTapStar), for: .touchUpInside)
+                starButton.addTarget(self, action: #selector(didTapStar), for: .touchDown)
+                starButton.addTarget(self, action: #selector(didReleaseStar), for: .touchUpInside)
             } else if cStruct.type == K.dictionaries.oxford.definition.type.secondary {
                 // Create cell from storyboard prototype cell for secondary/sub definition
                 cell = tableView.dequeueReusableCell(withIdentifier: K.tables.dictionary.cell.nib.secondaryDefenition, for: indexPath)
@@ -434,15 +502,11 @@ extension DictionaryViewController: UITableViewDataSource {
                 defExText.append(cStruct.examples!)
                 subDefLabel.attributedText = defExText
                 // Set star button as outlined/filled
-                let starButton = cell!.viewWithTag(3) as! dictStarButton
-                if cStruct.saved {
-                    starButton.setImage(UIImage(systemName: "star.fill"), for: .normal)
-                } else {
-                    starButton.setImage(UIImage(systemName: "star"), for: .normal)
-                }
-                // Listen to star button tap event
+                let starButton = configureDictStarButton(cell: cell!, cellInd: indexPath.row, isSaved: cStruct.saved)
+                // Listen to star button tap and release events
                 starButton.setIndexPath(indexPath: indexPath)
-                starButton.addTarget(self, action: #selector(didTapStar), for: .touchUpInside)
+                starButton.addTarget(self, action: #selector(didTapStar), for: .touchDown)
+                starButton.addTarget(self, action: #selector(didReleaseStar), for: .touchUpInside)
             } else {
                 print("Error: Issue differentiating between primary and secondary definition cells.")
             }
@@ -504,9 +568,27 @@ extension DictionaryViewController: UITableViewDataSource {
         
     }
     
+    func configureDictStarButton(cell: UITableViewCell, cellInd: Int, isSaved: Bool) -> dictStarButton {
+        let starButton = cell.viewWithTag(3) as! dictStarButton
+        if isSaved {
+            if let defaultDefinitionIndex = self.defaultDefinitionIndex {
+                if cellInd == defaultDefinitionIndex {
+                    starButton.tintColor = .orange
+                }
+            } else {
+                starButton.tintColor = UIView().tintColor
+            }
+            starButton.setImage(UIImage(systemName: "star.fill"), for: .normal)
+        } else {
+            starButton.tintColor = UIView().tintColor
+            starButton.setImage(UIImage(systemName: "star"), for: .normal)
+        }
+        return starButton
+    }
+    
     func updateCellStructs(userData: FirestoreUserData) {
         // User data may or may not contain saved definitions for a word
-        if let starredCellIndexes = self.firestoreManager!.getStarredCellIndexes(for: self.queryWord!, in: userData) {
+        if let starredCellIndexes = self.firestoreManager!.getWordInFirstCollection(for: self.queryWord!, in: userData)?.starredCellIndexes {
             for cellInd in starredCellIndexes {
                 let updatedCell = self.cells![cellInd] as! DefinitionCell
                 updatedCell.saved = true
@@ -526,12 +608,12 @@ extension DictionaryViewController: OxfordWordDataDelegate {
         // Save wordData locally and generate cell structs
         self.wordData = wordData
         self.cells = createCellStructs(wordDataResults: self.wordData?.results)
-        self.wordDataGetterGroup!.leave()
+        self.firestoreManager?.getUserData()
     }
     
 }
 
-extension DictionaryViewController: FirestoreUserWordCellsDelegate {
+extension DictionaryViewController: FirestoreWordDataDelegate {
     
     func didGetWordData(wordData: OxfordWordData?) {
         if let wordData = wordData {
@@ -556,6 +638,10 @@ extension DictionaryViewController: FirestoreUserDataDelegate {
         self.dbUserData = userData
         if let userData = userData {
             updateCellStructs(userData: userData)
+            // Update default definition index
+            if let defaultDefinitionIndex = self.firestoreManager!.getWordInFirstCollection(for: self.queryWord!, in: userData)?.defaultDefinitionIndex {
+                self.defaultDefinitionIndex = defaultDefinitionIndex
+            }
         }
         self.wordDataGetterGroup!.leave()
     }

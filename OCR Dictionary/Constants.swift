@@ -63,6 +63,17 @@ struct K {
     
     struct tables {
         
+        struct collection {
+            
+            struct cell {
+                
+                struct nib {
+                    
+                    static let wordSummary = "wordSummary"
+                }
+            }
+        }
+        
         struct dictionary {
             
             struct cell {

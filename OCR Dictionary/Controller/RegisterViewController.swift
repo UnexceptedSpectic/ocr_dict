@@ -57,7 +57,7 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
                     self.messageLabel.text = e.localizedDescription
                 } else {
                     
-                    self.performSegue(withIdentifier: "registerToLibrary", sender: self)
+                    self.performSegue(withIdentifier: "RegisterToLibrary", sender: self)
                 }
             }
         } else {

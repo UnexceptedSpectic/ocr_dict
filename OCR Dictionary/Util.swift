@@ -60,6 +60,20 @@ func uppercaseFirstCharacter(str: String) -> String {
 
 func getDatetimeString() -> String {
     let df = DateFormatter()
-    df.dateFormat = "yyyy-MM-dd hh:mm:ss"
+    // E.g. 1/1/2020 2:05 PM
+    df.dateFormat = "M/d/yyyy h:mm a"
     return df.string(from: Date())
+}
+
+func getDateOrTime(dateTime: String) -> String {
+    // Returns the date if not today, else returns the time
+    let df = DateFormatter()
+    df.dateFormat = "M/d/yyyy h:mm a"
+    let date = df.date(from: dateTime)!
+    if Calendar.current.isDateInToday(date) {
+        df.setLocalizedDateFormatFromTemplate("h:mm a")
+    } else {
+        df.setLocalizedDateFormatFromTemplate("d/M/yyyy")
+    }
+    return df.string(from: date)
 }

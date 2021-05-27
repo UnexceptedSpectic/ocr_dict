@@ -188,7 +188,7 @@
                         <outlet property="logInButton" destination="vdQ-zy-6pL" id="BLN-ZD-sTC"/>
                         <outlet property="messageLabel" destination="930-cB-BHq" id="dj0-hO-ySX"/>
                         <outlet property="passwordField" destination="Mij-az-UJx" id="mn0-7Y-jxP"/>
-                        <segue destination="BYZ-38-t0r" kind="show" identifier="loginToLibrary" id="AaT-Dv-Aac"/>
+                        <segue destination="BYZ-38-t0r" kind="show" identifier="LoginToLibrary" id="AaT-Dv-Aac"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Asd-T2-GNW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -322,7 +322,7 @@
                         <outlet property="messageLabel" destination="tU8-gQ-lBj" id="xGu-Qj-muR"/>
                         <outlet property="passwordField" destination="wGR-Zd-ca9" id="Lq8-C6-Xah"/>
                         <outlet property="registerButton" destination="0A5-5D-v66" id="7Ij-B3-vw6"/>
-                        <segue destination="BYZ-38-t0r" kind="show" identifier="registerToLibrary" id="MRY-hl-c13"/>
+                        <segue destination="BYZ-38-t0r" kind="show" identifier="RegisterToLibrary" id="MRY-hl-c13"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fQD-QR-K7O" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -341,15 +341,6 @@
                                 <rect key="frame" x="0.0" y="692" width="414" height="0.0"/>
                                 <color key="backgroundColor" red="0.43847274780000001" green="0.75777047870000003" blue="0.70153659580000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Create a collection of definitions using the &quot;+&quot; icon above." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nnl-JZ-RVD">
-                                <rect key="frame" x="75" y="325.66666666666669" width="264" height="40.666666666666686"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="0.50190538169999999" green="0.50199359659999998" blue="0.50189298390000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="4Cs-jo-uqc">
-                                <rect key="frame" x="197" y="336" width="20" height="20"/>
-                            </activityIndicatorView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Pel-Jr-KOi">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="642"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
@@ -361,6 +352,15 @@
                                 </collectionViewFlowLayout>
                                 <cells/>
                             </collectionView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="4Cs-jo-uqc">
+                                <rect key="frame" x="197" y="336" width="20" height="20"/>
+                            </activityIndicatorView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Create a collection of definitions using the &quot;+&quot; icon above." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nnl-JZ-RVD">
+                                <rect key="frame" x="75" y="325.66666666666669" width="264" height="40.666666666666686"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.50190538169999999" green="0.50199359659999998" blue="0.50189298390000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ALq-4e-Mfm" userLabel="navView">
                                 <rect key="frame" x="0.0" y="642" width="414" height="50"/>
                                 <subviews>
@@ -444,7 +444,7 @@
                         <outlet property="collectionView" destination="Pel-Jr-KOi" id="KHO-Ba-6O7"/>
                         <outlet property="collectionsLoadingIndicator" destination="4Cs-jo-uqc" id="UQU-hL-POK"/>
                         <outlet property="topNav" destination="LHm-hX-3DD" id="gec-0B-IkF"/>
-                        <segue destination="qn7-PX-Wh5" kind="show" identifier="homeToSnapper" id="pPm-xx-56a"/>
+                        <segue destination="qn7-PX-Wh5" kind="show" identifier="HomeToSnapper" id="pPm-xx-56a"/>
                         <segue destination="g5H-a4-3py" kind="show" identifier="LibraryToCollection" id="kVg-Tt-FEd"/>
                     </connections>
                 </viewController>
@@ -463,6 +463,55 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Eau-FI-Mh8" userLabel="collectionTableView">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="692"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="wordSummary" id="k5R-tF-fUI" userLabel="wordSummaryCell">
+                                        <rect key="frame" x="0.0" y="28" width="414" height="95.333335876464844"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="k5R-tF-fUI" id="9eM-NM-BMh">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="95.333335876464844"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="CJL-e5-N8g">
+                                                    <rect key="frame" x="20" y="10" width="374" height="75.333333333333329"/>
+                                                    <subviews>
+                                                        <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uij-Dv-apP">
+                                                            <rect key="frame" x="0.0" y="0.0" width="374" height="21.666666666666668"/>
+                                                            <subviews>
+                                                                <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sound" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0HW-jU-qzC" userLabel="wordLabel">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="249" height="21.666666666666668"/>
+                                                                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                                    <nil key="textColor"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                                <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last Modified: 7/11/2021" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7VA-gN-Z2z" userLabel="modDateLabel">
+                                                                    <rect key="frame" x="249" y="0.0" width="125" height="21.666666666666668"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="width" constant="125" id="DWj-uF-1Nf"/>
+                                                                    </constraints>
+                                                                    <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                                                    <nil key="textColor"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                            </subviews>
+                                                        </stackView>
+                                                        <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Vibrations that travel through the air or another medium and can be heard when they reach a person's or animal's ear." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eFQ-bY-wCj" userLabel="mainDefinitionLabel">
+                                                            <rect key="frame" x="0.0" y="24.666666666666668" width="374" height="50.666666666666657"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
+                                                </stackView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="bottom" secondItem="CJL-e5-N8g" secondAttribute="bottom" constant="10" id="7t8-NI-pUI"/>
+                                                <constraint firstAttribute="trailing" secondItem="CJL-e5-N8g" secondAttribute="trailing" constant="20" id="NTx-o0-A4X"/>
+                                                <constraint firstItem="CJL-e5-N8g" firstAttribute="leading" secondItem="9eM-NM-BMh" secondAttribute="leading" constant="20" id="YrY-a7-dHn"/>
+                                                <constraint firstItem="CJL-e5-N8g" firstAttribute="top" secondItem="9eM-NM-BMh" secondAttribute="top" constant="10" id="fuv-xb-MHh"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
@@ -475,10 +524,30 @@
                         <viewLayoutGuide key="safeArea" id="TWi-jn-WBC"/>
                     </view>
                     <navigationItem key="navigationItem" id="hHi-Ii-g6p"/>
+                    <connections>
+                        <outlet property="collectionTable" destination="Eau-FI-Mh8" id="Rxs-it-3jv"/>
+                        <segue destination="gOL-Ii-Lpq" kind="show" identifier="CollectionToLearner" id="61U-D6-ohn"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="63P-wD-ryW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5551" y="863"/>
+            <point key="canvasLocation" x="5551" y="893"/>
+        </scene>
+        <!--Learner View Controller-->
+        <scene sceneID="v7B-hm-SRZ">
+            <objects>
+                <viewController id="gOL-Ii-Lpq" customClass="LearnerViewController" customModule="OCR_Dictionary" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="mLD-Ib-qv1">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="692"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="ksk-dl-25a"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="l8U-tM-oXr"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yTF-At-2Jo" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="6375" y="893"/>
         </scene>
         <!--Snapper View Controller-->
         <scene sceneID="FOP-HU-y6X">
@@ -1045,7 +1114,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="MRY-hl-c13"/>
+        <segue reference="AaT-Dv-Aac"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="arrow.left" catalog="system" width="128" height="98"/>
