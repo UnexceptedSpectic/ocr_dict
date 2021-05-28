@@ -103,7 +103,7 @@ class DictionaryViewController: UIViewController {
         let starHoldStart = Date()
         DispatchQueue.global(qos: .userInitiated).async {
             // Super star a definition if star button is held for certain period of time
-            let holdThreshold = 0.25
+            let holdThreshold = 0.05
             while self.starHeldDown {
                 // Compare star hold duration to threshold
                 if ((Date().timeIntervalSinceReferenceDate - starHoldStart.timeIntervalSinceReferenceDate) > holdThreshold) {
@@ -242,14 +242,19 @@ class DictionaryViewController: UIViewController {
         if let results = wordDataResults {
             
             for (resInd, result) in results.enumerated() {
-                                
+                
+                var phoneticSpelling: String = ""
+                if let pronunciations = result.lexicalEntries![0].entries![0].pronunciations {
+                    phoneticSpelling = pronunciations.last!.phoneticSpelling!
+                }
+                
                 cells.append(WordPronounciationCell(
                     indexLocation: [resInd],
                     wordText: NSAttributedString(
                         string: result.word!,
                         attributes: K.stringAttributes.heading1),
                     phoneticText: NSAttributedString(
-                        string:  "| \(result.lexicalEntries![0].entries![0].pronunciations!.last!.phoneticSpelling!) |",
+                        string:  "| \(phoneticSpelling) |",
                         attributes: K.stringAttributes.italicSecondaryHeading1)
                     )
                 )
@@ -519,17 +524,14 @@ extension DictionaryViewController: UITableViewDataSource {
             originLabel.attributedText = cStruct.etymology
         } else if cellStruct is NoResultCell {
             // TODO: Create dedicated cell to handle cases when a word is not found in the dictionary
-            cell = tableView.dequeueReusableCell(withIdentifier: K.tables.dictionary.cell.nib.wordPronounciation, for: indexPath)
-            // Set text
-            let msg = cell!.viewWithTag(1) as! UILabel
-            msg.attributedText = NoResultCell.text
+            cell = tableView.dequeueReusableCell(withIdentifier: K.tables.dictionary.cell.nib.noResult, for: indexPath)
         }
         else {
             print("Error: Cell type could not be determined.")
         }
         
         let containerView = cell!.contentView.subviews[0]
-        if indexPath.row == 0 {
+        if (indexPath.row == 0 || (resultIndex != 0 && cells![indexPath.row - 1].indexLocation[0] == resultIndex - 1) ) {
             // Round top corners of first cell. Acts on cell prototype, not its instance.
             containerView.layer.cornerRadius = 10
             containerView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
@@ -539,7 +541,12 @@ extension DictionaryViewController: UITableViewDataSource {
         if indexPath.row + 1 == cells!.count || cells![indexPath.row + 1].indexLocation[0] == resultIndex + 1 {
             // Round bottom corners
             containerView.layer.cornerRadius = 10
-            containerView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+            let bottomCorners = CACornerMask([.layerMinXMaxYCorner, .layerMaxXMaxYCorner])
+            if cellStruct is NoResultCell {
+                containerView.layer.maskedCorners = containerView.layer.maskedCorners.union(bottomCorners)
+            } else {
+                containerView.layer.maskedCorners = bottomCorners
+            }
             // Set result bottom margin for cells that don't have etymology info
             if !(cellStruct is OriginCell) {
                 containerView.constraintWithIdentifier("nonLastCellBottomMargin")?.constant = 20
@@ -548,7 +555,7 @@ extension DictionaryViewController: UITableViewDataSource {
         
         // Set result container top margins
         if indexPath.row == 0 {
-            containerView.constraintWithIdentifier("resultContainerTopMargin")!.constant = 20
+            containerView.constraintWithIdentifier("resultContainerTopMargin")?.constant = 20
         } else if cells![indexPath.row - 1].indexLocation[0] == resultIndex - 1 {
             containerView.constraintWithIdentifier("resultContainerTopMargin")!.constant = 10
         }

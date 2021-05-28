@@ -48,7 +48,4 @@ struct OriginCell: DictTableCell {
 
 struct NoResultCell: DictTableCell {
     let indexLocation = [0]
-    static let text = NSAttributedString(
-        string: "No results found",
-        attributes: K.stringAttributes.heading1)
 }
