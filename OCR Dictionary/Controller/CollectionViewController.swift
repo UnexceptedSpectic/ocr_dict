@@ -94,14 +94,15 @@ extension CollectionViewController: UITableViewDataSource {
         wordLabel.text = userWordData.word
         modDateLabel.text = getDateOrTime(dateTime: userWordData.dateModified)
         // TODO: Set mainDefinitionLabel text
-        var wordDataDefinitionIndex: Int
-        if let ddci = userWordData.defaultDefinitionIndex {
-            wordDataDefinitionIndex = ddci - 2
+        var defaultDefinitionCellIndex: Int
+        if let ddci = userWordData.defaultDefinitionCellIndex {
+            defaultDefinitionCellIndex = ddci
         } else {
-            wordDataDefinitionIndex = 0
+            // Use the first definition cell, which occurs after the first wordPronounciationCell and categoryCell cells
+            defaultDefinitionCellIndex = 2
         }
         if let wordsData = self.wordsData {
-            mainDefinitionLabel.text = firestoreManager!.getDefinition(wordData: wordsData[indexPath.row]!, definitionIndex: wordDataDefinitionIndex).firstUppercased + "."
+            mainDefinitionLabel.text = firestoreManager!.getDefinition(wordData: wordsData[indexPath.row]!, cellIndex: defaultDefinitionCellIndex).firstUppercased + "."
         }
         return cell;
     }

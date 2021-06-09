@@ -27,5 +27,5 @@ struct Word: Decodable, Encodable {
     let dateAdded: String
     var dateModified: String
     var starredCellIndexes: [Int]
-    var defaultDefinitionIndex: Int?
+    var defaultDefinitionCellIndex: Int?
 }

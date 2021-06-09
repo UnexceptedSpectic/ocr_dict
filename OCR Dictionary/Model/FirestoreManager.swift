@@ -50,32 +50,45 @@ struct FirestoreManager {
         }
     }
     
-    func getDefinition(wordData: OxfordWordData, definitionIndex: Int) -> String {
-        var definitionCounter = 0
-        if let senses = wordData.results![0].lexicalEntries![0].entries![0].senses {
-            for sense in senses {
-                if let definitions = sense.definitions {
-                    for primaryDefinition in definitions {
-                        if definitionCounter == definitionIndex {
-                            return primaryDefinition
-                        } else {
-                            definitionCounter += 1
-                        }
-                    }
-                }
-                if let subsenses = sense.subsenses {
-                    for subsense in subsenses {
-                        if let definitions = subsense.definitions {
-                            for subDefinition in definitions {
-                                if definitionCounter == definitionIndex {
-                                    return subDefinition
-                                } else {
-                                    definitionCounter += 1
+    func getDefinition(wordData: OxfordWordData, cellIndex: Int) -> String {
+        var counter = 0
+        if let results = wordData.results {
+            for result in results {
+                // Each result starts with a wordPronounciationCell and categoryCell cell
+                counter += 2
+                if let lexicalEntries = result.lexicalEntries {
+                    for lexEntry in lexicalEntries {
+                        // Each lexical cell has variable numbers of primDefCells and subDefCells
+                        if let senses = lexEntry.entries![0].senses {
+                            for sense in senses {
+                                if let definitions = sense.definitions {
+                                    for primaryDefinition in definitions {
+                                        if counter == cellIndex {
+                                            return primaryDefinition
+                                        } else {
+                                            counter += 1
+                                        }
+                                    }
+                                }
+                                if let subsenses = sense.subsenses {
+                                    for subsense in subsenses {
+                                        if let definitions = subsense.definitions {
+                                            for subDefinition in definitions {
+                                                if counter == cellIndex {
+                                                    return subDefinition
+                                                } else {
+                                                    counter += 1
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                // Each result ends with an originCell
+                counter += 1
             }
         }
         return "No default definition found."
@@ -103,17 +116,28 @@ struct FirestoreManager {
     
     func getWordsData(for words: [Word]) {
         
+        struct wordData {
+            let data: OxfordWordData?
+            let indexInInput: Int
+        }
+        
         if words.count > 0 {
             let wordStrings = words.map({$0.word})
             db.collection(K.firestore.collections.dictionaries.oxford).whereField(FieldPath.documentID(), in: wordStrings).getDocuments { (querySnapshot, error) in
                 if let err = error {
                     print("Error getting data for words: \(err)")
                 } else {
-                    var wordsData: [OxfordWordData?] = []
+                    var wordsData: [wordData?] = []
                     for doc in querySnapshot!.documents {
-                        wordsData.append(parseDict(dictData: doc.data(), dataModel: OxfordWordData.self))
+                        wordsData.append(
+                            wordData(
+                                data: parseDict(dictData: doc.data(), dataModel: OxfordWordData.self),
+                                indexInInput: wordStrings.firstIndex(of: doc.documentID)!))
                     }
-                    self.wordsDataDelegate?.didGetWordsData(wordsData: wordsData)
+                    // Sort pulled word data to match input word order. 
+                    wordsData.sort(by: {$0!.indexInInput < $1!.indexInInput})
+                    self.wordsDataDelegate?.didGetWordsData(wordsData: wordsData
+                                                                .map({$0!.data}))
                 }
             }
         }
@@ -202,7 +226,7 @@ struct FirestoreManager {
                                 dateAdded: now,
                                 dateModified: now,
                                 starredCellIndexes: starredCellIndexes,
-                                defaultDefinitionIndex: newDefaultDefinitionIndex)]
+                                defaultDefinitionCellIndex: newDefaultDefinitionIndex)]
                         )
                         didUpdate = true
                     }
@@ -219,7 +243,7 @@ struct FirestoreManager {
                             dateAdded: now,
                             dateModified: now,
                             starredCellIndexes: starredCellIndexes,
-                            defaultDefinitionIndex: newDefaultDefinitionIndex)]
+                            defaultDefinitionCellIndex: newDefaultDefinitionIndex)]
                     )
                     updatedCollections.append(newCollec)
                 }
@@ -228,7 +252,7 @@ struct FirestoreManager {
                 var modifiedCollectionsWithWord: [Collection] = []
                 for collec in collectionsWithWord {
                     let originalWordEntry = collec.words.filter({$0.word == word})[0]
-                    let updatedWords = collec.words.filter({$0.word != word}) + [Word(word: word, dateAdded: originalWordEntry.dateAdded, dateModified: now, starredCellIndexes: starredCellIndexes, defaultDefinitionIndex: newDefaultDefinitionIndex)]
+                    let updatedWords = collec.words.filter({$0.word != word}) + [Word(word: word, dateAdded: originalWordEntry.dateAdded, dateModified: now, starredCellIndexes: starredCellIndexes, defaultDefinitionCellIndex: newDefaultDefinitionIndex)]
                     let updatedCollection = Collection(name: collec.name, dateCreated: collec.dateCreated, dateModified: now, words: updatedWords)
                     modifiedCollectionsWithWord.append(updatedCollection)
                 }
@@ -239,7 +263,7 @@ struct FirestoreManager {
                 
             } else {
             // Initialize user data
-            updatedUserData = FirestoreUserData(collections: [Collection(name: collectionName, dateCreated: now, dateModified: now, words: [Word(word: word, dateAdded: now, dateModified: now, starredCellIndexes: starredCellIndexes, defaultDefinitionIndex: newDefaultDefinitionIndex)])])
+            updatedUserData = FirestoreUserData(collections: [Collection(name: collectionName, dateCreated: now, dateModified: now, words: [Word(word: word, dateAdded: now, dateModified: now, starredCellIndexes: starredCellIndexes, defaultDefinitionCellIndex: newDefaultDefinitionIndex)])])
         }
         
         let updatedUserDataDict = structToDict(structInstance: updatedUserData)

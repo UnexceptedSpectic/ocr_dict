@@ -26,8 +26,8 @@ class DictionaryViewController: UIViewController {
     
     // For managing definition star state
     var starHeldDown: Bool = false
-    var defaultDefinitionIndex: Int?
-    var defaultDefinitionIndexUpdatePending: Bool = false
+    var defaultDefinitionCellIndex: Int?
+    var defaultDefinitionCellIndexUpdatePending: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,7 +84,7 @@ class DictionaryViewController: UIViewController {
             to: "testCollection",
             usingTemplate: dbUserData,
             newStarredCellIndexes: getSavedCellIndexes(cells: self.cells!),
-            newDefaultDefinitionIndex: self.defaultDefinitionIndex)
+            newDefaultDefinitionIndex: self.defaultDefinitionCellIndex)
         self.dbUserData = updatedUserData
         self.saveButton.isEnabled = false
     }
@@ -108,7 +108,7 @@ class DictionaryViewController: UIViewController {
                 // Compare star hold duration to threshold
                 if ((Date().timeIntervalSinceReferenceDate - starHoldStart.timeIntervalSinceReferenceDate) > holdThreshold) {
                     // Toggle definition cell as default/not
-                    self.defaultDefinitionIndexUpdatePending = true
+                    self.defaultDefinitionCellIndexUpdatePending = true
                     // Haptic/vibrate feedback
                     if CHHapticEngine.capabilitiesForHardware().supportsHaptics {
                         UISelectionFeedbackGenerator().selectionChanged()
@@ -137,10 +137,10 @@ class DictionaryViewController: UIViewController {
         let cellIndex = sender.getIndexPath()!.row
         let cell = self.cells![cellIndex] as! DefinitionCell
         
-        if self.defaultDefinitionIndexUpdatePending {
+        if self.defaultDefinitionCellIndexUpdatePending {
         // Sufficient hold event
             // Unsave previous default definition cell
-            if let previousDefaultDefinitionCellIndex = self.defaultDefinitionIndex {
+            if let previousDefaultDefinitionCellIndex = self.defaultDefinitionCellIndex {
                 let previousDefaultDefinitionCell = self.cells![previousDefaultDefinitionCellIndex] as! DefinitionCell
                 previousDefaultDefinitionCell.saved = false
                 self.cells![previousDefaultDefinitionCellIndex] = previousDefaultDefinitionCell
@@ -148,13 +148,13 @@ class DictionaryViewController: UIViewController {
             // Save current cell
             cell.saved = true
             // Update index
-            self.defaultDefinitionIndex = cellIndex
+            self.defaultDefinitionCellIndex = cellIndex
         } else {
         // Tap event
             if (cell.saved) {
                 cell.saved = false
-                if self.defaultDefinitionIndex == cellIndex {
-                    self.defaultDefinitionIndex = nil
+                if self.defaultDefinitionCellIndex == cellIndex {
+                    self.defaultDefinitionCellIndex = nil
                 }
             } else {
                 cell.saved = true
@@ -162,7 +162,7 @@ class DictionaryViewController: UIViewController {
         }
         
         // Reset definition cell touch state
-        self.defaultDefinitionIndexUpdatePending = false
+        self.defaultDefinitionCellIndexUpdatePending = false
         
         self.cells![cellIndex] = cell
                 
@@ -180,16 +180,16 @@ class DictionaryViewController: UIViewController {
         if let dbUserData = self.dbUserData {
             if let firstCollection = self.firestoreManager!.getWordInFirstCollection(for: self.queryWord!, in: dbUserData) {
                 let dbStarredCellIndexes = firstCollection.starredCellIndexes
-                let dbDefaultDefinitionIndex = firstCollection.defaultDefinitionIndex
+                let dbDefaultDefinitionIndex = firstCollection.defaultDefinitionCellIndex
                 // Enable save button if local user data differs from that in the db
-                if (localStarredCellIndexes != dbStarredCellIndexes || self.defaultDefinitionIndex != dbDefaultDefinitionIndex) {
+                if (localStarredCellIndexes != dbStarredCellIndexes || self.defaultDefinitionCellIndex != dbDefaultDefinitionIndex) {
                     self.saveButton.isEnabled = true
                 } else {
                     self.saveButton.isEnabled = false
                 }
             } else {
                 // Enable save button when the word is not found in any user collection in the db
-                if (!localStarredCellIndexes.isEmpty || self.defaultDefinitionIndex != nil) {
+                if (!localStarredCellIndexes.isEmpty || self.defaultDefinitionCellIndex != nil) {
                     self.saveButton.isEnabled = true
                 } else {
                     self.saveButton.isEnabled = false
@@ -197,7 +197,7 @@ class DictionaryViewController: UIViewController {
             }
         } else {
             // Enable save button when user data could not be obtained from the database/prior to it having been asynchronously fetched
-            if (!localStarredCellIndexes.isEmpty || self.defaultDefinitionIndex != nil) {
+            if (!localStarredCellIndexes.isEmpty || self.defaultDefinitionCellIndex != nil) {
                 self.saveButton.isEnabled = true
             } else {
                 self.saveButton.isEnabled = false
@@ -578,8 +578,8 @@ extension DictionaryViewController: UITableViewDataSource {
     func configureDictStarButton(cell: UITableViewCell, cellInd: Int, isSaved: Bool) -> dictStarButton {
         let starButton = cell.viewWithTag(3) as! dictStarButton
         if isSaved {
-            if let defaultDefinitionIndex = self.defaultDefinitionIndex {
-                if cellInd == defaultDefinitionIndex {
+            if let defaultDefinitionCellIndex = self.defaultDefinitionCellIndex {
+                if cellInd == defaultDefinitionCellIndex {
                     starButton.tintColor = .orange
                 }
             } else {
@@ -646,8 +646,8 @@ extension DictionaryViewController: FirestoreUserDataDelegate {
         if let userData = userData {
             updateCellStructs(userData: userData)
             // Update default definition index
-            if let defaultDefinitionIndex = self.firestoreManager!.getWordInFirstCollection(for: self.queryWord!, in: userData)?.defaultDefinitionIndex {
-                self.defaultDefinitionIndex = defaultDefinitionIndex
+            if let defaultDefinitionCellIndex = self.firestoreManager!.getWordInFirstCollection(for: self.queryWord!, in: userData)?.defaultDefinitionCellIndex {
+                self.defaultDefinitionCellIndex = defaultDefinitionCellIndex
             }
         }
         self.wordDataGetterGroup!.leave()
