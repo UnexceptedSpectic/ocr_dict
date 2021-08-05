@@ -69,7 +69,8 @@ struct K {
                 
                 struct nib {
                     
-                    static let wordSummary = "wordSummary"
+                    static let primaryFavorite = "primaryFavorite"
+                    static let secondaryFavorite = "secondaryFavorite"
                 }
             }
         }

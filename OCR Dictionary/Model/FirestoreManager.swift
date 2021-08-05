@@ -50,49 +50,49 @@ struct FirestoreManager {
         }
     }
     
-    func getDefinition(wordData: OxfordWordData, cellIndex: Int) -> String {
-        var counter = 0
-        if let results = wordData.results {
-            for result in results {
-                // Each result starts with a wordPronounciationCell and categoryCell cell
-                counter += 2
-                if let lexicalEntries = result.lexicalEntries {
-                    for lexEntry in lexicalEntries {
-                        // Each lexical cell has variable numbers of primDefCells and subDefCells
-                        if let senses = lexEntry.entries![0].senses {
-                            for sense in senses {
-                                if let definitions = sense.definitions {
-                                    for primaryDefinition in definitions {
-                                        if counter == cellIndex {
-                                            return primaryDefinition
-                                        } else {
-                                            counter += 1
-                                        }
-                                    }
-                                }
-                                if let subsenses = sense.subsenses {
-                                    for subsense in subsenses {
-                                        if let definitions = subsense.definitions {
-                                            for subDefinition in definitions {
-                                                if counter == cellIndex {
-                                                    return subDefinition
-                                                } else {
-                                                    counter += 1
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                // Each result ends with an originCell
-                counter += 1
-            }
-        }
-        return "No default definition found."
-    }
+//    func getDefinition(wordData: OxfordWordData, cellIndex: Int) -> String {
+//        var counter = 0
+//        if let results = wordData.results {
+//            for result in results {
+//                // Each result starts with a wordPronounciationCell and categoryCell cell
+//                counter += 2
+//                if let lexicalEntries = result.lexicalEntries {
+//                    for lexEntry in lexicalEntries {
+//                        // Each lexical cell has variable numbers of primDefCells and subDefCells
+//                        if let senses = lexEntry.entries![0].senses {
+//                            for sense in senses {
+//                                if let definitions = sense.definitions {
+//                                    for primaryDefinition in definitions {
+//                                        if counter == cellIndex {
+//                                            return primaryDefinition
+//                                        } else {
+//                                            counter += 1
+//                                        }
+//                                    }
+//                                }
+//                                if let subsenses = sense.subsenses {
+//                                    for subsense in subsenses {
+//                                        if let definitions = subsense.definitions {
+//                                            for subDefinition in definitions {
+//                                                if counter == cellIndex {
+//                                                    return subDefinition
+//                                                } else {
+//                                                    counter += 1
+//                                                }
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//                // Each result ends with an originCell
+//                counter += 1
+//            }
+//        }
+//        return "No default definition found."
+//    }
         
     func getWordData(for word: String) {
         

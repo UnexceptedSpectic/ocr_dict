@@ -8,6 +8,7 @@
 
 import Foundation
 import DictionaryCoding
+import UIKit
 
 func parseJSON<T: Decodable>(jsonData: Data, dataModel: T.Type) -> T? {
     
@@ -76,4 +77,8 @@ func getDateOrTime(dateTime: String) -> String {
         df.setLocalizedDateFormatFromTemplate("d/M/yyyy")
     }
     return df.string(from: date)
+}
+
+extension StringProtocol {
+    var firstUppercased: String { prefix(1).uppercased() + dropFirst() }
 }
