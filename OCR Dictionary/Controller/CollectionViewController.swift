@@ -20,6 +20,7 @@ class CollectionViewController: UIViewController {
     var hiddenCollectionTableSections = Set<Int>()
     var wordsCells: [[DictTableCell]]?
     var wordsGroupedCells: [[[DictTableCell]]]?
+    var wordToEdit: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,6 +75,20 @@ class CollectionViewController: UIViewController {
             self.hiddenCollectionTableSections.insert(section)
             self.collectionTable.deleteRows(at: sectionIndexPaths,
                                             with: .fade)
+        }
+    }
+    
+    @objc func editWord(_ sender: UIButton) {
+        self.wordToEdit = (self.wordsCells![sender.tag][0] as! WordPronounciationCell).wordText.string
+        performSegue(withIdentifier: "CollectionToDict", sender: self)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "CollectionToDict" {
+         
+            let dictionaryVC = segue.destination as! DictionaryViewController
+            dictionaryVC.queryWord = self.wordToEdit!.lowercased()
         }
     }
     
@@ -177,9 +192,13 @@ extension CollectionViewController: UITableViewDataSource, UITableViewDelegate {
             mainDefinitionLabel.text = definitionCell.definition.string
         }
         let sectionButton = templateCell.contentView.viewWithTag(4) as! UIButton
+        let editButton = templateCell.contentView.viewWithTag(5) as! UIButton
         sectionButton.tag = section
+        editButton.tag = section
         sectionButton
             .addTarget(self, action: #selector(self.toggleSectionDetails(_:)), for: .touchUpInside)
+        editButton
+            .addTarget(self, action: #selector(self.editWord(_:)), for: .touchUpInside)
         return templateCell.contentView
     }
     

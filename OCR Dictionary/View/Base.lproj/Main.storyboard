@@ -473,13 +473,10 @@
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="95"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ld7-7A-RTv" userLabel="fullViewButton">
-                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="95"/>
-                                                </button>
-                                                <stackView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" axis="vertical" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="CJL-e5-N8g">
+                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="CJL-e5-N8g">
                                                     <rect key="frame" x="20" y="10" width="374" height="75"/>
                                                     <subviews>
-                                                        <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uij-Dv-apP">
+                                                        <stackView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uij-Dv-apP">
                                                             <rect key="frame" x="0.0" y="0.0" width="374" height="21.666666666666668"/>
                                                             <subviews>
                                                                 <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sound" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0HW-jU-qzC" userLabel="wordLabel">
@@ -499,25 +496,40 @@
                                                                 </label>
                                                             </subviews>
                                                         </stackView>
-                                                        <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Vibrations that travel through the air or another medium and can be heard when they reach a person's or animal's ear." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eFQ-bY-wCj" userLabel="definitionLabel">
+                                                        <stackView opaque="NO" contentMode="scaleToFill" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="V5O-pA-GWB">
                                                             <rect key="frame" x="0.0" y="24.666666666666661" width="374" height="50.333333333333343"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                            <nil key="textColor"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
+                                                            <subviews>
+                                                                <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Vibrations that travel through the air or another medium and can be heard when they reach a person's or animal's ear." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eFQ-bY-wCj" userLabel="definitionLabel">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="321" height="50.333333333333336"/>
+                                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                                    <nil key="textColor"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                                <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uup-uH-oCy" userLabel="editButton">
+                                                                    <rect key="frame" x="324" y="0.0" width="50" height="50.333333333333336"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="width" constant="50" id="rfr-aE-XwY"/>
+                                                                    </constraints>
+                                                                    <state key="normal" image="square.and.pencil" catalog="system"/>
+                                                                </button>
+                                                            </subviews>
+                                                        </stackView>
                                                     </subviews>
                                                 </stackView>
+                                                <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ld7-7A-RTv" userLabel="toggleExpandButton">
+                                                    <rect key="frame" x="0.0" y="0.0" width="344" height="95"/>
+                                                </button>
                                             </subviews>
                                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                             <constraints>
                                                 <constraint firstAttribute="bottom" secondItem="CJL-e5-N8g" secondAttribute="bottom" constant="10" id="7t8-NI-pUI"/>
-                                                <constraint firstItem="ld7-7A-RTv" firstAttribute="top" secondItem="9eM-NM-BMh" secondAttribute="top" id="A1I-rW-Ipr"/>
-                                                <constraint firstItem="ld7-7A-RTv" firstAttribute="leading" secondItem="9eM-NM-BMh" secondAttribute="leading" id="C2s-b3-5W5"/>
-                                                <constraint firstAttribute="trailing" secondItem="ld7-7A-RTv" secondAttribute="trailing" id="DEm-Hj-Zgm"/>
-                                                <constraint firstAttribute="bottom" secondItem="ld7-7A-RTv" secondAttribute="bottom" id="Ihc-xQ-FOm"/>
+                                                <constraint firstItem="ld7-7A-RTv" firstAttribute="leading" secondItem="9eM-NM-BMh" secondAttribute="leading" id="ALG-vb-9kn"/>
                                                 <constraint firstAttribute="trailing" secondItem="CJL-e5-N8g" secondAttribute="trailing" constant="20" id="NTx-o0-A4X"/>
+                                                <constraint firstAttribute="trailing" secondItem="ld7-7A-RTv" secondAttribute="trailing" constant="70" id="QYK-2T-vZJ"/>
                                                 <constraint firstItem="CJL-e5-N8g" firstAttribute="leading" secondItem="9eM-NM-BMh" secondAttribute="leading" constant="20" id="YrY-a7-dHn"/>
                                                 <constraint firstItem="CJL-e5-N8g" firstAttribute="top" secondItem="9eM-NM-BMh" secondAttribute="top" constant="10" id="fuv-xb-MHh"/>
+                                                <constraint firstItem="ld7-7A-RTv" firstAttribute="top" secondItem="9eM-NM-BMh" secondAttribute="top" id="rDN-p5-Hbx"/>
+                                                <constraint firstAttribute="bottom" secondItem="ld7-7A-RTv" secondAttribute="bottom" id="wcH-Ax-iu4"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -575,11 +587,12 @@
                     <connections>
                         <outlet property="collectionTable" destination="Eau-FI-Mh8" id="Rxs-it-3jv"/>
                         <segue destination="gOL-Ii-Lpq" kind="show" identifier="CollectionToLearner" id="61U-D6-ohn"/>
+                        <segue destination="YpC-SB-0Gw" kind="presentation" identifier="CollectionToDict" id="Abw-WG-nMq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="63P-wD-ryW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5551" y="893"/>
+            <point key="canvasLocation" x="6375" y="925"/>
         </scene>
         <!--Learner View Controller-->
         <scene sceneID="v7B-hm-SRZ">
@@ -595,7 +608,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yTF-At-2Jo" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="6375" y="893"/>
+            <point key="canvasLocation" x="7191" y="924"/>
         </scene>
         <!--Snapper View Controller-->
         <scene sceneID="FOP-HU-y6X">
@@ -1196,6 +1209,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
+        <segue reference="Abw-WG-nMq"/>
         <segue reference="AaT-Dv-Aac"/>
     </inferredMetricsTieBreakers>
     <resources>
@@ -1206,6 +1220,7 @@
         <image name="plus" catalog="system" width="128" height="113"/>
         <image name="settingsButton" width="48" height="48"/>
         <image name="snapButton" width="48" height="48"/>
+        <image name="square.and.pencil" catalog="system" width="128" height="115"/>
         <image name="star" catalog="system" width="128" height="116"/>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
