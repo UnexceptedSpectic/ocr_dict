@@ -15,17 +15,21 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var passwordField: UITextField!
     @IBOutlet weak var registerButton: UIButton!
     @IBOutlet weak var messageLabel: UILabel!
+    @IBOutlet weak var nav: UINavigationItem!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         emailField.delegate = self
         passwordField.delegate = self
-        
+        // Ensure back button is enabled
+        self.nav.hidesBackButton = false
     }
     
     @IBAction func didTapRegisterButton(_ sender: UIButton) {
         self.view.endEditing(true)
+        // Disable back button
+        self.nav.hidesBackButton = true
         // Register user
         checkAndRegister()
     }

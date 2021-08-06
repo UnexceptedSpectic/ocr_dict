@@ -15,17 +15,21 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var passwordField: UITextField!
     @IBOutlet weak var logInButton: UIButton!
     @IBOutlet weak var messageLabel: UILabel!
+    @IBOutlet weak var nav: UINavigationItem!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         emailField.delegate = self
         passwordField.delegate = self
-        
+        // Ensure back button is enabled
+        self.nav.hidesBackButton = false
     }
     
     @IBAction func didTapLogInButton(_ sender: UIButton) {
         self.view.endEditing(true)
+        // Disable back button
+        self.nav.hidesBackButton = true
         // Authenticate User
         checkAndAuth()
     }
