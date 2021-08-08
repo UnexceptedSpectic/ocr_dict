@@ -189,6 +189,7 @@
                         <outlet property="emailField" destination="ihN-ub-ygK" id="tcs-ar-2UM"/>
                         <outlet property="logInButton" destination="vdQ-zy-6pL" id="BLN-ZD-sTC"/>
                         <outlet property="messageLabel" destination="930-cB-BHq" id="dj0-hO-ySX"/>
+                        <outlet property="nav" destination="ukt-kH-rgf" id="bQd-uD-EFm"/>
                         <outlet property="passwordField" destination="Mij-az-UJx" id="mn0-7Y-jxP"/>
                         <segue destination="BYZ-38-t0r" kind="show" identifier="LoginToLibrary" id="AaT-Dv-Aac"/>
                     </connections>
@@ -322,6 +323,7 @@
                     <connections>
                         <outlet property="emailField" destination="wA6-xo-2XH" id="nuN-hV-Td4"/>
                         <outlet property="messageLabel" destination="tU8-gQ-lBj" id="xGu-Qj-muR"/>
+                        <outlet property="nav" destination="MwT-ER-9ue" id="BRC-VA-3JE"/>
                         <outlet property="passwordField" destination="wGR-Zd-ca9" id="Lq8-C6-Xah"/>
                         <outlet property="registerButton" destination="0A5-5D-v66" id="7Ij-B3-vw6"/>
                         <segue destination="BYZ-38-t0r" kind="show" identifier="RegisterToLibrary" id="MRY-hl-c13"/>
@@ -805,7 +807,7 @@
                                             <constraint firstAttribute="height" constant="50" id="aCz-k8-3p0"/>
                                         </constraints>
                                         <inset key="contentEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
-                                        <state key="normal" image="plus" catalog="system"/>
+                                        <state key="normal" image="icloud.and.arrow.up" catalog="system"/>
                                         <connections>
                                             <action selector="didTapSave:" destination="YpC-SB-0Gw" eventType="touchUpInside" id="pOW-sW-SUQ"/>
                                         </connections>
@@ -1210,12 +1212,13 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="Abw-WG-nMq"/>
-        <segue reference="AaT-Dv-Aac"/>
+        <segue reference="MRY-hl-c13"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="arrow.left" catalog="system" width="128" height="98"/>
         <image name="cancelButton" width="48" height="48"/>
         <image name="historyButton" width="48" height="48"/>
+        <image name="icloud.and.arrow.up" catalog="system" width="128" height="106"/>
         <image name="person" catalog="system" width="128" height="117"/>
         <image name="plus" catalog="system" width="128" height="113"/>
         <image name="settingsButton" width="48" height="48"/>

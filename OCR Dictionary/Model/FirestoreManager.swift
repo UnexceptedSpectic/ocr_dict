@@ -252,9 +252,10 @@ struct FirestoreManager {
                 var modifiedCollectionsWithWord: [Collection] = []
                 for collec in collectionsWithWord {
                     let originalWordEntry = collec.words.filter({$0.word == word})[0]
-                    let updatedWords = collec.words.filter({$0.word != word}) + [Word(word: word, dateAdded: originalWordEntry.dateAdded, dateModified: now, starredCellIndexes: starredCellIndexes, defaultDefinitionCellIndex: newDefaultDefinitionIndex)]
+                    let updatedWord = Word(word: word, dateAdded: originalWordEntry.dateAdded, dateModified: now, starredCellIndexes: starredCellIndexes, defaultDefinitionCellIndex: newDefaultDefinitionIndex)
+                    let updatedWords = [updatedWord] + collec.words.filter({$0.word != word})
                     let updatedCollection = Collection(name: collec.name, dateCreated: collec.dateCreated, dateModified: now, words: updatedWords)
-                    modifiedCollectionsWithWord.append(updatedCollection)
+                    modifiedCollectionsWithWord.insert(updatedCollection, at: 0)
                 }
                 updatedCollections = collectionsWithoutWord + modifiedCollectionsWithWord
             }

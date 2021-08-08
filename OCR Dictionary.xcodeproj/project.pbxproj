@@ -14,6 +14,7 @@
 		D42B48F324A71B670054CE66 /* DictionaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42B48F224A71B670054CE66 /* DictionaryViewController.swift */; };
 		D43E5CF1262033EB0094429D /* DictionaryCoding in Frameworks */ = {isa = PBXBuildFile; productRef = D43E5CF0262033EB0094429D /* DictionaryCoding */; };
 		D43E5CF5262A72E40094429D /* DictTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43E5CF4262A72E40094429D /* DictTableCell.swift */; };
+		D45DAE6326BDBE7700910B2E /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45DAE6226BDBE7700910B2E /* State.swift */; };
 		D4704C8824AC591700100641 /* OxfordDictionaryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4704C8724AC591700100641 /* OxfordDictionaryManager.swift */; };
 		D4704C8A24AC642B00100641 /* OxfordWordData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4704C8924AC642B00100641 /* OxfordWordData.swift */; };
 		D486B32F24F32391007AA2D6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D486B32E24F32391007AA2D6 /* GoogleService-Info.plist */; };
@@ -51,6 +52,7 @@
 		D42B48EF24A4F5010054CE66 /* TessResultCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TessResultCell.xib; sourceTree = "<group>"; };
 		D42B48F224A71B670054CE66 /* DictionaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryViewController.swift; sourceTree = "<group>"; };
 		D43E5CF4262A72E40094429D /* DictTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictTableCell.swift; sourceTree = "<group>"; };
+		D45DAE6226BDBE7700910B2E /* State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = State.swift; sourceTree = "<group>"; };
 		D4704C8724AC591700100641 /* OxfordDictionaryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OxfordDictionaryManager.swift; sourceTree = "<group>"; };
 		D4704C8924AC642B00100641 /* OxfordWordData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OxfordWordData.swift; sourceTree = "<group>"; };
 		D486B32E24F32391007AA2D6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -135,6 +137,7 @@
 				D4DB529F2480CE1E00F48A83 /* Info.plist */,
 				D4EC4B6E2504B58000A0BC10 /* Constants.swift */,
 				D48D2C362612EF0E00CFF6CF /* Util.swift */,
+				D45DAE6226BDBE7700910B2E /* State.swift */,
 			);
 			path = "OCR Dictionary";
 			sourceTree = "<group>";
@@ -340,6 +343,7 @@
 				D42B48F024A4F5010054CE66 /* TessResultTableCell.swift in Sources */,
 				D48D2C39261E942400CFF6CF /* FirestoreUserData.swift in Sources */,
 				D43E5CF5262A72E40094429D /* DictTableCell.swift in Sources */,
+				D45DAE6326BDBE7700910B2E /* State.swift in Sources */,
 				D4F036EE24A0ED9B00A2D4CB /* OpticalCharacterRecognition.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

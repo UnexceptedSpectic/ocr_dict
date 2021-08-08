@@ -99,8 +99,9 @@ class ChooserViewController: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
         
-        if segue.identifier == "ChooserToDict" {
+        if segue.destination is DictionaryViewController {
          
             let dictionaryVC = segue.destination as! DictionaryViewController
             dictionaryVC.queryWord = self.chosenWord.lowercased()

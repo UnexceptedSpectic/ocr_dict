@@ -82,3 +82,11 @@ func getDateOrTime(dateTime: String) -> String {
 extension StringProtocol {
     var firstUppercased: String { prefix(1).uppercased() + dropFirst() }
 }
+
+extension UIViewController {
+    func presentingViewController(forModalController modalController: UIViewController) -> UIViewController {
+        // Return the view that presented the input modal view controller
+        let navControllers = (modalController.presentingViewController as! UINavigationController).viewControllers
+        return navControllers[navControllers.count - 1]
+    }
+}

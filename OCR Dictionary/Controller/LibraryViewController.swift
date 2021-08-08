@@ -17,7 +17,6 @@ class LibraryViewController: UIViewController {
     @IBOutlet weak var addCollectionButton: UIBarButtonItem!
     
     var firestoreM: FirestoreManager?
-    var userData: FirestoreUserData?
     var selectedCollectionIndex: Int?
     
     let gridGapSize: CGFloat = 10
@@ -99,19 +98,19 @@ class LibraryViewController: UIViewController {
                     dateModified: dtNow,
                     words: []
                 )
-                if self.userData != nil {
-                    self.userData!.collections.append(newCollection)
+                if State.instance.userData != nil {
+                    State.instance.userData!.collections.append(newCollection)
                 } else {
-                    self.userData = FirestoreUserData(collections: [newCollection])
+                    State.instance.userData = FirestoreUserData(collections: [newCollection])
                 }
                 
                 // Save data to firestore
-                self.firestoreM!.saveUserData(updatedUserData: self.userData!)
+                self.firestoreM!.saveUserData(updatedUserData: State.instance.userData!)
                 
                 // Show/hide add collection instructions label
                 self.toggleInstructionsGivenUserData()
                 
-                let indexPath = IndexPath(row: self.userData!.collections.count - 1, section: 0)
+                let indexPath = IndexPath(row: State.instance.userData!.collections.count - 1, section: 0)
                 self.collectionView.insertItems(at: [indexPath])
             }
         }))
@@ -127,7 +126,7 @@ class LibraryViewController: UIViewController {
     }
     
     func toggleInstructionsGivenUserData() {
-        if self.userData!.collections.count == 0 {
+        if (State.instance.userData!.collections.count == 0) {
             collectionInstructionsLabel.isHidden = false
         } else {
             collectionInstructionsLabel.isHidden = true
@@ -139,9 +138,8 @@ class LibraryViewController: UIViewController {
         
         // Pass userData and collection index to collection view
         if segue.destination is CollectionViewController {
-            let controllerVC = segue.destination as! CollectionViewController
-            controllerVC.userData = self.userData
-            controllerVC.collectionIndex = self.selectedCollectionIndex
+            let collectionVC = segue.destination as! CollectionViewController
+            collectionVC.collectionIndex = self.selectedCollectionIndex
         }
     }
     
@@ -164,7 +162,7 @@ extension LibraryViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        if let userData = self.userData {
+        if let userData = State.instance.userData {
             return userData.collections.count
         } else {
             return 0
@@ -176,7 +174,7 @@ extension LibraryViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: K.collections.library.cell.type, for: indexPath) as! CollectionViewCell
 
         cell.configure(backgroundColor: K.brand.colors.gray)
-        cell.configure(collectionName: self.userData!.collections[indexPath.row].name)
+        cell.configure(collectionName: State.instance.userData!.collections[indexPath.row].name)
         return cell
     }
     
@@ -204,7 +202,7 @@ extension LibraryViewController: FirestoreUserDataDelegate {
         // Enable add collection button
         addCollectionButton.isEnabled = true
         // Save user data
-        self.userData = userData
+        State.instance.userData = userData
         // Show/hide collection instructions
         if userData != nil {
             toggleInstructionsGivenUserData()

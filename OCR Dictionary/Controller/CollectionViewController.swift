@@ -12,12 +12,11 @@ class CollectionViewController: UIViewController {
     
     @IBOutlet weak var collectionTable: UITableView!
     
-    var firestoreManager: FirestoreManager?
-    var userData: FirestoreUserData?
-    var wordsData: [OxfordWordData?]?
+    var firestoreManager: FirestoreManager? = FirestoreManager()
     var collectionIndex: Int?
-    var wordsDataGetterGroup: DispatchGroup?
+    var wordsDataGetterGroup: DispatchGroup? = DispatchGroup()
     var hiddenCollectionTableSections = Set<Int>()
+    var wordsData: [OxfordWordData?]?
     var wordsCells: [[DictTableCell]]?
     var wordsGroupedCells: [[[DictTableCell]]]?
     var wordToEdit: String?
@@ -26,24 +25,21 @@ class CollectionViewController: UIViewController {
         super.viewDidLoad()
         
         fetchDataLoadTable()
-        
     }
     
     // Fetch word data and update collection table with it
     func fetchDataLoadTable() {
         
         // Configure handling of firestore methods
-        self.firestoreManager = FirestoreManager()
         self.firestoreManager!.wordsDataDelegate = self
         
         // Fetch data on background thread
-        self.wordsDataGetterGroup = DispatchGroup()
         self.wordsDataGetterGroup!.enter()
         
         DispatchQueue.main.async {
             // Fetch data for user's saved words, from firestore
             print("Fetching words data for collection view")
-            self.firestoreManager!.getWordsData(for: self.userData!.collections[self.collectionIndex!].words)
+            self.firestoreManager!.getWordsData(for: State.instance.userData!.collections[self.collectionIndex!].words)
         }
         
         // Load table after user data is obtained
@@ -85,29 +81,31 @@ class CollectionViewController: UIViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        if segue.identifier == "CollectionToDict" {
+        if segue.destination is DictionaryViewController {
          
             let dictionaryVC = segue.destination as! DictionaryViewController
+            DictionaryViewController.userDataUpdateDelegates.append(self)
             dictionaryVC.queryWord = self.wordToEdit!.lowercased()
         }
     }
     
     func getStarredCellIndexes(for word: String) -> [Int]? {
         // Return the starred cell indexes for a word, if it exists in the current collection
-        if let wordData = self.userData!.collections[self.collectionIndex!].words.filter({ $0.word == word }).first {
+        if let wordData = State.instance.userData!.collections[self.collectionIndex!].words.filter({ $0.word == word }).first {
             return wordData.starredCellIndexes
         } else {
             return nil
         }
     }
     
-    func getDefaultDefinitionCellIndex(userWordData: Word) -> Int {
-        if let ddci = userWordData.defaultDefinitionCellIndex {
-            return ddci
-        } else {
-            // Use the first definition cell, which occurs after the first wordPronounciationCell and categoryCell cells
-            return 2
-        }
+    func getDefaultDefinitionCellIndex(wordInd: Int) -> Int {
+        return State.instance.userData!.collections[self.collectionIndex!].words[wordInd].defaultDefinitionCellIndex!
+    }
+}
+
+extension CollectionViewController: UserDataUpdateHandler {
+    func updateViews() {
+        self.fetchDataLoadTable()
     }
 }
 
@@ -128,7 +126,6 @@ extension CollectionViewController: FirestoreWordsDataDelegate {
         for (wordInd, word) in self.wordsCells!.enumerated() {
             var wordGroup: [[DictTableCell]] = []
             var cellGroup: [DictTableCell] = []
-            let defaultDefinitionCellIndex = getDefaultDefinitionCellIndex(userWordData: self.userData!.collections[self.collectionIndex!].words[wordInd])
             let starredCellIndexes = getStarredCellIndexes(for: (word[0] as! WordPronounciationCell).wordText.string)!
             for (cellInd, cell) in word.enumerated() {
                 if (cell is LexicalCategoryCell) {
@@ -136,7 +133,7 @@ extension CollectionViewController: FirestoreWordsDataDelegate {
                     cellGroup.append(cell as! LexicalCategoryCell)
                 } else if (cell is DefinitionCell) {
                     // Omit default/primary favorite cell, which is included in section header
-                    if (starredCellIndexes.contains(cellInd) && cellInd != defaultDefinitionCellIndex) {
+                    if (starredCellIndexes.contains(cellInd) && cellInd != self.getDefaultDefinitionCellIndex(wordInd: wordInd)) {
                         cellGroup.append(cell as! DefinitionCell)
                     }
                 }
@@ -159,7 +156,7 @@ extension CollectionViewController: UITableViewDataSource, UITableViewDelegate {
     
     // Required delegate method. Create a section for each word
     func numberOfSections(in tableView: UITableView) -> Int {
-        if let userData = self.userData {
+        if let userData = State.instance.userData {
             return userData.collections[self.collectionIndex!].words.count
         } else {
             return 0
@@ -183,12 +180,11 @@ extension CollectionViewController: UITableViewDataSource, UITableViewDelegate {
         let wordLabel = templateCell.viewWithTag(1) as! UILabel
         let modDateLabel = templateCell.viewWithTag(2) as! UILabel
         let mainDefinitionLabel = templateCell.viewWithTag(3) as! UILabel
-        let userWordData = userData!.collections[self.collectionIndex!].words[section]
+        let userWordData = State.instance.userData!.collections[self.collectionIndex!].words[section]
         wordLabel.text = userWordData.word
         modDateLabel.text = getDateOrTime(dateTime: userWordData.dateModified)
-        let defaultDefinitionCellIndex = getDefaultDefinitionCellIndex(userWordData: userWordData)
         if let wordsCells = self.wordsCells {
-            let definitionCell = wordsCells[section][defaultDefinitionCellIndex] as! DefinitionCell
+            let definitionCell = wordsCells[section][self.getDefaultDefinitionCellIndex(wordInd: section)] as! DefinitionCell
             mainDefinitionLabel.text = definitionCell.definition.string
         }
         let sectionButton = templateCell.contentView.viewWithTag(4) as! UIButton

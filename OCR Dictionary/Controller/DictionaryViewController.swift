@@ -10,6 +10,7 @@ import UIKit
 import CoreHaptics
 import AudioToolbox.AudioServices
 
+
 class DictionaryViewController: UIViewController {
     
     @IBOutlet weak var dicitonaryTableView: UITableView!
@@ -21,8 +22,10 @@ class DictionaryViewController: UIViewController {
     var wordDataGetterGroup: DispatchGroup?
     var definitionTableGroup = DispatchGroup()
     var cells: [DictTableCell]?
-    var dbUserData: FirestoreUserData?
     var firestoreManager: FirestoreManager?
+    
+    // Handle updating data
+    static var userDataUpdateDelegates: [UserDataUpdateHandler] = []
     
     // For managing definition star state
     var starHeldDown: Bool = false
@@ -79,14 +82,26 @@ class DictionaryViewController: UIViewController {
     @IBAction func didTapSave(_ sender: UIButton) {
         // Show word saver
 //        performSegue(withIdentifier: "DictToSaver", sender: self)
+        if (self.defaultDefinitionCellIndex == nil) {
+            // Use the first definition cell, which occurs after the first wordPronounciationCell and categoryCell cells
+            self.defaultDefinitionCellIndex = 2
+            // Set defaultDefinition cell as saved and show it in table
+            (self.cells![self.defaultDefinitionCellIndex!] as! DefinitionCell).saved = true
+            self.dicitonaryTableView.reloadData()
+        }
         let updatedUserData = self.firestoreManager?.saveUserData(
             add: queryWord!,
             to: "testCollection",
-            usingTemplate: dbUserData,
+            usingTemplate: State.instance.userData,
             newStarredCellIndexes: getSavedCellIndexes(cells: self.cells!),
             newDefaultDefinitionIndex: self.defaultDefinitionCellIndex)
-        self.dbUserData = updatedUserData
+        State.instance.userData = updatedUserData
+        // Reload collection view
+        DictionaryViewController.userDataUpdateDelegates.forEach({ $0.updateViews() })
         self.saveButton.isEnabled = false
+        if (self.presentingViewController(forModalController: self) is CollectionViewController) {
+            dismiss(animated: true)
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -177,7 +192,7 @@ class DictionaryViewController: UIViewController {
     func setSaveButtonState() {
         // Enable/disable save button
         let localStarredCellIndexes = getSavedCellIndexes(cells: self.cells!)
-        if let dbUserData = self.dbUserData {
+        if let dbUserData = State.instance.userData {
             if let firstCollection = self.firestoreManager!.getWordInFirstCollection(for: self.queryWord!, in: dbUserData) {
                 let dbStarredCellIndexes = firstCollection.starredCellIndexes
                 let dbDefaultDefinitionIndex = firstCollection.defaultDefinitionCellIndex
@@ -459,7 +474,7 @@ extension DictionaryViewController: FirestoreUserDataDelegate {
     
     func didGetUserData(userData: FirestoreUserData?) {
         print("successfully got user data")
-        self.dbUserData = userData
+        State.instance.userData = userData
         if let userData = userData {
             updateCellStructs(userData: userData)
             // Update default definition index
