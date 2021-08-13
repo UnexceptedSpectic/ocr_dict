@@ -32,6 +32,10 @@ class CollectionViewCell: UICollectionViewCell {
         imageView.backgroundColor = color
     }
     
+    public func getBackgroundColor() -> UIColor? {
+        return imageView.backgroundColor
+    }
+    
     public func configure(collectionName title: String) {
         titleLabel.text = title
     }

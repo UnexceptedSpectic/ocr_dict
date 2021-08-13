@@ -24,6 +24,9 @@ class CollectionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Listen for updated userData
+        State.instance.userDataUpdateDelegates.append(self)
+        
         fetchDataLoadTable()
     }
     
@@ -84,7 +87,6 @@ class CollectionViewController: UIViewController {
         if segue.destination is DictionaryViewController {
          
             let dictionaryVC = segue.destination as! DictionaryViewController
-            DictionaryViewController.userDataUpdateDelegates.append(self)
             dictionaryVC.queryWord = self.wordToEdit!.lowercased()
         }
     }
@@ -103,7 +105,7 @@ class CollectionViewController: UIViewController {
     }
 }
 
-extension CollectionViewController: UserDataUpdateHandler {
+extension CollectionViewController: UserDataUpdateDelegate {
     func updateViews() {
         self.fetchDataLoadTable()
     }

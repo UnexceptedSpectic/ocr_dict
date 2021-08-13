@@ -40,7 +40,7 @@ struct FirestoreManager {
         // Get the indexes of starred table cells for a particular word
         let collectionsWithWord = userData.collections
             .filter({$0.words
-                .filter({$0.word == word}).count > 0})
+                        .filter({$0.word == word}).count > 0})
         
         // Get the indexes of starred table cells from the first collection in which the word is found. This assumes that if any word is saved in more than one collections, its starredCellIndex data is synced/consistent.
         if (collectionsWithWord.count > 0) {
@@ -50,57 +50,57 @@ struct FirestoreManager {
         }
     }
     
-//    func getDefinition(wordData: OxfordWordData, cellIndex: Int) -> String {
-//        var counter = 0
-//        if let results = wordData.results {
-//            for result in results {
-//                // Each result starts with a wordPronounciationCell and categoryCell cell
-//                counter += 2
-//                if let lexicalEntries = result.lexicalEntries {
-//                    for lexEntry in lexicalEntries {
-//                        // Each lexical cell has variable numbers of primDefCells and subDefCells
-//                        if let senses = lexEntry.entries![0].senses {
-//                            for sense in senses {
-//                                if let definitions = sense.definitions {
-//                                    for primaryDefinition in definitions {
-//                                        if counter == cellIndex {
-//                                            return primaryDefinition
-//                                        } else {
-//                                            counter += 1
-//                                        }
-//                                    }
-//                                }
-//                                if let subsenses = sense.subsenses {
-//                                    for subsense in subsenses {
-//                                        if let definitions = subsense.definitions {
-//                                            for subDefinition in definitions {
-//                                                if counter == cellIndex {
-//                                                    return subDefinition
-//                                                } else {
-//                                                    counter += 1
-//                                                }
-//                                            }
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//                // Each result ends with an originCell
-//                counter += 1
-//            }
-//        }
-//        return "No default definition found."
-//    }
-        
+    //    func getDefinition(wordData: OxfordWordData, cellIndex: Int) -> String {
+    //        var counter = 0
+    //        if let results = wordData.results {
+    //            for result in results {
+    //                // Each result starts with a wordPronounciationCell and categoryCell cell
+    //                counter += 2
+    //                if let lexicalEntries = result.lexicalEntries {
+    //                    for lexEntry in lexicalEntries {
+    //                        // Each lexical cell has variable numbers of primDefCells and subDefCells
+    //                        if let senses = lexEntry.entries![0].senses {
+    //                            for sense in senses {
+    //                                if let definitions = sense.definitions {
+    //                                    for primaryDefinition in definitions {
+    //                                        if counter == cellIndex {
+    //                                            return primaryDefinition
+    //                                        } else {
+    //                                            counter += 1
+    //                                        }
+    //                                    }
+    //                                }
+    //                                if let subsenses = sense.subsenses {
+    //                                    for subsense in subsenses {
+    //                                        if let definitions = subsense.definitions {
+    //                                            for subDefinition in definitions {
+    //                                                if counter == cellIndex {
+    //                                                    return subDefinition
+    //                                                } else {
+    //                                                    counter += 1
+    //                                                }
+    //                                            }
+    //                                        }
+    //                                    }
+    //                                }
+    //                            }
+    //                        }
+    //                    }
+    //                }
+    //                // Each result ends with an originCell
+    //                counter += 1
+    //            }
+    //        }
+    //        return "No default definition found."
+    //    }
+    
     func getWordData(for word: String) {
         
         db.collection(K.firestore.collections.dictionaries.oxford).document(word).getDocument { (querySnapshot, error) in
             if let err = error {
                 print("Error getting word data: \(err)")
             } else {
-
+                
                 if let data = querySnapshot!.data() {
                     self.wordDataDelegate?.didGetWordData(
                         wordData: parseDict(
@@ -163,7 +163,7 @@ struct FirestoreManager {
                 if let err = error {
                     print("Error getting user data: \(err)")
                 } else {
-
+                    
                     if let data = querySnapshot!.data() {
                         self.userDataDelegate?.didGetUserData(
                             userData: parseDict(
@@ -186,8 +186,8 @@ struct FirestoreManager {
             self.db.collection(K.firestore.collections.users).document(currentUser.email!).setData(updatedUserDataDict!)
         }
     }
-        
-    func saveUserData(add word: String, to collectionName: String, usingTemplate dbUserData: FirestoreUserData?, newStarredCellIndexes starredCellIndexes: [Int], newDefaultDefinitionIndex: Int?) -> FirestoreUserData {
+    
+    func initOrUpdateUserData(add word: String, to collectionName: String, usingTemplate dbUserData: FirestoreUserData?, newStarredCellIndexes starredCellIndexes: [Int], newDefaultDefinitionIndex: Int?) -> FirestoreUserData {
         
         var updatedUserData: FirestoreUserData
         let now = getDatetimeString()
@@ -201,53 +201,44 @@ struct FirestoreManager {
                 .filter({$0.words
                     .filter({$0.word == word})
                     .count > 0
-            })
+                })
             
             let collectionsWithoutWord = userData.collections
                 .filter({$0.words
                     .filter({$0.word != word})
                     .count == $0.words.count
-            })
+                })
             
-            // Adding word to collection
-            if collectionsWithWord.count == 0 {
-                var didUpdate = false
-                for collec in collectionsWithoutWord {
-                    var c = collec
-                    // If collection with target name exists, update it
-                    if collec.name == collectionName {
-                        // Update collection
-                        c = Collection(
-                            name: collec.name,
-                            dateCreated: collec.dateCreated,
-                            dateModified: now,
-                            words: collec.words + [Word(
+            func createCollection() -> Collection {
+                return Collection(
+                    name: collectionName,
+                    dateCreated: now,
+                    dateModified: now,
+                    words: [Word(
                                 word: word,
                                 dateAdded: now,
                                 dateModified: now,
                                 starredCellIndexes: starredCellIndexes,
                                 defaultDefinitionCellIndex: newDefaultDefinitionIndex)]
-                        )
-                        didUpdate = true
-                    }
-                    updatedCollections.append(c)
-                }
-                if !didUpdate {
-                    // No collection with the target name exists. Create the collection
-                    let newCollec = Collection(
-                        name: collectionName,
-                        dateCreated: now,
-                        dateModified: now,
-                        words: [Word(
-                            word: word,
-                            dateAdded: now,
-                            dateModified: now,
-                            starredCellIndexes: starredCellIndexes,
-                            defaultDefinitionCellIndex: newDefaultDefinitionIndex)]
-                    )
-                    updatedCollections.append(newCollec)
-                }
-            } else {
+                )
+            }
+            
+            func addWordToCollection(collection: Collection) -> Collection {
+                return Collection(
+                    name: collection.name,
+                    dateCreated: collection.dateCreated,
+                    dateModified: now,
+                    words: collection.words + [Word(
+                                                word: word,
+                                                dateAdded: now,
+                                                dateModified: now,
+                                                starredCellIndexes: starredCellIndexes,
+                                                defaultDefinitionCellIndex: newDefaultDefinitionIndex)]
+                )
+            }
+            
+            // Adding word to collection
+            if collectionsWithWord.count > 0 {
                 // Modify all collections containing word
                 var modifiedCollectionsWithWord: [Collection] = []
                 for collec in collectionsWithWord {
@@ -255,25 +246,87 @@ struct FirestoreManager {
                     let updatedWord = Word(word: word, dateAdded: originalWordEntry.dateAdded, dateModified: now, starredCellIndexes: starredCellIndexes, defaultDefinitionCellIndex: newDefaultDefinitionIndex)
                     let updatedWords = [updatedWord] + collec.words.filter({$0.word != word})
                     let updatedCollection = Collection(name: collec.name, dateCreated: collec.dateCreated, dateModified: now, words: updatedWords)
-                    modifiedCollectionsWithWord.insert(updatedCollection, at: 0)
+                    modifiedCollectionsWithWord.append(updatedCollection)
                 }
-                updatedCollections = collectionsWithoutWord + modifiedCollectionsWithWord
+                updatedCollections = modifiedCollectionsWithWord + collectionsWithoutWord
+                // Word exists in other collections, but not in new target collection
+                if (collectionsWithWord.filter({ $0.name == collectionName }).count == 0) {
+                    let nonTargetCollecs = updatedCollections.filter({ $0.name != collectionName })
+                    let targetCollection = updatedCollections.filter({ $0.name == collectionName })
+                    // Collection exists -> update it
+                    if (targetCollection.count != 0) {
+                        updatedCollections = [addWordToCollection(collection: targetCollection[0])] + nonTargetCollecs
+                    } else {
+                        // Collection doesn't exist -> create it
+                        updatedCollections.insert(createCollection(), at: 0)
+                    }
+                }
+            } else {
+                // No collections with word
+                var didUpdate = false
+                for collec in collectionsWithoutWord {
+                    var c = collec
+                    // If collection with target name exists, update it
+                    var prepend = false
+                    if collec.name == collectionName {
+                        // Update collection by adding word
+                        c = addWordToCollection(collection: collec)
+                        didUpdate = true
+                        prepend = true
+                    }
+                    if prepend {
+                        updatedCollections.insert(c, at: 0)
+                        prepend = false
+                    } else {
+                        updatedCollections.append(c)
+                    }
+                }
+                if !didUpdate {
+                    // No collection with the target name exists. Create the collection
+                    updatedCollections.insert(createCollection(), at: 0)
+                }
             }
+            // Ensure the input collection - the primary one being update/created - is the first element
+            updatedCollections = updatedCollections.filter({ $0.name == collectionName }) + updatedCollections.filter({ $0.name != collectionName })
             // Update user data
             updatedUserData = FirestoreUserData(collections: updatedCollections)
-                
-            } else {
+            
+        } else {
             // Initialize user data
-            updatedUserData = FirestoreUserData(collections: [Collection(name: collectionName, dateCreated: now, dateModified: now, words: [Word(word: word, dateAdded: now, dateModified: now, starredCellIndexes: starredCellIndexes, defaultDefinitionCellIndex: newDefaultDefinitionIndex)])])
-        }
-        
-        let updatedUserDataDict = structToDict(structInstance: updatedUserData)
-
-        if let currentUser = Auth.auth().currentUser {
-            self.db.collection(K.firestore.collections.users).document(currentUser.email!).setData(updatedUserDataDict!)
+            updatedUserData = FirestoreUserData(
+                collections: [Collection(
+                                name: collectionName,
+                                dateCreated: now,
+                                dateModified: now,
+                                words: [Word(
+                                            word: word,
+                                            dateAdded: now, dateModified: now,
+                                            starredCellIndexes: starredCellIndexes,
+                                            defaultDefinitionCellIndex: newDefaultDefinitionIndex)])])
         }
         
         return updatedUserData
     }
-        
+    
+    func deleteWordFromCollection(userData: FirestoreUserData, word: String, collectionInd: Int) -> FirestoreUserData? {
+        if let currentUser = Auth.auth().currentUser {
+            let updatedCollectionWords = userData.collections[collectionInd].words.filter({ $0.word != word })
+            var nonTargetCollections: [Collection] = []
+            var targetCollection: [Collection] = []
+            userData.collections.forEach { (collec) in
+                if (collec.name != userData.collections[collectionInd].name) {
+                    nonTargetCollections.append(collec)
+                } else {
+                    targetCollection.append(Collection(name: collec.name, dateCreated: collec.dateCreated, dateModified: collec.dateModified, words: updatedCollectionWords))
+                }
+            }
+            var updatedUserData = userData
+            updatedUserData.collections = targetCollection + nonTargetCollections
+            let updatedUserDataDict = structToDict(structInstance: updatedUserData)
+            self.db.collection(K.firestore.collections.users).document(currentUser.email!).setData(updatedUserDataDict!)
+            return updatedUserData
+        }
+        return nil
     }
+    
+}

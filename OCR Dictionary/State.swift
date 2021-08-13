@@ -14,11 +14,12 @@ class State {
     
     // Globally available data
     var userData: FirestoreUserData?
+    var userDataUpdateDelegates: [UserDataUpdateDelegate] = []
     
     private init() {}
 }
 
 // Define delegate methods for handling state change
-protocol UserDataUpdateHandler {
+protocol UserDataUpdateDelegate {
   func updateViews()
 }

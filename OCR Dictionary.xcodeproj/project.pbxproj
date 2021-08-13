@@ -15,8 +15,10 @@
 		D43E5CF1262033EB0094429D /* DictionaryCoding in Frameworks */ = {isa = PBXBuildFile; productRef = D43E5CF0262033EB0094429D /* DictionaryCoding */; };
 		D43E5CF5262A72E40094429D /* DictTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43E5CF4262A72E40094429D /* DictTableCell.swift */; };
 		D45DAE6326BDBE7700910B2E /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45DAE6226BDBE7700910B2E /* State.swift */; };
+		D45DAE8C26C1827A00910B2E /* LibraryCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45DAE8B26C1827A00910B2E /* LibraryCollection.swift */; };
 		D4704C8824AC591700100641 /* OxfordDictionaryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4704C8724AC591700100641 /* OxfordDictionaryManager.swift */; };
 		D4704C8A24AC642B00100641 /* OxfordWordData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4704C8924AC642B00100641 /* OxfordWordData.swift */; };
+		D47E9A5026C4B310000EF5DE /* CollectionCreatorAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47E9A4F26C4B310000EF5DE /* CollectionCreatorAlert.swift */; };
 		D486B32F24F32391007AA2D6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D486B32E24F32391007AA2D6 /* GoogleService-Info.plist */; };
 		D486B33324F41C7C007AA2D6 /* AuthenticationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D486B33224F41C7C007AA2D6 /* AuthenticationViewController.swift */; };
 		D486B33524F41CFC007AA2D6 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D486B33424F41CFC007AA2D6 /* LoginViewController.swift */; };
@@ -53,8 +55,10 @@
 		D42B48F224A71B670054CE66 /* DictionaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryViewController.swift; sourceTree = "<group>"; };
 		D43E5CF4262A72E40094429D /* DictTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictTableCell.swift; sourceTree = "<group>"; };
 		D45DAE6226BDBE7700910B2E /* State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = State.swift; sourceTree = "<group>"; };
+		D45DAE8B26C1827A00910B2E /* LibraryCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryCollection.swift; sourceTree = "<group>"; };
 		D4704C8724AC591700100641 /* OxfordDictionaryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OxfordDictionaryManager.swift; sourceTree = "<group>"; };
 		D4704C8924AC642B00100641 /* OxfordWordData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OxfordWordData.swift; sourceTree = "<group>"; };
+		D47E9A4F26C4B310000EF5DE /* CollectionCreatorAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionCreatorAlert.swift; sourceTree = "<group>"; };
 		D486B32E24F32391007AA2D6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D486B33224F41C7C007AA2D6 /* AuthenticationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewController.swift; sourceTree = "<group>"; };
 		D486B33424F41CFC007AA2D6 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -149,6 +153,7 @@
 				D4DB529C2480CE1E00F48A83 /* LaunchScreen.storyboard */,
 				D488F412248E0116001D25CC /* CollectionViewCell.swift */,
 				D488F413248E0116001D25CC /* LibraryCell.xib */,
+				D45DAE8B26C1827A00910B2E /* LibraryCollection.swift */,
 				D42B48EE24A4F5010054CE66 /* TessResultTableCell.swift */,
 				D42B48EF24A4F5010054CE66 /* TessResultCell.xib */,
 				D48D2C2C260DA3AD00CFF6CF /* dictStarButton.swift */,
@@ -183,6 +188,7 @@
 				D4704C8924AC642B00100641 /* OxfordWordData.swift */,
 				D48D2C38261E942400CFF6CF /* FirestoreUserData.swift */,
 				D43E5CF4262A72E40094429D /* DictTableCell.swift */,
+				D47E9A4F26C4B310000EF5DE /* CollectionCreatorAlert.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -325,6 +331,7 @@
 				D490F0D22515CC3700F906F5 /* CollectionViewController.swift in Sources */,
 				D486B33524F41CFC007AA2D6 /* LoginViewController.swift in Sources */,
 				D42B48F324A71B670054CE66 /* DictionaryViewController.swift in Sources */,
+				D45DAE8C26C1827A00910B2E /* LibraryCollection.swift in Sources */,
 				D4DB52962480CE1D00F48A83 /* LibraryViewController.swift in Sources */,
 				D429D4F1266017A5008304F9 /* LearnerViewController.swift in Sources */,
 				D4DB52922480CE1D00F48A83 /* AppDelegate.swift in Sources */,
@@ -343,6 +350,7 @@
 				D42B48F024A4F5010054CE66 /* TessResultTableCell.swift in Sources */,
 				D48D2C39261E942400CFF6CF /* FirestoreUserData.swift in Sources */,
 				D43E5CF5262A72E40094429D /* DictTableCell.swift in Sources */,
+				D47E9A5026C4B310000EF5DE /* CollectionCreatorAlert.swift in Sources */,
 				D45DAE6326BDBE7700910B2E /* State.swift in Sources */,
 				D4F036EE24A0ED9B00A2D4CB /* OpticalCharacterRecognition.swift in Sources */,
 			);

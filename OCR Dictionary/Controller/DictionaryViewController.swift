@@ -14,8 +14,7 @@ import AudioToolbox.AudioServices
 class DictionaryViewController: UIViewController {
     
     @IBOutlet weak var dicitonaryTableView: UITableView!
-    @IBOutlet weak var queryWordLabel: UILabel!
-    @IBOutlet weak var saveButton: UIButton!
+    @IBOutlet weak var saveBarButton: UIBarButtonItem!
     
     var queryWord: String?
     var wordData: OxfordWordData?
@@ -23,9 +22,6 @@ class DictionaryViewController: UIViewController {
     var definitionTableGroup = DispatchGroup()
     var cells: [DictTableCell]?
     var firestoreManager: FirestoreManager?
-    
-    // Handle updating data
-    static var userDataUpdateDelegates: [UserDataUpdateHandler] = []
     
     // For managing definition star state
     var starHeldDown: Bool = false
@@ -38,11 +34,11 @@ class DictionaryViewController: UIViewController {
         // Configure the result table view
         dicitonaryTableView.allowsSelection = false
         
-        // Disable save button until local data diverges from db version
-        saveButton.isEnabled = false
+        // Configure save button
+        self.saveBarButton.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.gray], for: .disabled)
         
-        // Set query word to label at top of view
-        self.queryWordLabel.text = queryWord
+        // Disable save button until local data diverges from db version
+        self.saveBarButton.isEnabled = false
         
         // Fetch word data from firestore, else oxford api, then reload table
         fetchWordDataReloadTable()
@@ -50,7 +46,6 @@ class DictionaryViewController: UIViewController {
     
     func fetchWordDataReloadTable() {
         // Logic for fetching word data. Always query firestore first
-
         self.firestoreManager = FirestoreManager()
         self.firestoreManager!.wordDataDelegate =  self
         self.firestoreManager!.userDataDelegate = self
@@ -79,9 +74,7 @@ class DictionaryViewController: UIViewController {
         }
     }
     
-    @IBAction func didTapSave(_ sender: UIButton) {
-        // Show word saver
-//        performSegue(withIdentifier: "DictToSaver", sender: self)
+    @IBAction func didTapSave(_ sender: UIBarButtonItem) {
         if (self.defaultDefinitionCellIndex == nil) {
             // Use the first definition cell, which occurs after the first wordPronounciationCell and categoryCell cells
             self.defaultDefinitionCellIndex = 2
@@ -89,27 +82,29 @@ class DictionaryViewController: UIViewController {
             (self.cells![self.defaultDefinitionCellIndex!] as! DefinitionCell).saved = true
             self.dicitonaryTableView.reloadData()
         }
-        let updatedUserData = self.firestoreManager?.saveUserData(
-            add: queryWord!,
-            to: "testCollection",
-            usingTemplate: State.instance.userData,
-            newStarredCellIndexes: getSavedCellIndexes(cells: self.cells!),
-            newDefaultDefinitionIndex: self.defaultDefinitionCellIndex)
-        State.instance.userData = updatedUserData
-        // Reload collection view
-        DictionaryViewController.userDataUpdateDelegates.forEach({ $0.updateViews() })
-        self.saveButton.isEnabled = false
-        if (self.presentingViewController(forModalController: self) is CollectionViewController) {
-            dismiss(animated: true)
+        let presentingViewController = navigationController!.viewControllers[navigationController!.viewControllers.count - 2]
+        if (presentingViewController is CollectionViewController) {
+            let collectionViewController = presentingViewController as! CollectionViewController
+            let updatedUserData = self.firestoreManager!.initOrUpdateUserData(add: self.queryWord!, to: State.instance.userData!.collections[collectionViewController.collectionIndex!].name, usingTemplate: State.instance.userData!, newStarredCellIndexes: self.getSavedCellIndexes(cells: self.cells!), newDefaultDefinitionIndex: self.defaultDefinitionCellIndex)
+            self.firestoreManager!.saveUserData(updatedUserData: updatedUserData)
+            State.instance.userData = updatedUserData
+            // Notify views that rely on state userData of update
+            State.instance.userDataUpdateDelegates.forEach({ $0.updateViews() })
+            navigationController?.popViewController(animated: true)
+        } else {
+            // Use word saver to allow user to specify target collection
+            performSegue(withIdentifier: "DictToSaver", sender: self)
         }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
         
-        if segue.identifier == "DictToSaver" {
-         
+        if segue.destination is WordSaverViewController {
             let saverVC = segue.destination as! WordSaverViewController
-            saverVC.wordCells = self.cells
+            saverVC.word = queryWord!
+            saverVC.savedCellIndexes = self.getSavedCellIndexes(cells: self.cells!)
+            saverVC.defaultDefinitionIndex = self.defaultDefinitionCellIndex
         }
     }
     
@@ -186,7 +181,6 @@ class DictionaryViewController: UIViewController {
 
         // Refresh table view
         self.dicitonaryTableView.reloadData()
-        // TODO: bring up window with list of collections to save to. add option to create collection.
     }
     
     func setSaveButtonState() {
@@ -198,37 +192,27 @@ class DictionaryViewController: UIViewController {
                 let dbDefaultDefinitionIndex = firstCollection.defaultDefinitionCellIndex
                 // Enable save button if local user data differs from that in the db
                 if (localStarredCellIndexes != dbStarredCellIndexes || self.defaultDefinitionCellIndex != dbDefaultDefinitionIndex) {
-                    self.saveButton.isEnabled = true
+                    self.saveBarButton.isEnabled = true
                 } else {
-                    self.saveButton.isEnabled = false
+                    self.saveBarButton.isEnabled = false
                 }
             } else {
                 // Enable save button when the word is not found in any user collection in the db
                 if (!localStarredCellIndexes.isEmpty || self.defaultDefinitionCellIndex != nil) {
-                    self.saveButton.isEnabled = true
+                    self.saveBarButton.isEnabled = true
                 } else {
-                    self.saveButton.isEnabled = false
+                    self.saveBarButton.isEnabled = false
                 }
             }
         } else {
             // Enable save button when user data could not be obtained from the database/prior to it having been asynchronously fetched
             if (!localStarredCellIndexes.isEmpty || self.defaultDefinitionCellIndex != nil) {
-                self.saveButton.isEnabled = true
+                self.saveBarButton.isEnabled = true
             } else {
-                self.saveButton.isEnabled = false
+                self.saveBarButton.isEnabled = false
             }
         }
     }
-    
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destination.
-     // Pass the selected object to the new view controller.
-     }
-     */
     
     func getSavedCellIndexes(cells: [DictTableCell]) -> [Int] {
         
@@ -493,5 +477,11 @@ extension UIView {
     /// - Parameter identifier: The constraint identifier.
     func constraintWithIdentifier(_ identifier: String) -> NSLayoutConstraint? {
         return self.constraints.first { $0.identifier == identifier }
+    }
+}
+
+extension DictionaryViewController: UserDataUpdateDelegate {
+    func updateViews() {
+        self.setSaveButtonState()
     }
 }
