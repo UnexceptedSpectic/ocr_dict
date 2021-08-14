@@ -19,13 +19,7 @@ class AccountViewController: UIViewController {
     
     
     @IBAction func didTapSignOut(_ sender: UIBarButtonItem) {
-        
-        do {
-            try Auth.auth().signOut()
-            navigationController?.popToRootViewController(animated: false)
-        } catch let error as NSError {
-            print("Error signing out: \(error).")
-        }
+        signOutAndGoHome(navigationController: navigationController)
     }
     
     /*

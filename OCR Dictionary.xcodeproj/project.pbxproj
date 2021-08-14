@@ -19,6 +19,7 @@
 		D4704C8824AC591700100641 /* OxfordDictionaryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4704C8724AC591700100641 /* OxfordDictionaryManager.swift */; };
 		D4704C8A24AC642B00100641 /* OxfordWordData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4704C8924AC642B00100641 /* OxfordWordData.swift */; };
 		D47E9A5026C4B310000EF5DE /* CollectionCreatorAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47E9A4F26C4B310000EF5DE /* CollectionCreatorAlert.swift */; };
+		D47E9A5326C98CDB000EF5DE /* SearcherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47E9A5226C98CDB000EF5DE /* SearcherViewController.swift */; };
 		D486B32F24F32391007AA2D6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D486B32E24F32391007AA2D6 /* GoogleService-Info.plist */; };
 		D486B33324F41C7C007AA2D6 /* AuthenticationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D486B33224F41C7C007AA2D6 /* AuthenticationViewController.swift */; };
 		D486B33524F41CFC007AA2D6 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D486B33424F41CFC007AA2D6 /* LoginViewController.swift */; };
@@ -59,6 +60,7 @@
 		D4704C8724AC591700100641 /* OxfordDictionaryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OxfordDictionaryManager.swift; sourceTree = "<group>"; };
 		D4704C8924AC642B00100641 /* OxfordWordData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OxfordWordData.swift; sourceTree = "<group>"; };
 		D47E9A4F26C4B310000EF5DE /* CollectionCreatorAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionCreatorAlert.swift; sourceTree = "<group>"; };
+		D47E9A5226C98CDB000EF5DE /* SearcherViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearcherViewController.swift; sourceTree = "<group>"; };
 		D486B32E24F32391007AA2D6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D486B33224F41C7C007AA2D6 /* AuthenticationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewController.swift; sourceTree = "<group>"; };
 		D486B33424F41CFC007AA2D6 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -171,6 +173,7 @@
 				D490F0D12515CC3700F906F5 /* CollectionViewController.swift */,
 				D429D4F0266017A5008304F9 /* LearnerViewController.swift */,
 				D490F0CF250D5BD200F906F5 /* AccountViewController.swift */,
+				D47E9A5226C98CDB000EF5DE /* SearcherViewController.swift */,
 				D491FCE1248891E000B66A67 /* SnapperViewController.swift */,
 				D491FCE32488A7CA00B66A67 /* ChooserViewController.swift */,
 				D42B48F224A71B670054CE66 /* DictionaryViewController.swift */,
@@ -333,6 +336,7 @@
 				D42B48F324A71B670054CE66 /* DictionaryViewController.swift in Sources */,
 				D45DAE8C26C1827A00910B2E /* LibraryCollection.swift in Sources */,
 				D4DB52962480CE1D00F48A83 /* LibraryViewController.swift in Sources */,
+				D47E9A5326C98CDB000EF5DE /* SearcherViewController.swift in Sources */,
 				D429D4F1266017A5008304F9 /* LearnerViewController.swift in Sources */,
 				D4DB52922480CE1D00F48A83 /* AppDelegate.swift in Sources */,
 				D488F414248E0116001D25CC /* CollectionViewCell.swift in Sources */,

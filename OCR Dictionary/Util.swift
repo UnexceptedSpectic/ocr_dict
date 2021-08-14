@@ -9,6 +9,7 @@
 import Foundation
 import DictionaryCoding
 import UIKit
+import Firebase
 
 func parseJSON<T: Decodable>(jsonData: Data, dataModel: T.Type) -> T? {
     
@@ -88,5 +89,14 @@ extension UIViewController {
         // Return the view that presented the input modal view controller
         let navControllers = (modalController.presentingViewController as! UINavigationController).viewControllers
         return navControllers[navControllers.count - 1]
+    }
+}
+
+func signOutAndGoHome(navigationController: UINavigationController?) {
+    do {
+        try Auth.auth().signOut()
+        navigationController?.popToRootViewController(animated: false)
+    } catch let error as NSError {
+        print("Error signing out: \(error).")
     }
 }

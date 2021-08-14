@@ -61,7 +61,11 @@ class LibraryViewController: UIViewController {
         
         collectionView.isHidden = false
     }
-
+    
+    @IBAction func didTapSignOut(_ sender: UIBarButtonItem) {
+        signOutAndGoHome(navigationController: navigationController)
+    }
+    
     @IBAction func didTapCaptureButton(_ sender: UIButton) {
         self.performSegue(withIdentifier: "HomeToSnapper", sender: self)
     }
