@@ -66,11 +66,7 @@ class LibraryViewController: UIViewController {
         signOutAndGoHome(navigationController: navigationController)
     }
     
-    @IBAction func didTapCaptureButton(_ sender: UIButton) {
-        self.performSegue(withIdentifier: "HomeToSnapper", sender: self)
-    }
-    
-    @IBAction func addCollectionItem(_ sender: UIBarButtonItem) {
+    @IBAction func didTapAddCollection(_ sender: UIBarButtonItem) {
         // Create an alert
         let alert = CollectionCreatorAlert(collectionView: self.collectionView, firestoreM: self.firestoreM!).alert!
         

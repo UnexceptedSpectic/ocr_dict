@@ -24,6 +24,7 @@
         
         var delegate: OxfordWordDataDelegate?
         
+        // TODO: Use the Lemmas endpoint first to link an inflected form back to its headword (e.g., pixels --> pixel).
         func getDefinitionData(word: String) {
             
             let urlString = "https://od-api.oxforddictionaries.com/api/v2/\(endpoint)/\(language_code)/\(word)"

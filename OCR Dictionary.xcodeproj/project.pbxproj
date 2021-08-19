@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1482D02CE385ABBEAFA37BA2 /* Pods_OCR_Dictionary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7ECD172BFD23DE7E5AB29293 /* Pods_OCR_Dictionary.framework */; };
+		D40188A726CE041D00C6794B /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40188A626CE041D00C6794B /* HistoryViewController.swift */; };
 		D429D4F1266017A5008304F9 /* LearnerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D429D4F0266017A5008304F9 /* LearnerViewController.swift */; };
 		D42B48F024A4F5010054CE66 /* TessResultTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42B48EE24A4F5010054CE66 /* TessResultTableCell.swift */; };
 		D42B48F124A4F5010054CE66 /* TessResultCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D42B48EF24A4F5010054CE66 /* TessResultCell.xib */; };
@@ -50,6 +51,7 @@
 		3914AB5D72CF1AAFCFF4AE1F /* Pods-OCR Dictionary.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OCR Dictionary.release.xcconfig"; path = "Target Support Files/Pods-OCR Dictionary/Pods-OCR Dictionary.release.xcconfig"; sourceTree = "<group>"; };
 		7641B573CFC615E9BE601FBF /* Pods-OCR Dictionary.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OCR Dictionary.debug.xcconfig"; path = "Target Support Files/Pods-OCR Dictionary/Pods-OCR Dictionary.debug.xcconfig"; sourceTree = "<group>"; };
 		7ECD172BFD23DE7E5AB29293 /* Pods_OCR_Dictionary.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OCR_Dictionary.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D40188A626CE041D00C6794B /* HistoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
 		D429D4F0266017A5008304F9 /* LearnerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnerViewController.swift; sourceTree = "<group>"; };
 		D42B48EE24A4F5010054CE66 /* TessResultTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TessResultTableCell.swift; sourceTree = "<group>"; };
 		D42B48EF24A4F5010054CE66 /* TessResultCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TessResultCell.xib; sourceTree = "<group>"; };
@@ -178,6 +180,7 @@
 				D491FCE32488A7CA00B66A67 /* ChooserViewController.swift */,
 				D42B48F224A71B670054CE66 /* DictionaryViewController.swift */,
 				D48D2C2E260E185500CFF6CF /* WordSaverViewController.swift */,
+				D40188A626CE041D00C6794B /* HistoryViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -329,6 +332,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D40188A726CE041D00C6794B /* HistoryViewController.swift in Sources */,
 				D48D2C2F260E185500CFF6CF /* WordSaverViewController.swift in Sources */,
 				D48D2C31260EE65800CFF6CF /* FirestoreManager.swift in Sources */,
 				D490F0D22515CC3700F906F5 /* CollectionViewController.swift in Sources */,

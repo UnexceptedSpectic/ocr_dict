@@ -333,6 +333,22 @@
             </objects>
             <point key="canvasLocation" x="3788.4057971014495" y="470.75892857142856"/>
         </scene>
+        <!--History View Controller-->
+        <scene sceneID="RIr-JY-5I0">
+            <objects>
+                <viewController id="b3c-06-M97" customClass="HistoryViewController" customModule="OCR_Dictionary" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="94Y-kD-AvI">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="623"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="uSL-8O-aPU"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="XIs-XZ-6ZE"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="uCO-YK-bfR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5550" y="906"/>
+        </scene>
         <!--Searcher View Controller-->
         <scene sceneID="X6A-5T-W46">
             <objects>
@@ -420,7 +436,7 @@
                                         <subviews>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="books.vertical" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="Gwd-6T-ohK" userLabel="image">
                                                 <rect key="frame" x="0.0" y="4" width="75" height="34"/>
-                                                <color key="tintColor" systemColor="labelColor"/>
+                                                <color key="tintColor" systemColor="systemIndigoColor"/>
                                             </imageView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Library" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fjy-jh-k0g" userLabel="label">
                                                 <rect key="frame" x="0.0" y="38" width="75" height="10"/>
@@ -533,6 +549,9 @@
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="crd-sp-MGT" userLabel="historyButton">
                                                 <rect key="frame" x="0.0" y="0.0" width="75" height="50"/>
                                                 <color key="tintColor" systemColor="labelColor"/>
+                                                <connections>
+                                                    <segue destination="b3c-06-M97" kind="show" id="fEf-6N-jPG"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OHg-Dl-I74" userLabel="libraryButton">
                                                 <rect key="frame" x="75" y="0.0" width="75" height="50"/>
@@ -542,18 +561,21 @@
                                                 <rect key="frame" x="150" y="0.0" width="75" height="50"/>
                                                 <color key="tintColor" systemColor="labelColor"/>
                                                 <connections>
-                                                    <action selector="didTapCaptureButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="lTe-hf-O8B"/>
+                                                    <segue destination="qn7-PX-Wh5" kind="show" id="6Zp-hu-C2Z"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gUW-0p-SYP" userLabel="searchButton">
                                                 <rect key="frame" x="225" y="0.0" width="75" height="50"/>
                                                 <color key="tintColor" systemColor="labelColor"/>
+                                                <connections>
+                                                    <segue destination="Cvo-mo-bLn" kind="show" id="dpB-xp-0hh"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h5P-gX-C85" userLabel="accountButton">
                                                 <rect key="frame" x="300" y="0.0" width="75" height="50"/>
                                                 <color key="tintColor" systemColor="labelColor"/>
                                                 <connections>
-                                                    <segue destination="AVA-uh-Sdo" kind="show" id="JeA-yv-QnY"/>
+                                                    <segue destination="AVA-uh-Sdo" kind="show" identifier="" id="JeA-yv-QnY"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -621,7 +643,7 @@
                         <barButtonItem key="rightBarButtonItem" image="plus" catalog="system" id="gHd-Hj-CYF">
                             <color key="tintColor" systemColor="labelColor"/>
                             <connections>
-                                <action selector="addCollectionItem:" destination="BYZ-38-t0r" id="cBR-b8-kDg"/>
+                                <action selector="didTapAddCollection:" destination="BYZ-38-t0r" id="bKw-xI-mmO"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -631,9 +653,7 @@
                         <outlet property="collectionView" destination="Pel-Jr-KOi" id="KHO-Ba-6O7"/>
                         <outlet property="collectionsLoadingIndicator" destination="4Cs-jo-uqc" id="UQU-hL-POK"/>
                         <outlet property="topNav" destination="LHm-hX-3DD" id="gec-0B-IkF"/>
-                        <segue destination="qn7-PX-Wh5" kind="show" identifier="HomeToSnapper" id="pPm-xx-56a"/>
                         <segue destination="g5H-a4-3py" kind="show" identifier="LibraryToCollection" id="kVg-Tt-FEd"/>
-                        <segue destination="Cvo-mo-bLn" kind="show" identifier="LibraryToSearcher" id="TGA-Ki-JjK"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -778,7 +798,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="63P-wD-ryW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4682" y="908"/>
+            <point key="canvasLocation" x="4682" y="906"/>
         </scene>
         <!--Learner View Controller-->
         <scene sceneID="v7B-hm-SRZ">
@@ -1465,7 +1485,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="InM-ae-WOH"/>
+        <segue reference="6MJ-99-99y"/>
         <segue reference="AaT-Dv-Aac"/>
     </inferredMetricsTieBreakers>
     <resources>
@@ -1495,6 +1515,9 @@
         </systemColor>
         <systemColor name="systemBlueColor">
             <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemIndigoColor">
+            <color red="0.34509803921568627" green="0.33725490196078434" blue="0.83921568627450982" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemPinkColor">
             <color red="1" green="0.17647058823529413" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
