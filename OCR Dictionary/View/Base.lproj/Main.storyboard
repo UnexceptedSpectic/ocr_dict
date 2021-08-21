@@ -198,7 +198,7 @@
             </objects>
             <point key="canvasLocation" x="3791.3043478260875" y="-194.19642857142856"/>
         </scene>
-        <!--Account View Controller-->
+        <!--Account-->
         <scene sceneID="1tH-Zc-05R">
             <objects>
                 <viewController id="AVA-uh-Sdo" customClass="AccountViewController" customModule="OCR_Dictionary" customModuleProvider="target" sceneMemberID="viewController">
@@ -220,7 +220,7 @@
                             <constraint firstItem="IHf-im-eZU" firstAttribute="trailing" secondItem="va1-ea-MPi" secondAttribute="trailing" id="HS8-Kj-ctI"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="qQT-74-sYw">
+                    <navigationItem key="navigationItem" title="Account" id="qQT-74-sYw">
                         <barButtonItem key="rightBarButtonItem" title="Sign Out" id="TTi-Vx-v2t">
                             <connections>
                                 <action selector="didTapSignOut:" destination="AVA-uh-Sdo" id="DOT-Dk-3c6"/>
@@ -333,7 +333,7 @@
             </objects>
             <point key="canvasLocation" x="3788.4057971014495" y="470.75892857142856"/>
         </scene>
-        <!--History View Controller-->
+        <!--History-->
         <scene sceneID="RIr-JY-5I0">
             <objects>
                 <viewController id="b3c-06-M97" customClass="HistoryViewController" customModule="OCR_Dictionary" customModuleProvider="target" sceneMemberID="viewController">
@@ -343,13 +343,13 @@
                         <viewLayoutGuide key="safeArea" id="uSL-8O-aPU"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
-                    <navigationItem key="navigationItem" id="XIs-XZ-6ZE"/>
+                    <navigationItem key="navigationItem" title="History" id="XIs-XZ-6ZE"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uCO-YK-bfR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="5550" y="906"/>
         </scene>
-        <!--Searcher View Controller-->
+        <!--Search-->
         <scene sceneID="X6A-5T-W46">
             <objects>
                 <viewController id="Cvo-mo-bLn" customClass="SearcherViewController" customModule="OCR_Dictionary" customModuleProvider="target" sceneMemberID="viewController">
@@ -593,7 +593,7 @@
                             <constraint firstItem="mxI-hW-BnH" firstAttribute="top" secondItem="RsJ-gQ-7o6" secondAttribute="bottom" id="yES-pB-sLi"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="ATu-aZ-6B0"/>
+                    <navigationItem key="navigationItem" title="Search" id="ATu-aZ-6B0"/>
                     <connections>
                         <outlet property="searchBar" destination="SlV-HD-jV7" id="liI-bM-CN7"/>
                         <outlet property="suggestionTable" destination="RsJ-gQ-7o6" id="Md3-uv-dzQ"/>
@@ -604,7 +604,7 @@
             </objects>
             <point key="canvasLocation" x="6375" y="907"/>
         </scene>
-        <!--Library View Controller-->
+        <!--Library-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="LibraryViewController" customModule="OCR_Dictionary" customModuleProvider="target" sceneMemberID="viewController">
@@ -868,8 +868,7 @@
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Nnl-JZ-RVD" secondAttribute="trailing" constant="75" id="n2H-57-MgJ"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="LHm-hX-3DD">
-                        <nil key="title"/>
+                    <navigationItem key="navigationItem" title="Library" id="LHm-hX-3DD">
                         <barButtonItem key="leftBarButtonItem" image="arrow.up.left.square" catalog="system" id="cgZ-mS-Lrw">
                             <color key="tintColor" systemColor="labelColor"/>
                             <connections>
@@ -1036,7 +1035,7 @@
             </objects>
             <point key="canvasLocation" x="4682" y="906"/>
         </scene>
-        <!--Learner View Controller-->
+        <!--Quiz-->
         <scene sceneID="v7B-hm-SRZ">
             <objects>
                 <viewController id="gOL-Ii-Lpq" customClass="LearnerViewController" customModule="OCR_Dictionary" customModuleProvider="target" sceneMemberID="viewController">
@@ -1046,13 +1045,13 @@
                         <viewLayoutGuide key="safeArea" id="ksk-dl-25a"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
-                    <navigationItem key="navigationItem" id="l8U-tM-oXr"/>
+                    <navigationItem key="navigationItem" title="Quiz" id="l8U-tM-oXr"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yTF-At-2Jo" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="4681" y="1688"/>
         </scene>
-        <!--Snapper View Controller-->
+        <!--Recognize-->
         <scene sceneID="FOP-HU-y6X">
             <objects>
                 <viewController id="qn7-PX-Wh5" customClass="SnapperViewController" customModule="OCR_Dictionary" customModuleProvider="target" sceneMemberID="viewController">
@@ -1126,7 +1125,7 @@
                             <constraint firstItem="hF3-DC-Rmr" firstAttribute="leading" secondItem="Xl6-6h-BAe" secondAttribute="leading" id="yY5-2V-hPa"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="L6X-YG-Vsu"/>
+                    <navigationItem key="navigationItem" title="Recognize" id="L6X-YG-Vsu"/>
                     <connections>
                         <outlet property="cameraView" destination="1Vu-JP-ibv" id="jye-UG-KaS"/>
                         <outlet property="capturingIndicator" destination="Pxv-Ir-E11" id="LUV-RW-lN2"/>
@@ -1138,7 +1137,7 @@
             </objects>
             <point key="canvasLocation" x="5550.7246376811599" y="138.61607142857142"/>
         </scene>
-        <!--Chooser View Controller-->
+        <!--Results-->
         <scene sceneID="zct-oa-hTZ">
             <objects>
                 <viewController id="dza-Pd-qS9" customClass="ChooserViewController" customModule="OCR_Dictionary" customModuleProvider="target" sceneMemberID="viewController">
@@ -1166,7 +1165,7 @@
                                             <constraint firstAttribute="height" constant="30" id="UZz-Z6-UXj"/>
                                             <constraint firstAttribute="width" constant="30" id="WOJ-aC-7rt"/>
                                         </constraints>
-                                        <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="tintColor" systemColor="labelColor"/>
                                         <state key="normal" backgroundImage="arrow.left" catalog="system"/>
                                         <connections>
                                             <action selector="didTapBack:" destination="dza-Pd-qS9" eventType="touchUpInside" id="uMc-wI-eg2"/>
@@ -1215,7 +1214,7 @@
                             <constraint firstItem="3A3-cZ-jnM" firstAttribute="bottom" secondItem="UeJ-vd-IbX" secondAttribute="bottom" id="thV-WZ-1R3"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="XCa-sE-2kX"/>
+                    <navigationItem key="navigationItem" title="Results" id="XCa-sE-2kX"/>
                     <connections>
                         <outlet property="previewImage" destination="UeJ-vd-IbX" id="T6f-hf-ugo"/>
                         <outlet property="resultTableView" destination="c6a-XY-tri" id="GGt-lx-EO9"/>
@@ -1226,7 +1225,7 @@
             </objects>
             <point key="canvasLocation" x="6375.36231884058" y="138.61607142857142"/>
         </scene>
-        <!--Dictionary View Controller-->
+        <!--Definitions-->
         <scene sceneID="zee-3d-rDk">
             <objects>
                 <viewController id="YpC-SB-0Gw" customClass="DictionaryViewController" customModule="OCR_Dictionary" customModuleProvider="target" sceneMemberID="viewController">
@@ -1608,7 +1607,7 @@
                             <constraint firstItem="29X-O8-IXk" firstAttribute="trailing" secondItem="Mzd-vI-Mdk" secondAttribute="trailing" id="WzE-ot-Nxx"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="7LS-aw-lAq">
+                    <navigationItem key="navigationItem" title="Definitions" id="7LS-aw-lAq">
                         <barButtonItem key="rightBarButtonItem" title="Save" id="Wbo-4z-2aL">
                             <connections>
                                 <action selector="didTapSave:" destination="YpC-SB-0Gw" id="VQ7-kn-UyQ"/>
@@ -1757,7 +1756,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="6MJ-99-99y"/>
+        <segue reference="Abw-WG-nMq"/>
         <segue reference="MRY-hl-c13"/>
     </inferredMetricsTieBreakers>
     <resources>

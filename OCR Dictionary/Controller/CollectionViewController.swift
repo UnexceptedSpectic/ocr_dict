@@ -24,6 +24,9 @@ class CollectionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Set nav title to name of collection
+        navigationController?.viewControllers.last?.navigationItem.title = State.instance.userData!.collections[self.collectionIndex!].name
+        
         // Listen for updated userData
         State.instance.userDataUpdateDelegates.append(self)
         
