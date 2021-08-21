@@ -19,9 +19,12 @@ class DictionaryViewController: UIViewController {
     var queryWord: String?
     var wordData: OxfordWordData?
     var wordDataGetterGroup: DispatchGroup?
+    var suggestionsGetterGroup: DispatchGroup?
     var definitionTableGroup = DispatchGroup()
     var cells: [DictTableCell]?
     var firestoreManager: FirestoreManager?
+    var oxfordDictionaryManager = OxfordDictionaryManager()
+    var suggestions: [String]?
     
     // For managing definition star state
     var starHeldDown: Bool = false
@@ -31,8 +34,8 @@ class DictionaryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Configure the result table view
-        dicitonaryTableView.allowsSelection = false
+        // Configure oxford deletages
+        self.oxfordDictionaryManager.headwordDelegate = self
         
         // Configure save button
         self.saveBarButton.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.gray], for: .disabled)
@@ -51,8 +54,8 @@ class DictionaryViewController: UIViewController {
         self.firestoreManager!.userDataDelegate = self
         
         // Perform firestore/oxford dict word queries on background thread
-        wordDataGetterGroup = DispatchGroup()
-        wordDataGetterGroup!.enter()
+        self.wordDataGetterGroup = DispatchGroup()
+        self.wordDataGetterGroup!.enter()
         
         DispatchQueue.main.async {
             // Fetch word cells from firestore
@@ -64,7 +67,7 @@ class DictionaryViewController: UIViewController {
         DispatchQueue.main.async {
             
             self.wordDataGetterGroup!.notify(queue: .main) {
-                                
+                
                 // Set up dict table view and reload view, now that data has been obtained
                 self.dicitonaryTableView.delegate = self
                 self.dicitonaryTableView.dataSource = self
@@ -131,7 +134,7 @@ class DictionaryViewController: UIViewController {
                     }
                     break
                 }
-
+                
                 // Sleep for 0.001 seconds between star hold duration checks
                 usleep(1000)
             }
@@ -143,12 +146,12 @@ class DictionaryViewController: UIViewController {
         // Required to terminate async function in didTapStar()
         self.starHeldDown = false
         
-       // Toggle definition cell as starred/not
+        // Toggle definition cell as starred/not
         let cellIndex = sender.getIndexPath()!.row
         let cell = self.cells![cellIndex] as! DefinitionCell
         
         if self.defaultDefinitionCellIndexUpdatePending {
-        // Sufficient hold event
+            // Sufficient hold event
             // Unsave previous default definition cell
             if let previousDefaultDefinitionCellIndex = self.defaultDefinitionCellIndex {
                 let previousDefaultDefinitionCell = self.cells![previousDefaultDefinitionCellIndex] as! DefinitionCell
@@ -160,7 +163,7 @@ class DictionaryViewController: UIViewController {
             // Update index
             self.defaultDefinitionCellIndex = cellIndex
         } else {
-        // Tap event
+            // Tap event
             if (cell.saved) {
                 cell.saved = false
                 if self.defaultDefinitionCellIndex == cellIndex {
@@ -175,10 +178,10 @@ class DictionaryViewController: UIViewController {
         self.defaultDefinitionCellIndexUpdatePending = false
         
         self.cells![cellIndex] = cell
-                
+        
         // Enable/disable save button
         setSaveButtonState()
-
+        
         // Refresh table view
         self.dicitonaryTableView.reloadData()
     }
@@ -230,7 +233,7 @@ class DictionaryViewController: UIViewController {
         return savedCellIndexes
     }
     
-    func getCellStructs(wordDataResults: [Result]?) -> [DictTableCell]? {
+    func getCellStructs(wordDataResults: [WordResult]?) -> [DictTableCell]? {
         // Create a list of cell objects that describe cell type and a cell content's location in the Oxford API data structure
         if let cells = self.cells {
             return cells
@@ -248,6 +251,12 @@ extension DictionaryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         tableView.deselectRow(at: indexPath, animated: true)
+        let cell = self.cells![indexPath.row]
+        if cell is RootWordCell {
+            self.queryWord = (cell as! RootWordCell).word.string
+            self.cells = nil
+            self.fetchWordDataReloadTable()
+        }
         
     }
     
@@ -286,9 +295,9 @@ extension DictionaryViewController: UITableViewDataSource {
             resultNumLabel.text = String(cStruct.indexLocation[0] + 1)
             phoneticLabel.attributedText = cStruct.phoneticText
             // Set name label width
-            wordLabel.constraintWithIdentifier("wordLabelWidth")!.constant = wordLabel.intrinsicContentSize.width
+            wordLabel.firstConstraintWithIdentifier("wordLabelWidth")!.constant = wordLabel.intrinsicContentSize.width
             // Set result number label width
-            resultNumLabel.constraintWithIdentifier("resultNumLabelWidth")!.constant = resultNumLabel.intrinsicContentSize.width
+            resultNumLabel.firstConstraintWithIdentifier("resultNumLabelWidth")!.constant = resultNumLabel.intrinsicContentSize.width
         } else if cellStruct is LexicalCategoryCell {
             let cStruct = cellStruct as! LexicalCategoryCell
             // Create cell from storyboard prototype cell for word category
@@ -339,53 +348,83 @@ extension DictionaryViewController: UITableViewDataSource {
             let originLabel = cell!.viewWithTag(1) as! UILabel
             originLabel.attributedText = cStruct.etymology
         } else if cellStruct is NoResultCell {
-            // TODO: Create dedicated cell to handle cases when a word is not found in the dictionary
             cell = tableView.dequeueReusableCell(withIdentifier: K.tables.dictionary.cell.nib.noResult, for: indexPath)
+            if self.suggestions == nil {
+                // Get word suggestions on background thread
+                self.suggestionsGetterGroup = DispatchGroup()
+                self.suggestionsGetterGroup!.enter()
+                DispatchQueue.main.async {
+                    self.oxfordDictionaryManager.getHeadword(word: self.queryWord!)
+                    // Wait for completion of above task
+                    self.suggestionsGetterGroup!.notify(queue: .main) {
+                        self.dicitonaryTableView.reloadData()
+                    }
+                }
+            }
+        } else if cellStruct is RootWordCell {
+            let cStruct = cellStruct as! RootWordCell
+            cell = tableView.dequeueReusableCell(withIdentifier: K.tables.dictionary.cell.nib.rootWord, for: indexPath)
+            let rootWordLabel = cell?.viewWithTag(1) as! UILabel
+            rootWordLabel.attributedText = cStruct.word
         }
         else {
             print("Error: Cell type could not be determined.")
         }
         
+        // Don't highlight cell on tap
+        cell!.selectionStyle = .none
+        
+        // Modify cell corner curves and cell-container margins. Changes act on cell prototype, not its instance, so each cell should have these properties configured here.
         let containerView = cell!.contentView.subviews[0]
-        if (indexPath.row == 0 || (resultIndex != 0 && cells![indexPath.row - 1].indexLocation[0] == resultIndex - 1) ) {
-            // Round top corners of first cell. Acts on cell prototype, not its instance.
+        let firstCell: Bool = (indexPath.row == 0)
+        let lastCell: Bool = (indexPath.row + 1 == cells!.count)
+        let followingFirstResultCell: Bool = (resultIndex != 0 && cells![indexPath.row - 1].indexLocation[0] == resultIndex - 1)
+        let lastCellInResult: () -> Bool = {(self.cells![indexPath.row + 1].indexLocation[0] == resultIndex + 1)}
+        
+        // For first cell of each 'result' sequence of cells OR RootWord cell.
+        if (firstCell || followingFirstResultCell) {
+            // Round top corners
             containerView.layer.cornerRadius = 10
             containerView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
         }
         
-        // Logic for last cell in each result. Acts on cell prototype, not its instance.
-        if indexPath.row + 1 == cells!.count || cells![indexPath.row + 1].indexLocation[0] == resultIndex + 1 {
+        // For last cell in each result.
+        if (lastCell || lastCellInResult()) {
             // Round bottom corners
             containerView.layer.cornerRadius = 10
             let bottomCorners = CACornerMask([.layerMinXMaxYCorner, .layerMaxXMaxYCorner])
-            if cellStruct is NoResultCell {
+            // Round all corners for NoResult and RootWord cells
+            if (cellStruct is NoResultCell || cellStruct is RootWordCell) {
                 containerView.layer.maskedCorners = containerView.layer.maskedCorners.union(bottomCorners)
             } else {
                 containerView.layer.maskedCorners = bottomCorners
             }
             // Set result bottom margin for cells that don't have etymology info
-            if !(cellStruct is OriginCell) {
-                containerView.constraintWithIdentifier("nonLastCellBottomMargin")?.constant = 20
+            if cellStruct is DefinitionCell {
+                cell!.contentView.firstConstraintWithIdentifier("resultContainerBottomMargin")!.constant = 20
             }
         }
         
+        // TODO: add activity indicator
+        
         // Set result container top margins
-        if indexPath.row == 0 {
-            containerView.constraintWithIdentifier("resultContainerTopMargin")?.constant = 20
-        } else if cells![indexPath.row - 1].indexLocation[0] == resultIndex - 1 {
-            containerView.constraintWithIdentifier("resultContainerTopMargin")!.constant = 10
+        if firstCell {
+            cell!.contentView.firstConstraintWithIdentifier("resultContainerTopMargin")!.constant = 20
+        } else if followingFirstResultCell {
+            cell!.contentView.firstConstraintWithIdentifier("resultContainerTopMargin")!.constant = 10
+            if (resultIndex == 1 && cellStruct is RootWordCell) {
+                cell!.contentView.firstConstraintWithIdentifier("resultContainerTopMargin")!.constant = 20
+            }
         }
         
         // Set result container bottom margins
-        if indexPath.row + 1 == cells!.count {
-            containerView.superview!.constraintWithIdentifier("resultContainerBottomMargin")!.constant = 20
-        } else if cells![indexPath.row + 1].indexLocation[0] == resultIndex + 1 {
-            containerView.superview!.constraintWithIdentifier("resultContainerBottomMargin")!.constant = 0
+        if lastCell {
+            cell!.contentView.firstConstraintWithIdentifier("resultContainerBottomMargin")!.constant = 20
+        } else if lastCellInResult() {
+            cell!.contentView.firstConstraintWithIdentifier("resultContainerBottomMargin")!.constant = 0
         }
         
         cell!.layoutIfNeeded()
-        
-        // TODO: Set star as outlined or filled based on whether word definition is saved for user.
         
         return cell!
         
@@ -422,6 +461,19 @@ extension DictionaryViewController: UITableViewDataSource {
     
 }
 
+extension DictionaryViewController: OxfordHeadwordDelegate {
+    func didGetHeadwords(headwords: [String]) {
+        self.suggestions = headwords
+        // Create a dedicated HeadwordCell for each suggested headword
+        self.suggestions!.forEach({ self.cells!.append(RootWordCell(
+                                                        indexLocation: [self.cells!.count],
+                                                        word: NSAttributedString(
+                                                            string: $0,
+                                                            attributes: K.stringAttributes.heading2))) })
+        self.suggestionsGetterGroup!.leave()
+    }
+}
+
 extension DictionaryViewController: OxfordWordDataDelegate {
     
     func didGetWordData(wordData: OxfordWordData) {
@@ -446,9 +498,8 @@ extension DictionaryViewController: FirestoreWordDataDelegate {
             self.firestoreManager?.getUserData()
         } else {
             // No word data found in firestore. Query oxford api and save result to firestore
-            var dictionaryManager = OxfordDictionaryManager()
-            dictionaryManager.delegate = self
-            dictionaryManager.getDefinitionData(word: self.queryWord!)
+            self.oxfordDictionaryManager.wordDataDelegate = self
+            self.oxfordDictionaryManager.getDefinitionData(word: self.queryWord!)
         }
     }
     
@@ -475,8 +526,18 @@ extension UIView {
     /// Returns the first constraint with the given identifier, if available.
     ///
     /// - Parameter identifier: The constraint identifier.
-    func constraintWithIdentifier(_ identifier: String) -> NSLayoutConstraint? {
-        return self.constraints.first { $0.identifier == identifier }
+    func firstConstraintWithIdentifier(_ identifier: String) -> NSLayoutConstraint? {
+        let constraint = self.constraints.first { $0.identifier == identifier }
+        if constraint != nil  {
+            return constraint
+        } else {
+            for subview in self.subviews {
+                if let constraint = subview.firstConstraintWithIdentifier(identifier) {
+                    return constraint
+                }
+            }
+        }
+        return nil
     }
 }
 

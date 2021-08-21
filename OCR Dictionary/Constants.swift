@@ -75,6 +75,17 @@ struct K {
             }
         }
         
+        struct suggestion {
+            
+            struct cell {
+                
+                struct nib {
+                    
+                    static let value = "suggestionCell"
+                }
+            }
+        }
+        
         struct dictionary {
             
             struct cell {
@@ -87,6 +98,7 @@ struct K {
                     static let secondaryDefenition = "secondaryDefenition"
                     static let origin = "origin"
                     static let noResult = "noResult"
+                    static let rootWord = "rootWord"
                 }
             }
         }

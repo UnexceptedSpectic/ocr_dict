@@ -47,7 +47,7 @@ class RegisterViewController: UIViewController, UITextFieldDelegate {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         touchesBegan(touches, with: event)
-        
+        // Close keyboard on touch outside of it
         self.view.endEditing(true)
     }
     

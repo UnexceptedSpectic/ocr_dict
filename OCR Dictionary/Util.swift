@@ -82,6 +82,7 @@ func getDateOrTime(dateTime: String) -> String {
 
 extension StringProtocol {
     var firstUppercased: String { prefix(1).uppercased() + dropFirst() }
+    var strip: String { trimmingCharacters(in: .whitespacesAndNewlines) }
 }
 
 extension UIViewController {

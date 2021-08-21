@@ -52,8 +52,13 @@ struct NoResultCell: DictTableCell {
     let indexLocation = [0]
 }
 
+struct RootWordCell: DictTableCell {
+    let indexLocation: [Int]
+    let word: NSAttributedString
+}
+
 struct DictTableCellFactory {
-    static func createCellStructs(wordDataResults: [Result]?) -> [DictTableCell] {
+    static func createCellStructs(wordDataResults: [WordResult]?) -> [DictTableCell] {
         // Create a list of cell objects that describe cell type and a cell content's location in the Oxford API data structure
         
         var cells: [DictTableCell] = []
@@ -64,13 +69,13 @@ struct DictTableCellFactory {
                 
                 var phoneticSpelling: String = ""
                 if let pronunciations = result.lexicalEntries![0].entries![0].pronunciations {
-                    phoneticSpelling = pronunciations.last!.phoneticSpelling!
+                    phoneticSpelling = pronunciations.last!.phoneticSpelling!.strip
                 }
                 
                 cells.append(WordPronounciationCell(
                     indexLocation: [resInd],
                     wordText: NSAttributedString(
-                        string: result.word!,
+                        string: result.word!.strip,
                         attributes: K.stringAttributes.heading1),
                     phoneticText: NSAttributedString(
                         string:  "| \(phoneticSpelling) |",
@@ -83,7 +88,7 @@ struct DictTableCellFactory {
                     cells.append(LexicalCategoryCell(
                         indexLocation: [resInd, lexInd],
                         categoryText: NSAttributedString(
-                            string: entry.lexicalCategory!.id!,
+                            string: entry.lexicalCategory!.id!.strip,
                             attributes: K.stringAttributes.heading2)
                     )
                     )
@@ -116,7 +121,7 @@ struct DictTableCellFactory {
                     cells.append(OriginCell(
                                     indexLocation: [resInd],
                                     etymology: NSAttributedString(
-                                        string: etymologies[0],
+                                        string: etymologies[0].strip,
                                         attributes: K.stringAttributes.primary14)))
                 }
             }
@@ -139,7 +144,7 @@ struct DictTableCellFactory {
         // Add domain text
         if let domains = definitionData.domains {
             definitionText.append(NSAttributedString(
-                                    string: "\(domains[0].text) ",
+                                    string: "\(domains[0].text.strip) ",
                                     attributes: K.stringAttributes.italicTertiary14))
         }
         
@@ -166,7 +171,7 @@ struct DictTableCellFactory {
             return nil
         }
         definitionText.append(NSAttributedString(
-                                string: defText,
+                                string: defText.strip,
                                 attributes: K.stringAttributes.primary14))
         
         // Add definition examples string
@@ -188,7 +193,7 @@ struct DictTableCellFactory {
                 
                 // Add example text
                 examplesText.append(NSAttributedString(
-                                        string: example.text!,
+                                        string: example.text!.strip,
                                         attributes: K.stringAttributes.italicSecondary14))
                 
                 // Separate/punctuate examples
@@ -218,12 +223,12 @@ struct DictTableCellFactory {
         let noteText = NSMutableAttributedString(string: "")
         if note.type == "wordFormNote" {
             noteText.append(NSAttributedString(string: "(", attributes: K.stringAttributes.primary14))
-            noteText.append(NSAttributedString(string: note.text.trimmingCharacters(in: ["\""]), attributes: K.stringAttributes.boldPrimary14))
+            noteText.append(NSAttributedString(string: note.text.trimmingCharacters(in: ["\""]).strip, attributes: K.stringAttributes.boldPrimary14))
             noteText.append(NSAttributedString(string: ") ", attributes: K.stringAttributes.primary14))
         } else if note.type == "grammaticalNote" {
-            noteText.append(NSAttributedString(string: "[\(note.text)] ", attributes: K.stringAttributes.italicTertiary14))
+            noteText.append(NSAttributedString(string: "[\(note.text.strip)] ", attributes: K.stringAttributes.italicTertiary14))
         } else {
-            noteText.append(NSAttributedString(string: "[\(note.text)] ", attributes: K.stringAttributes.italicTertiary14))
+            noteText.append(NSAttributedString(string: "[\(note.text.strip)] ", attributes: K.stringAttributes.italicTertiary14))
             print("New definition note type found: \(note.type)")
         }
         return noteText
@@ -237,7 +242,7 @@ struct DictTableCellFactory {
             } else {
                 registerText = uppercaseFirstCharacter(str: registers[0].text)
             }
-            return NSAttributedString(string: "\(registerText) ", attributes: K.stringAttributes.italicTertiary14)
+            return NSAttributedString(string: "\(registerText.strip) ", attributes: K.stringAttributes.italicTertiary14)
         } else {
             return nil
         }

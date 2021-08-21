@@ -13,22 +13,22 @@ import Foundation
 
 struct OxfordWordData: Decodable, Encodable {
     
-    let results: [Result]?
+    let results: [WordResult]?
     
 }
 
-struct Result: Decodable, Encodable {
+struct WordResult: Decodable, Encodable {
     
     let word: String?
-    let lexicalEntries: [LexicalEntry]?
+    let lexicalEntries: [WordLexicalEntry]?
     
 }
 
-struct LexicalEntry: Decodable, Encodable {
+struct WordLexicalEntry: Decodable, Encodable {
     
     let entries: [Entry]?
     let derivatives: [Derivative]?
-    let lexicalCategory: LexicalCategory?
+    let lexicalCategory: WordLexicalCategory?
     
 }
 
@@ -126,7 +126,7 @@ struct Synonym: Decodable, Encodable {
     
 }
 
-struct LexicalCategory: Decodable, Encodable {
+struct WordLexicalCategory: Decodable, Encodable {
     
     let id: String?
     
