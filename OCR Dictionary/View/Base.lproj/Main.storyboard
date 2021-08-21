@@ -1302,7 +1302,7 @@
                                             <constraints>
                                                 <constraint firstItem="n8p-O4-sy4" firstAttribute="leading" secondItem="LCk-ZC-edp" secondAttribute="leading" constant="10" id="03a-m2-HIf"/>
                                                 <constraint firstAttribute="trailing" secondItem="n8p-O4-sy4" secondAttribute="trailing" constant="10" id="Ci7-qd-y4F"/>
-                                                <constraint firstAttribute="bottom" secondItem="n8p-O4-sy4" secondAttribute="bottom" identifier="resultContainerBottomMargin" id="wCO-Cb-4zJ"/>
+                                                <constraint firstAttribute="bottom" secondItem="n8p-O4-sy4" secondAttribute="bottom" priority="999" identifier="resultContainerBottomMargin" id="wCO-Cb-4zJ"/>
                                                 <constraint firstItem="n8p-O4-sy4" firstAttribute="top" secondItem="LCk-ZC-edp" secondAttribute="top" identifier="resultContainerTopMargin" id="zoF-dz-U7T"/>
                                             </constraints>
                                         </tableViewCellContentView>
@@ -1596,6 +1596,9 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="tfg-zI-e10" userLabel="activityIndicator">
+                                <rect key="frame" x="177.5" y="301.5" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="29X-O8-IXk"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -1605,6 +1608,8 @@
                             <constraint firstItem="Mzd-vI-Mdk" firstAttribute="top" secondItem="29X-O8-IXk" secondAttribute="top" id="QRW-oQ-Lvx"/>
                             <constraint firstItem="Mzd-vI-Mdk" firstAttribute="leading" secondItem="29X-O8-IXk" secondAttribute="leading" id="Wpc-pD-fXL"/>
                             <constraint firstItem="29X-O8-IXk" firstAttribute="trailing" secondItem="Mzd-vI-Mdk" secondAttribute="trailing" id="WzE-ot-Nxx"/>
+                            <constraint firstItem="tfg-zI-e10" firstAttribute="centerY" secondItem="6sg-95-vOq" secondAttribute="centerY" id="hr4-oH-mh9"/>
+                            <constraint firstItem="tfg-zI-e10" firstAttribute="centerX" secondItem="6sg-95-vOq" secondAttribute="centerX" id="xbc-XJ-TwR"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Definitions" id="7LS-aw-lAq">
@@ -1615,7 +1620,8 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="dicitonaryTableView" destination="Mzd-vI-Mdk" id="fuT-77-JXp"/>
+                        <outlet property="activityIndicator" destination="tfg-zI-e10" id="YhW-FI-K6A"/>
+                        <outlet property="dictionaryTableView" destination="Mzd-vI-Mdk" id="fuT-77-JXp"/>
                         <outlet property="saveBarButton" destination="Wbo-4z-2aL" id="rvb-e6-AxU"/>
                         <segue destination="mmo-vr-1EX" kind="presentation" identifier="DictToSaver" id="F0R-Zt-lZX"/>
                     </connections>

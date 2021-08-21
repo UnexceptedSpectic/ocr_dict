@@ -13,8 +13,9 @@ import AudioToolbox.AudioServices
 
 class DictionaryViewController: UIViewController {
     
-    @IBOutlet weak var dicitonaryTableView: UITableView!
+    @IBOutlet weak var dictionaryTableView: UITableView!
     @IBOutlet weak var saveBarButton: UIBarButtonItem!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     var queryWord: String?
     var wordData: OxfordWordData?
@@ -33,6 +34,9 @@ class DictionaryViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Hide activity indicator
+        self.activityIndicator.isHidden = true
         
         // Configure oxford deletages
         self.oxfordDictionaryManager.headwordDelegate = self
@@ -69,9 +73,10 @@ class DictionaryViewController: UIViewController {
             self.wordDataGetterGroup!.notify(queue: .main) {
                 
                 // Set up dict table view and reload view, now that data has been obtained
-                self.dicitonaryTableView.delegate = self
-                self.dicitonaryTableView.dataSource = self
-                self.dicitonaryTableView.reloadData()
+                self.dictionaryTableView.delegate = self
+                self.dictionaryTableView.dataSource = self
+                self.activityIndicator.isHidden = true
+                self.dictionaryTableView.reloadData()
                 
             }
         }
@@ -83,7 +88,7 @@ class DictionaryViewController: UIViewController {
             self.defaultDefinitionCellIndex = 2
             // Set defaultDefinition cell as saved and show it in table
             (self.cells![self.defaultDefinitionCellIndex!] as! DefinitionCell).saved = true
-            self.dicitonaryTableView.reloadData()
+            self.dictionaryTableView.reloadData()
         }
         let presentingViewController = navigationController!.viewControllers[navigationController!.viewControllers.count - 2]
         if (presentingViewController is CollectionViewController) {
@@ -130,7 +135,7 @@ class DictionaryViewController: UIViewController {
                     }
                     DispatchQueue.main.async {
                         // Refresh table view
-                        self.dicitonaryTableView.setNeedsDisplay()
+                        self.dictionaryTableView.setNeedsDisplay()
                     }
                     break
                 }
@@ -183,7 +188,7 @@ class DictionaryViewController: UIViewController {
         setSaveButtonState()
         
         // Refresh table view
-        self.dicitonaryTableView.reloadData()
+        self.dictionaryTableView.reloadData()
     }
     
     func setSaveButtonState() {
@@ -253,6 +258,7 @@ extension DictionaryViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         let cell = self.cells![indexPath.row]
         if cell is RootWordCell {
+            self.activityIndicator.isHidden = false
             self.queryWord = (cell as! RootWordCell).word.string
             self.cells = nil
             self.fetchWordDataReloadTable()
@@ -351,13 +357,15 @@ extension DictionaryViewController: UITableViewDataSource {
             cell = tableView.dequeueReusableCell(withIdentifier: K.tables.dictionary.cell.nib.noResult, for: indexPath)
             if self.suggestions == nil {
                 // Get word suggestions on background thread
+                self.activityIndicator.isHidden = false
                 self.suggestionsGetterGroup = DispatchGroup()
                 self.suggestionsGetterGroup!.enter()
                 DispatchQueue.main.async {
                     self.oxfordDictionaryManager.getHeadword(word: self.queryWord!)
                     // Wait for completion of above task
                     self.suggestionsGetterGroup!.notify(queue: .main) {
-                        self.dicitonaryTableView.reloadData()
+                        self.activityIndicator.isHidden = true
+                        self.dictionaryTableView.reloadData()
                     }
                 }
             }
@@ -375,6 +383,7 @@ extension DictionaryViewController: UITableViewDataSource {
         cell!.selectionStyle = .none
         
         // Modify cell corner curves and cell-container margins. Changes act on cell prototype, not its instance, so each cell should have these properties configured here.
+        // If this section needs to be modified, note that adding constraints may result in conflicts automatically generated cell constraints e.g. 'UIView-Encapsulated-Layout-Height ... (active)' error. To solve this, 'reduce' the priority of your custom constraint in the storyboard e.g. 999 instead of 1000.
         let containerView = cell!.contentView.subviews[0]
         let firstCell: Bool = (indexPath.row == 0)
         let lastCell: Bool = (indexPath.row + 1 == cells!.count)
@@ -404,9 +413,7 @@ extension DictionaryViewController: UITableViewDataSource {
                 cell!.contentView.firstConstraintWithIdentifier("resultContainerBottomMargin")!.constant = 20
             }
         }
-        
-        // TODO: add activity indicator
-        
+                
         // Set result container top margins
         if firstCell {
             cell!.contentView.firstConstraintWithIdentifier("resultContainerTopMargin")!.constant = 20
@@ -423,8 +430,6 @@ extension DictionaryViewController: UITableViewDataSource {
         } else if lastCellInResult() {
             cell!.contentView.firstConstraintWithIdentifier("resultContainerBottomMargin")!.constant = 0
         }
-        
-        cell!.layoutIfNeeded()
         
         return cell!
         
