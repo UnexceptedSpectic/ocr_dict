@@ -14,6 +14,7 @@ class SearcherViewController: UIViewController {
     @IBOutlet weak var suggestionTable: UITableView!
     let textChecker = UITextChecker()
     var suggestions: [String]? = []
+    var selectedWord: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,16 +45,12 @@ class SearcherViewController: UIViewController {
         )
     }
     
-    
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destination.
-     // Pass the selected object to the new view controller.
-     }
-     */
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.destination is DictionaryViewController {
+            let dictVc = segue.destination as! DictionaryViewController
+            dictVc.queryWord = self.selectedWord!.lowercased()
+        }
+    }
     
 }
 
@@ -84,7 +81,8 @@ extension SearcherViewController: UITableViewDataSource {
 
 extension SearcherViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // segue to dict
+        self.selectedWord = tableView.cellForRow(at: indexPath)!.textLabel!.text
+        performSegue(withIdentifier: "SearcherToDictionary", sender: self)
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
