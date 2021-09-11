@@ -266,6 +266,8 @@ class DictionaryViewController: UIViewController {
                 self.firestoreManager!.saveUserData(updatedUserData: State.instance.userData!)
             }
         }
+        // Notify views that rely on state userData of update
+        State.instance.userDataUpdateDelegates.forEach({ $0.updateViews() })
     }
     
 }

@@ -23,6 +23,9 @@ class HistoryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Listen for updated userData
+        State.instance.userDataUpdateDelegates.append(self)
+        
         // Initialize history data
         if State.instance.userData != nil {
             self.filterHistoryData(searchText: searchBar.text)
@@ -105,6 +108,14 @@ class HistoryViewController: UIViewController {
             let dictVc = segue.destination as! DictionaryViewController
             dictVc.queryWord = self.selectedWord!.lowercased()
         }
+    }
+}
+
+extension HistoryViewController: UserDataUpdateDelegate {
+    func updateViews() {
+        self.searchBar.text = nil
+        self.filterHistoryData(searchText: nil)
+        self.historyTable.reloadData()
     }
 }
 
