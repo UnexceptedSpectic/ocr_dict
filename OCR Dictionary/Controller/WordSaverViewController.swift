@@ -27,7 +27,7 @@ class WordSaverViewController: UIViewController {
         super.viewDidLoad()
 
         // Highlight cells based on the word's presence in a collection
-        self.dbSelectedCollectionIndexes = Set(0...((State.instance.userData?.collections.count)! - 1))
+        self.dbSelectedCollectionIndexes = Set(0..<State.instance.userData!.collections.count)
             .filter({ (State.instance.userData?.collections[$0].words
                         .filter({ $0.word == word }).count)! > 0
             })
@@ -74,7 +74,11 @@ class WordSaverViewController: UIViewController {
     
     @IBAction func didTapCreateCollection(_ sender: UIButton) {
         // Create an alert
-        let alert = CollectionCreatorAlert(collectionView: self.collectionView, firestoreM: self.firestoreManager).alert!
+        let alert = CollectionCreatorAlert(
+            collectionView: self.collectionView,
+            firestoreM: self.firestoreManager,
+            uiHandlers: nil
+        ).alert!
 
         // Show the alert
         self.present(alert, animated: true, completion: nil)

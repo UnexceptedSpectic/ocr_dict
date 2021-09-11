@@ -9,11 +9,16 @@
 import Foundation
 import UIKit
 
+struct UIHandlers {
+    let handlers: [(_ callingClass: Any) -> ()]
+    let callingClass: Any
+}
+
 class CollectionCreatorAlert {
     
     var alert: UIAlertController?
     
-    init(collectionView: UICollectionView, firestoreM: FirestoreManager) {
+    init(collectionView: UICollectionView, firestoreM: FirestoreManager, uiHandlers: UIHandlers?) {
         // Create alert controller
         self.alert = UIAlertController(title: "Create a new Collection", message: "Collection name", preferredStyle: .alert)
         
@@ -33,17 +38,19 @@ class CollectionCreatorAlert {
                     dateModified: dtNow,
                     words: []
                 )
-                if State.instance.userData != nil {
-                    State.instance.userData!.collections.append(newCollection)
-                } else {
-                    State.instance.userData = FirestoreUserData(collections: [newCollection])
-                }
+                // Add collection to user data
+                State.instance.userData!.collections.append(newCollection)
                 
                 // Save data to firestore
                 firestoreM.saveUserData(updatedUserData: State.instance.userData!)
                 
                 let indexPath = IndexPath(row: State.instance.userData!.collections.count - 1, section: 0)
                 collectionView.insertItems(at: [indexPath])
+                
+                // Call callingClass-specific handlers
+                if uiHandlers != nil {
+                    uiHandlers!.handlers.forEach({ $0(uiHandlers!.callingClass) })
+                }
             }
         }))
         

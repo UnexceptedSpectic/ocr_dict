@@ -75,6 +75,17 @@ struct K {
             }
         }
         
+        struct history {
+            
+            struct cell {
+                
+                struct nib {
+                    
+                    static let value = "historyCell"
+                }
+            }
+        }
+        
         struct suggestion {
             
             struct cell {

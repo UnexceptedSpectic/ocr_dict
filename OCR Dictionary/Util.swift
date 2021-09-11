@@ -67,6 +67,33 @@ func getDatetimeString() -> String {
     return df.string(from: Date())
 }
 
+func getDateString(dateTime: String) -> String {
+    // Returns either 'Today' or the date as e.g. 'Wednesday, January 1'
+    let df = DateFormatter()
+    df.dateFormat = "M/d/yyyy h:mm a"
+    let date = df.date(from: dateTime)!
+    if Calendar.current.isDateInToday(date) {
+        return "Today"
+    } else {
+        df.setLocalizedDateFormatFromTemplate("EEEE, MMMM d")
+    }
+    return df.string(from: date)
+}
+
+func getDate(dateString: String) -> Date {
+    let df = DateFormatter()
+    df.dateFormat = "EEEE, MMMM d"
+    return df.date(from: dateString)!
+}
+
+func getTime(dateTime: String) -> String {
+    let df = DateFormatter()
+    df.dateFormat = "M/d/yyyy h:mm a"
+    let date = df.date(from: dateTime)!
+    df.setLocalizedDateFormatFromTemplate("h:mm a")
+    return df.string(from: date)
+}
+
 func getDateOrTime(dateTime: String) -> String {
     // Returns the date if not today, else returns the time
     let df = DateFormatter()
@@ -83,6 +110,22 @@ func getDateOrTime(dateTime: String) -> String {
 extension StringProtocol {
     var firstUppercased: String { prefix(1).uppercased() + dropFirst() }
     var strip: String { trimmingCharacters(in: .whitespacesAndNewlines) }
+}
+
+extension UIView {
+    func firstConstraintWithIdentifier(_ identifier: String) -> NSLayoutConstraint? {
+        let constraint = self.constraints.first { $0.identifier == identifier }
+        if constraint != nil  {
+            return constraint
+        } else {
+            for subview in self.subviews {
+                if let constraint = subview.firstConstraintWithIdentifier(identifier) {
+                    return constraint
+                }
+            }
+        }
+        return nil
+    }
 }
 
 extension UIViewController {

@@ -23,6 +23,7 @@ class SearcherViewController: UIViewController {
         self.suggestionTable.delegate = self
         self.suggestionTable.dataSource = self
         
+        // Handle closing keyboard
         self.suggestionTable.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTapSuggestionTable)))
         
     }

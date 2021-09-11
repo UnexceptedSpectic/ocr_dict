@@ -68,21 +68,23 @@ class LibraryViewController: UIViewController {
     
     @IBAction func didTapAddCollection(_ sender: UIBarButtonItem) {
         // Create an alert
-        let alert = CollectionCreatorAlert(collectionView: self.collectionView, firestoreM: self.firestoreM!).alert!
-        
-        // Show/hide add collection instructions label
-        self.toggleInstructionsGivenUserData()
+        let alert = CollectionCreatorAlert(
+            collectionView: self.collectionView,
+            firestoreM: self.firestoreM!,
+            uiHandlers: UIHandlers(handlers: [self.toggleInstructionsGivenUserData], callingClass: self)
+        ).alert!
 
         // Show the alert
         self.present(alert, animated: true, completion: nil)
         
     }
     
-    func toggleInstructionsGivenUserData() {
+    func toggleInstructionsGivenUserData(callingClass: Any) {
+        let handlerClass = callingClass as! LibraryViewController
         if (State.instance.userData!.collections.count == 0) {
-            collectionInstructionsLabel.isHidden = false
+            handlerClass.collectionInstructionsLabel.isHidden = false
         } else {
-            collectionInstructionsLabel.isHidden = true
+            handlerClass.collectionInstructionsLabel.isHidden = true
         }
     }
     
@@ -135,7 +137,7 @@ extension LibraryViewController: FirestoreUserDataDelegate {
         State.instance.userData = userData
         // Show/hide collection instructions
         if userData != nil {
-            toggleInstructionsGivenUserData()
+            toggleInstructionsGivenUserData(callingClass: self)
         } else {
             collectionInstructionsLabel.isHidden = false
         }

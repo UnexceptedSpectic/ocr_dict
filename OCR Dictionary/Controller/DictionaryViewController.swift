@@ -17,6 +17,7 @@ class DictionaryViewController: UIViewController {
     @IBOutlet weak var saveBarButton: UIBarButtonItem!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
+    var previousController: UIViewController?
     var queryWord: String?
     var wordData: OxfordWordData?
     var wordDataGetterGroup: DispatchGroup?
@@ -34,6 +35,9 @@ class DictionaryViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Determine calling/previous view controller
+        self.previousController = navigationController!.viewControllers[navigationController!.viewControllers.count - 1]
         
         // Hide activity indicator
         self.activityIndicator.isHidden = true
@@ -93,7 +97,12 @@ class DictionaryViewController: UIViewController {
         let presentingViewController = navigationController!.viewControllers[navigationController!.viewControllers.count - 2]
         if (presentingViewController is CollectionViewController) {
             let collectionViewController = presentingViewController as! CollectionViewController
-            let updatedUserData = self.firestoreManager!.initOrUpdateUserData(add: self.queryWord!, to: State.instance.userData!.collections[collectionViewController.collectionIndex!].name, usingTemplate: State.instance.userData!, newStarredCellIndexes: self.getSavedCellIndexes(cells: self.cells!), newDefaultDefinitionIndex: self.defaultDefinitionCellIndex)
+            let updatedUserData = self.firestoreManager!.initOrUpdateUserData(
+                add: self.queryWord!,
+                to: State.instance.userData!.collections[collectionViewController.collectionIndex!].name,
+                usingTemplate: State.instance.userData!,
+                newStarredCellIndexes: self.getSavedCellIndexes(cells: self.cells!),
+                newDefaultDefinitionIndex: self.defaultDefinitionCellIndex)
             self.firestoreManager!.saveUserData(updatedUserData: updatedUserData)
             State.instance.userData = updatedUserData
             // Notify views that rely on state userData of update
@@ -246,6 +255,17 @@ class DictionaryViewController: UIViewController {
             return DictTableCellFactory.createCellStructs(wordDataResults: wordDataResults)
         }
         
+    }
+    
+    func updateHistory() {
+        let now = getDatetimeString()
+        if !(self.previousController! is CollectionViewController) {
+            let wordAtSameTimeExists = State.instance.userData!.history.filter({ $0.word == self.queryWord && getTime(dateTime: $0.date) == getTime(dateTime: now) }).count > 0
+            if !wordAtSameTimeExists {
+                State.instance.userData!.history.insert(WordLookup(word: self.queryWord!, date: now), at: 0)
+                self.firestoreManager!.saveUserData(updatedUserData: State.instance.userData!)
+            }
+        }
     }
     
 }
@@ -410,6 +430,7 @@ extension DictionaryViewController: UITableViewDataSource {
             }
             // Set result bottom margin for cells that don't have etymology info
             if cellStruct is DefinitionCell {
+                cell!.contentView.firstConstraintWithIdentifier("definitionBottomMargin")!.constant = 20
                 cell!.contentView.firstConstraintWithIdentifier("resultContainerBottomMargin")!.constant = 20
             }
         }
@@ -454,13 +475,16 @@ extension DictionaryViewController: UITableViewDataSource {
     }
     
     func updateCellStructs(userData: FirestoreUserData) {
-        // User data may or may not contain saved definitions for a word
-        if let starredCellIndexes = self.firestoreManager!.getWordInFirstCollection(for: self.queryWord!, in: userData)?.starredCellIndexes {
-            for cellInd in starredCellIndexes {
+        // Update table with a user's data, if the user has starred definitions of the word before
+        if let firstCollection = self.firestoreManager!.getWordInFirstCollection(for: self.queryWord!, in: userData) {
+            // Update starred indexes
+            for cellInd in firstCollection.starredCellIndexes {
                 let updatedCell = self.cells![cellInd] as! DefinitionCell
                 updatedCell.saved = true
                 self.cells![cellInd] = updatedCell
             }
+            // Update default definition index
+            self.defaultDefinitionCellIndex = firstCollection.defaultDefinitionCellIndex!
         }
     }
     
@@ -487,8 +511,14 @@ extension DictionaryViewController: OxfordWordDataDelegate {
         self.firestoreManager?.saveWordData(for: self.queryWord!, wordData: wordData)
         // Save wordData locally and generate cell structs
         self.wordData = wordData
-        self.cells = getCellStructs(wordDataResults: self.wordData?.results)
-        self.firestoreManager?.getUserData()
+        self.cells = self.getCellStructs(wordDataResults: self.wordData?.results)
+        if State.instance.userData == nil {
+            self.firestoreManager!.getUserData()
+        } else {
+            self.updateHistory()
+            self.updateCellStructs(userData: State.instance.userData!)
+            self.wordDataGetterGroup!.leave()
+        }
     }
     
 }
@@ -499,8 +529,14 @@ extension DictionaryViewController: FirestoreWordDataDelegate {
         if let wordData = wordData {
             print("found word data in firestore")
             self.wordData = wordData
-            self.cells = getCellStructs(wordDataResults: self.wordData?.results)
-            self.firestoreManager?.getUserData()
+            self.cells = self.getCellStructs(wordDataResults: self.wordData?.results)
+            if State.instance.userData == nil {
+                self.firestoreManager!.getUserData()
+            } else {
+                self.updateHistory()
+                self.updateCellStructs(userData: State.instance.userData!)
+                self.wordDataGetterGroup!.leave()
+            }
         } else {
             // No word data found in firestore. Query oxford api and save result to firestore
             self.oxfordDictionaryManager.wordDataDelegate = self
@@ -515,35 +551,11 @@ extension DictionaryViewController: FirestoreUserDataDelegate {
     func didGetUserData(userData: FirestoreUserData?) {
         print("successfully got user data")
         State.instance.userData = userData
-        if let userData = userData {
-            updateCellStructs(userData: userData)
-            // Update default definition index
-            if let defaultDefinitionCellIndex = self.firestoreManager!.getWordInFirstCollection(for: self.queryWord!, in: userData)?.defaultDefinitionCellIndex {
-                self.defaultDefinitionCellIndex = defaultDefinitionCellIndex
-            }
-        }
+        self.updateHistory()
+        self.updateCellStructs(userData: State.instance.userData!)
         self.wordDataGetterGroup!.leave()
     }
     
-}
-
-extension UIView {
-    /// Returns the first constraint with the given identifier, if available.
-    ///
-    /// - Parameter identifier: The constraint identifier.
-    func firstConstraintWithIdentifier(_ identifier: String) -> NSLayoutConstraint? {
-        let constraint = self.constraints.first { $0.identifier == identifier }
-        if constraint != nil  {
-            return constraint
-        } else {
-            for subview in self.subviews {
-                if let constraint = subview.firstConstraintWithIdentifier(identifier) {
-                    return constraint
-                }
-            }
-        }
-        return nil
-    }
 }
 
 extension DictionaryViewController: UserDataUpdateDelegate {

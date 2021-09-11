@@ -11,6 +11,7 @@ import Foundation
 struct FirestoreUserData: Decodable, Encodable {
     
     var collections: [Collection]
+    var history: [WordLookup]
 }
 
 struct Collection: Decodable, Encodable {
@@ -28,4 +29,10 @@ struct Word: Decodable, Encodable {
     var dateModified: String
     var starredCellIndexes: [Int]
     var defaultDefinitionCellIndex: Int?
+}
+
+struct WordLookup: Decodable, Encodable {
+    
+    let word: String
+    let date: String
 }

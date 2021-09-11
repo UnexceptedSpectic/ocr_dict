@@ -170,7 +170,10 @@ struct FirestoreManager {
                                 dictData: data,
                                 dataModel: FirestoreUserData.self))
                     } else {
-                        self.userDataDelegate?.didGetUserData(userData: nil)
+                        // Initialize user data
+                        let userData = FirestoreUserData(collections: [], history: [])
+                        self.saveUserData(updatedUserData: userData)
+                        self.userDataDelegate?.didGetUserData(userData: userData)
                     }
                     
                 }
@@ -194,6 +197,7 @@ struct FirestoreManager {
         
         if let userData = dbUserData {
             
+            // Update collections
             var updatedCollections: [Collection] = []
             
             // Find all collections that contain the given word
@@ -288,8 +292,9 @@ struct FirestoreManager {
             }
             // Ensure the input collection - the primary one being update/created - is the first element
             updatedCollections = updatedCollections.filter({ $0.name == collectionName }) + updatedCollections.filter({ $0.name != collectionName })
+            
             // Update user data
-            updatedUserData = FirestoreUserData(collections: updatedCollections)
+            updatedUserData = FirestoreUserData(collections: updatedCollections, history: dbUserData!.history)
             
         } else {
             // Initialize user data
@@ -302,7 +307,8 @@ struct FirestoreManager {
                                             word: word,
                                             dateAdded: now, dateModified: now,
                                             starredCellIndexes: starredCellIndexes,
-                                            defaultDefinitionCellIndex: newDefaultDefinitionIndex)])])
+                                            defaultDefinitionCellIndex: newDefaultDefinitionIndex)])],
+                                            history: dbUserData!.history)
         }
         
         return updatedUserData
