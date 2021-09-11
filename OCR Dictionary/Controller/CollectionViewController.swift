@@ -13,6 +13,7 @@ class CollectionViewController: UIViewController {
     @IBOutlet weak var collectionTable: UITableView!
     
     var firestoreManager: FirestoreManager? = FirestoreManager()
+    var collectionName: String?
     var collectionIndex: Int?
     var wordsDataGetterGroup: DispatchGroup? = DispatchGroup()
     var hiddenCollectionTableSections = Set<Int>()
@@ -24,13 +25,26 @@ class CollectionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Determine collection index
+        self.collectionIndex = self.getCollectionIndex(collectionName: self.collectionName!)!
+        
         // Set nav title to name of collection
-        navigationController?.viewControllers.last?.navigationItem.title = State.instance.userData!.collections[self.collectionIndex!].name
+        navigationController?.viewControllers.last?.navigationItem.title = self.collectionName
         
         // Listen for updated userData
         State.instance.userDataUpdateDelegates.append(self)
         
         fetchDataLoadTable()
+    }
+    
+    func getCollectionIndex(collectionName: String) -> Int? {
+        for (ind, collec) in State.instance.userData!.collections.enumerated() {
+            if collec.name == collectionName {
+                return ind
+            }
+        }
+        print("ERROR: Could not find collection with name \(collectionName)")
+        return nil
     }
     
     // Fetch word data and update collection table with it
@@ -110,6 +124,7 @@ class CollectionViewController: UIViewController {
 
 extension CollectionViewController: UserDataUpdateDelegate {
     func updateViews() {
+        self.collectionIndex = self.getCollectionIndex(collectionName: self.collectionName!)!
         self.fetchDataLoadTable()
     }
 }

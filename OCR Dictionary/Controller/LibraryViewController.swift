@@ -17,7 +17,7 @@ class LibraryViewController: UIViewController {
     @IBOutlet weak var addCollectionButton: UIBarButtonItem!
     
     var firestoreM: FirestoreManager?
-    var selectedCollectionIndex: Int?
+    var selectedCollectionName: String?
     
     let gridGapSize: CGFloat = 10
     
@@ -94,7 +94,7 @@ class LibraryViewController: UIViewController {
         // Pass userData and collection index to collection view
         if segue.destination is CollectionViewController {
             let collectionVC = segue.destination as! CollectionViewController
-            collectionVC.collectionIndex = self.selectedCollectionIndex
+            collectionVC.collectionName = self.selectedCollectionName
         }
     }
     
@@ -105,7 +105,7 @@ class LibraryViewController: UIViewController {
 extension LibraryViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
-        self.selectedCollectionIndex = indexPath.row
+        self.selectedCollectionName = State.instance.userData!.collections[indexPath.row].name
         performSegue(withIdentifier: "LibraryToCollection", sender: self)
     }
 }
