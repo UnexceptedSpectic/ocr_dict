@@ -124,8 +124,10 @@ class CollectionViewController: UIViewController {
 
 extension CollectionViewController: UserDataUpdateDelegate {
     func updateViews() {
-        self.collectionIndex = self.getCollectionIndex(collectionName: self.collectionName!)!
-        self.fetchDataLoadTable()
+        DispatchQueue.main.async {
+            self.collectionIndex = self.getCollectionIndex(collectionName: self.collectionName!)!
+            self.fetchDataLoadTable()
+        }
     }
 }
 

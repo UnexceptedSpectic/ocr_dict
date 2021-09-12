@@ -149,6 +149,8 @@ extension LibraryViewController: FirestoreUserDataDelegate {
 
 extension LibraryViewController: UserDataUpdateDelegate {
     func updateViews() {
-        self.collectionView.reloadData()
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
+        }
     }
 }

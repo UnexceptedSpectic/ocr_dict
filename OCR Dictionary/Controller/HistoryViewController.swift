@@ -113,9 +113,11 @@ class HistoryViewController: UIViewController {
 
 extension HistoryViewController: UserDataUpdateDelegate {
     func updateViews() {
-        self.searchBar.text = nil
-        self.filterHistoryData(searchText: nil)
-        self.historyTable.reloadData()
+        DispatchQueue.main.async {
+            self.searchBar.text = nil
+            self.filterHistoryData(searchText: nil)
+            self.historyTable.reloadData()            
+        }
     }
 }
 
