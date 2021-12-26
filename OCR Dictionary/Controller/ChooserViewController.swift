@@ -90,12 +90,12 @@ class ChooserViewController: UIViewController {
     
     @IBAction func didTapClose(_ sender: UIButton) {
         
-        backTwo(animated: true)
+        performSegue(withIdentifier: "ChooserToHome", sender: self)
     }
     
     @IBAction func didTapBack(_ sender: UIButton) {
         
-        navigationController?.popViewController(animated: true)
+        dismiss(animated: true, completion: nil)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

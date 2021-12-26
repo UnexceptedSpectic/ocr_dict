@@ -136,10 +136,11 @@ extension UIViewController {
     }
 }
 
-func signOutAndGoHome(navigationController: UINavigationController?) {
+func signOutAndGoHome(caller: UIViewController) {
     do {
         try Auth.auth().signOut()
-        navigationController?.popToRootViewController(animated: false)
+        caller.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
+
     } catch let error as NSError {
         print("Error signing out: \(error).")
     }

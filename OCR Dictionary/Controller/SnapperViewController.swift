@@ -25,6 +25,9 @@ class SnapperViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     // Called only once, when the app loads
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Hide bottom nav bar
+        self.tabBarController?.tabBar.isHidden = true
 
         snapButton.isHidden = false
         capturingIndicator.isHidden = true
@@ -132,14 +135,16 @@ class SnapperViewController: UIViewController, AVCapturePhotoCaptureDelegate {
   
     @IBAction func cancelSnap(_ sender: UIButton) {
         
-        navigationController?.popViewController(animated: true)
+        performSegue(withIdentifier: "SnapperToHome", sender: self)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
         
-        let cropperVC = segue.destination as! ChooserViewController
-        cropperVC.capturedImage = self.capturedImage
+        if segue.destination is ChooserViewController {
+            let cropperVC = segue.destination as! ChooserViewController
+            cropperVC.capturedImage = self.capturedImage            
+        }
     }
 
 }

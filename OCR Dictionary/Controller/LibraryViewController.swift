@@ -63,7 +63,7 @@ class LibraryViewController: UIViewController {
     }
     
     @IBAction func didTapSignOut(_ sender: UIBarButtonItem) {
-        signOutAndGoHome(navigationController: navigationController)
+        signOutAndGoHome(caller: self)
     }
     
     @IBAction func didTapAddCollection(_ sender: UIBarButtonItem) {

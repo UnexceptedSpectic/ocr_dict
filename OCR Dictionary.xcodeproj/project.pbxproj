@@ -23,6 +23,7 @@
 		D4704C8A24AC642B00100641 /* OxfordWordData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4704C8924AC642B00100641 /* OxfordWordData.swift */; };
 		D47E9A5026C4B310000EF5DE /* CollectionCreatorAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47E9A4F26C4B310000EF5DE /* CollectionCreatorAlert.swift */; };
 		D47E9A5326C98CDB000EF5DE /* SearcherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47E9A5226C98CDB000EF5DE /* SearcherViewController.swift */; };
+		D482370D2777678C000DB1B4 /* BaseTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D482370C2777678C000DB1B4 /* BaseTabBarController.swift */; };
 		D486B32F24F32391007AA2D6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D486B32E24F32391007AA2D6 /* GoogleService-Info.plist */; };
 		D486B33324F41C7C007AA2D6 /* AuthenticationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D486B33224F41C7C007AA2D6 /* AuthenticationViewController.swift */; };
 		D486B33524F41CFC007AA2D6 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D486B33424F41CFC007AA2D6 /* LoginViewController.swift */; };
@@ -67,6 +68,7 @@
 		D4704C8924AC642B00100641 /* OxfordWordData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OxfordWordData.swift; sourceTree = "<group>"; };
 		D47E9A4F26C4B310000EF5DE /* CollectionCreatorAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionCreatorAlert.swift; sourceTree = "<group>"; };
 		D47E9A5226C98CDB000EF5DE /* SearcherViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearcherViewController.swift; sourceTree = "<group>"; };
+		D482370C2777678C000DB1B4 /* BaseTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTabBarController.swift; sourceTree = "<group>"; };
 		D486B32E24F32391007AA2D6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D486B33224F41C7C007AA2D6 /* AuthenticationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewController.swift; sourceTree = "<group>"; };
 		D486B33424F41CFC007AA2D6 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -174,6 +176,7 @@
 			isa = PBXGroup;
 			children = (
 				D486B33224F41C7C007AA2D6 /* AuthenticationViewController.swift */,
+				D482370C2777678C000DB1B4 /* BaseTabBarController.swift */,
 				D486B33424F41CFC007AA2D6 /* LoginViewController.swift */,
 				D486B33624F41D08007AA2D6 /* RegisterViewController.swift */,
 				D4DB52952480CE1D00F48A83 /* LibraryViewController.swift */,
@@ -338,6 +341,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D482370D2777678C000DB1B4 /* BaseTabBarController.swift in Sources */,
 				D401892A26DBFA0900C6794B /* HistoryStatusButton.swift in Sources */,
 				D40188A726CE041D00C6794B /* HistoryViewController.swift in Sources */,
 				D48D2C2F260E185500CFF6CF /* WordSaverViewController.swift in Sources */,

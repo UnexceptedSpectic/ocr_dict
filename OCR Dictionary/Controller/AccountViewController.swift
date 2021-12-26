@@ -19,7 +19,7 @@ class AccountViewController: UIViewController {
     
     
     @IBAction func didTapSignOut(_ sender: UIBarButtonItem) {
-        signOutAndGoHome(navigationController: navigationController)
+        signOutAndGoHome(caller: self)
     }
     
     /*
